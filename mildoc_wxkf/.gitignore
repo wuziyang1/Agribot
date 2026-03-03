@@ -1,0 +1,7 @@
+.env
+__pycache__/
+messages.db
+nohup.out
+mildoc_wxkf.log
+.specstory/
+

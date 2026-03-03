@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="color-scheme" content="light" />
+  <title>Mildoc Chat - 知识库问答</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}" />
+</head>
+<body>
+  <div class="app-root">
+    <!-- 左侧导航栏，模仿 ChatGPT 的侧边栏风格（仅前端样式，不影响现有接口） -->
+    <aside class="nav-sidebar">
+      <div class="nav-top">
+        <button class="nav-new-chat" type="button">
+          <span class="nav-new-chat-icon">＋</span>
+          <span>新聊天</span>
+        </button>
+
+        <div class="nav-section">
+          <div class="nav-section-title">你的聊天</div>
+          <div class="nav-item muted">这里会展示你的历史对话（仅样式示意）</div>
+        </div>
+      </div>
+
+      <div class="nav-bottom">
+        <div class="nav-section">
+          <div class="nav-item">在线 RAG 服务推荐</div>
+          <div class="nav-item">curl 命令解析</div>
+          <div class="nav-item">Gemini / GPT 对比分析</div>
+        </div>
+
+        <div class="nav-user">
+          <div class="nav-user-avatar">M</div>
+          <div class="nav-user-info">
+            <div class="nav-user-name">Mildoc 用户</div>
+            <div class="nav-user-desc">企业知识库助手</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 右侧主聊天区域 -->
+    <div class="shell">
+      <header class="header">
+        <div class="title">
+          <div class="logo-dot"></div>
+          <div class="title-text">
+            <h1>Mildoc Chat</h1>
+            <span>企业文档知识库 · RAG 问答</span>
+          </div>
+        </div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          <span id="status-label">RAG 服务已连接</span>
+        </div>
+      </header>
+
+      <main class="layout">
+        <aside class="sidebar">
+          <h2 class="sidebar-title">知识库助手</h2>
+          <p class="sidebar-desc">基于 Milvus + 文档向量库，对企业内部文档进行语义检索与回答。</p>
+
+          <div class="sidebar-section">
+            <h3 class="sidebar-section-title">示例问题</h3>
+            <button class="suggestion" type="button" data-question="帮我总结一下某个合同的关键条款和风险点。">
+              合同关键条款与风险梳理
+            </button>
+            <button class="suggestion" type="button" data-question="项目 A 的整体架构和主要技术栈是什么？">
+              项目架构与技术栈说明
+            </button>
+            <button class="suggestion" type="button" data-question="根据考勤和制度文档，说明一下加班和调休的规则。">
+              人事制度 / 流程问答
+            </button>
+          </div>
+
+          <div class="sidebar-section">
+            <h3 class="sidebar-section-title">使用建议</h3>
+            <ul class="tips">
+              <li>尽量带上<span>具体场景</span>和<span>文档名称</span>，效果更好。</li>
+              <li>回答底部会展示本次引用的文档来源。</li>
+              <li>如答案明显不对，可以换一种问法或补充关键信息。</li>
+            </ul>
+          </div>
+        </aside>
+
+        <section class="chat-main">
+          <div class="messages" id="messages"></div>
+
+          <section class="insights" id="insights" aria-label="本次回答的引用来源与统计信息"></section>
+
+          <div class="input-area">
+            <div class="input-row">
+              <textarea
+                id="input"
+                placeholder="请输入你的问题，例如：知识库里的某个合同有哪些关键条款？"
+              ></textarea>
+              <button id="send-btn" type="button">
+                <span id="send-label">发送</span>
+              </button>
+            </div>
+            <div class="hint">
+              <span id="hint-text">按 Enter 发送，Shift+Enter 换行。</span>
+              <span></span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

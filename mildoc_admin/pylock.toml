@@ -1,0 +1,343 @@
+lock-version = "1.0"
+created-by = "pip"
+
+[[packages]]
+name = "argon2-cffi"
+version = "25.1.0"
+
+[[packages.wheels]]
+name = "argon2_cffi-25.1.0-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/4f/d3/a8b22fa575b297cd6e3e3b0155c7e25db170edf1c74783d6a31a2490b8d9/argon2_cffi-25.1.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "fdc8b074db390fccb6eb4a3604ae7231f219aa669a2652e0f20e16ba513d5741"
+
+[[packages]]
+name = "argon2-cffi-bindings"
+version = "25.1.0"
+
+[[packages.wheels]]
+name = "argon2_cffi_bindings-25.1.0-cp39-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/09/52/94108adfdd6e2ddf58be64f959a0b9c7d4ef2fa71086c38356d22dc501ea/argon2_cffi_bindings-25.1.0-cp39-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl"
+
+[packages.wheels.hashes]
+sha256 = "d3e924cfc503018a714f94a49a149fdc0b644eaead5d1f089330399134fa028a"
+
+[[packages]]
+name = "blinker"
+version = "1.9.0"
+
+[[packages.wheels]]
+name = "blinker-1.9.0-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/10/cb/f2ad4230dc2eb1a74edf38f1a38b9b52277f75bef262d8908e60d957e13c/blinker-1.9.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "ba0efaa9080b619ff2f3459d1d500c57bddea4a6b424b60a91141db6fd2f08bc"
+
+[[packages]]
+name = "certifi"
+version = "2025.10.5"
+
+[[packages.wheels]]
+name = "certifi-2025.10.5-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/e4/37/af0d2ef3967ac0d6113837b44a4f0bfe1328c2b9763bd5b1744520e5cfed/certifi-2025.10.5-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "0f212c2744a9bb6de0c56639a6f68afe01ecd92d91f14ae897c4fe7bbeeef0de"
+
+[[packages]]
+name = "cffi"
+version = "2.0.0"
+
+[[packages.wheels]]
+name = "cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/78/2d/7fa73dfa841b5ac06c7b8855cfc18622132e365f5b81d02230333ff26e9e/cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl"
+
+[packages.wheels.hashes]
+sha256 = "3e17ed538242334bf70832644a32a7aae3d83b57567f9fd60a26257e992b79ba"
+
+[[packages]]
+name = "click"
+version = "8.3.0"
+
+[[packages.wheels]]
+name = "click-8.3.0-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/db/d3/9dcc0f5797f070ec8edf30fbadfb200e71d9db6b84d211e3b2085a7589a0/click-8.3.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "9b9f285302c6e3064f4330c05f05b81945b2a39544279343e6e7c5f27a9baddc"
+
+[[packages]]
+name = "flask"
+version = "3.1.1"
+
+[[packages.wheels]]
+name = "flask-3.1.1-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/3d/68/9d4508e893976286d2ead7f8f571314af6c2037af34853a30fd769c02e9d/flask-3.1.1-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "07aae2bb5eaf77993ef57e357491839f5fd9f4dc281593a81a9e4d79a24f295c"
+
+[[packages]]
+name = "flask-login"
+version = "0.6.3"
+
+[[packages.wheels]]
+name = "Flask_Login-0.6.3-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/59/f5/67e9cc5c2036f58115f9fe0f00d203cf6780c3ff8ae0e705e7a9d9e8ff9e/Flask_Login-0.6.3-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "849b25b82a436bf830a054e74214074af59097171562ab10bfa999e6b78aae5d"
+
+[[packages]]
+name = "grpcio"
+version = "1.76.0"
+
+[[packages.wheels]]
+name = "grpcio-1.76.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/f5/86/f6ec2164f743d9609691115ae8ece098c76b894ebe4f7c94a655c6b03e98/grpcio-1.76.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl"
+
+[packages.wheels.hashes]
+sha256 = "980a846182ce88c4f2f7e2c22c56aefd515daeb36149d1c897f83cf57999e0b6"
+
+[[packages]]
+name = "itsdangerous"
+version = "2.2.0"
+
+[[packages.wheels]]
+name = "itsdangerous-2.2.0-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "c6242fc49e35958c8b15141343aa660db5fc54d4f13a1db01a3f5891b98700ef"
+
+[[packages]]
+name = "jinja2"
+version = "3.1.6"
+
+[[packages.wheels]]
+name = "jinja2-3.1.6-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"
+
+[[packages]]
+name = "markupsafe"
+version = "3.0.3"
+
+[[packages.wheels]]
+name = "markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/3c/2e/8d0c2ab90a8c1d9a24f0399058ab8519a3279d1bd4289511d74e909f060e/markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl"
+
+[packages.wheels.hashes]
+sha256 = "d6dd0be5b5b189d31db7cda48b91d7e0a9795f31430b7f271219ab30f1d3ac9d"
+
+[[packages]]
+name = "milvus-lite"
+version = "2.5.1"
+
+[[packages.wheels]]
+name = "milvus_lite-2.5.1-py3-none-manylinux2014_x86_64.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/d3/82/41d9b80f09b82e066894d9b508af07b7b0fa325ce0322980674de49106a0/milvus_lite-2.5.1-py3-none-manylinux2014_x86_64.whl"
+
+[packages.wheels.hashes]
+sha256 = "25ce13f4b8d46876dd2b7ac8563d7d8306da7ff3999bb0d14b116b30f71d706c"
+
+[[packages]]
+name = "minio"
+version = "7.2.16"
+
+[[packages.wheels]]
+name = "minio-7.2.16-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/89/a3/00260f8df72b51afa1f182dd609533c77fa2407918c4c2813d87b4a56725/minio-7.2.16-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "9288ab988ca57c181eb59a4c96187b293131418e28c164392186c2b89026b223"
+
+[[packages]]
+name = "numpy"
+version = "2.3.4"
+
+[[packages.wheels]]
+name = "numpy-2.3.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/f9/58/30a85127bfee6f108282107caf8e06a1f0cc997cb6b52cdee699276fcce4/numpy-2.3.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
+
+[packages.wheels.hashes]
+sha256 = "4121c5beb58a7f9e6dfdee612cb24f4df5cd4db6e8261d7f4d7450a997a65d6a"
+
+[[packages]]
+name = "pandas"
+version = "2.3.3"
+
+[[packages.wheels]]
+name = "pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/e5/63/cd7d615331b328e287d8233ba9fdf191a9c2d11b6af0c7a59cfcec23de68/pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl"
+
+[packages.wheels.hashes]
+sha256 = "b3d11d2fda7eb164ef27ffc14b4fcab16a80e1ce67e9f57e19ec0afaf715ba89"
+
+[[packages]]
+name = "protobuf"
+version = "6.33.0"
+
+[[packages.wheels]]
+name = "protobuf-6.33.0-cp39-abi3-manylinux2014_x86_64.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/21/51/0b1cbad62074439b867b4e04cc09b93f6699d78fd191bed2bbb44562e077/protobuf-6.33.0-cp39-abi3-manylinux2014_x86_64.whl"
+
+[packages.wheels.hashes]
+sha256 = "35be49fd3f4fefa4e6e2aacc35e8b837d6703c37a2168a55ac21e9b1bc7559ef"
+
+[[packages]]
+name = "pycparser"
+version = "2.23"
+
+[[packages.wheels]]
+name = "pycparser-2.23-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/a0/e3/59cd50310fc9b59512193629e1984c1f95e5c8ae6e5d8c69532ccc65a7fe/pycparser-2.23-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934"
+
+[[packages]]
+name = "pycryptodome"
+version = "3.23.0"
+
+[[packages.wheels]]
+name = "pycryptodome-3.23.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/5f/e9/a09476d436d0ff1402ac3867d933c61805ec2326c6ea557aeeac3825604e/pycryptodome-3.23.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+
+[packages.wheels.hashes]
+sha256 = "c8987bd3307a39bc03df5c8e0e3d8be0c4c3518b7f044b0f4c15d1aa78f52575"
+
+[[packages]]
+name = "pymilvus"
+version = "2.5.15"
+
+[[packages.wheels]]
+name = "pymilvus-2.5.15-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/2e/af/10a620686025e5b59889d7075f5d426e45e57a0180c4465051645a88ccb0/pymilvus-2.5.15-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "a155a3b436e2e3ca4b85aac80c92733afe0bd172c497c3bc0dfaca0b804b90c9"
+
+[[packages]]
+name = "python-dateutil"
+version = "2.9.0.post0"
+
+[[packages.wheels]]
+name = "python_dateutil-2.9.0.post0-py2.py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427"
+
+[[packages]]
+name = "python-dotenv"
+version = "1.1.1"
+
+[[packages.wheels]]
+name = "python_dotenv-1.1.1-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/5f/ed/539768cf28c661b5b068d66d96a2f155c4971a5d55684a514c1a0e0dec2f/python_dotenv-1.1.1-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "31f23644fe2602f88ff55e1f5c79ba497e01224ee7737937930c448e4d0e24dc"
+
+[[packages]]
+name = "pytz"
+version = "2025.2"
+
+[[packages.wheels]]
+name = "pytz-2025.2-py2.py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/81/c4/34e93fe5f5429d7570ec1fa436f1986fb1f00c3e0f43a589fe2bbcd22c3f/pytz-2025.2-py2.py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "5ddf76296dd8c44c26eb8f4b6f35488f3ccbf6fbbd7adee0b7262d43f0ec2f00"
+
+[[packages]]
+name = "setuptools"
+version = "80.9.0"
+
+[[packages.wheels]]
+name = "setuptools-80.9.0-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/a3/dc/17031897dae0efacfea57dfd3a82fdd2a2aeb58e0ff71b77b87e44edc772/setuptools-80.9.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922"
+
+[[packages]]
+name = "six"
+version = "1.17.0"
+
+[[packages.wheels]]
+name = "six-1.17.0-py2.py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274"
+
+[[packages]]
+name = "tqdm"
+version = "4.67.1"
+
+[[packages.wheels]]
+name = "tqdm-4.67.1-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/d0/30/dc54f88dd4a2b5dc8a0279bdd7270e735851848b762aeb1c1184ed1f6b14/tqdm-4.67.1-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "26445eca388f82e72884e0d580d5464cd801a3ea01e63e5601bdff9ba6a48de2"
+
+[[packages]]
+name = "typing-extensions"
+version = "4.15.0"
+
+[[packages.wheels]]
+name = "typing_extensions-4.15.0-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548"
+
+[[packages]]
+name = "tzdata"
+version = "2025.2"
+
+[[packages.wheels]]
+name = "tzdata-2025.2-py2.py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/5c/23/c7abc0ca0a1526a0774eca151daeb8de62ec457e77262b66b359c3c7679e/tzdata-2025.2-py2.py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "1a403fada01ff9221ca8044d701868fa132215d84beb92242d9acd2147f667a8"
+
+[[packages]]
+name = "ujson"
+version = "5.11.0"
+
+[[packages.wheels]]
+name = "ujson-5.11.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/17/7b/2dcbc2bbfdbf68f2368fb21ab0f6735e872290bb604c75f6e06b81edcb3f/ujson-5.11.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl"
+
+[packages.wheels.hashes]
+sha256 = "8254e858437c00f17cb72e7a644fc42dad0ebb21ea981b71df6e84b1072aaa7c"
+
+[[packages]]
+name = "urllib3"
+version = "2.5.0"
+
+[[packages.wheels]]
+name = "urllib3-2.5.0-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/a7/c2/fe1e52489ae3122415c51f387e221dd0773709bad6c6cdaa599e8a2c5185/urllib3-2.5.0-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "e6b01673c0fa6a13e374b50871808eb3bf7046c4b125b216f6bf1cc604cff0dc"
+
+[[packages]]
+name = "werkzeug"
+version = "3.1.3"
+
+[[packages.wheels]]
+name = "werkzeug-3.1.3-py3-none-any.whl"
+url = "http://mirrors.cloud.aliyuncs.com/pypi/packages/52/24/ab44c871b0f07f491e5d2ad12c9bd7358e527510618cb1b803a88e986db1/werkzeug-3.1.3-py3-none-any.whl"
+
+[packages.wheels.hashes]
+sha256 = "54b78bf3716d19a65be4fceccc0d1d7b89e608834989dfae50ea87564639213e"

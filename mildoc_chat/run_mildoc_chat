@@ -1,0 +1,9 @@
+#!/bin/bash
+echo "Mildoc Chat Starting... "
+
+source /export/server/anaconda3/etc/profile.d/conda.sh
+conda activate mildocchat
+
+cd /export/workspace/rag
+nohup python -u -m mildoc_chat.chat_app >> /export/workspace/rag/mildoc_chat/mildoc_chat.log 2>&1 &
+

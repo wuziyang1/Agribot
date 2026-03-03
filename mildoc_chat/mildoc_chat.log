@@ -1,0 +1,1081 @@
+INFO:__main__:Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:51:03] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:51:03] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:55:41] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:55:42] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:55:43] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:55:43] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:55:43] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:55:44] "GET / HTTP/1.1" 200 -
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:嵌入模型初始化成功: text-embedding-v4
+INFO:mildoc_chat.rag_service:向量维度: 768
+INFO:mildoc_chat.rag_service:大语言模型初始化成功: qwen-plus
+WARNING:langchain_milvus.vectorstores.milvus:Failed to initialize AsyncMilvusClient during Milvus initialization: <ConnectionConfigException: (code=1, message=Cannot create async connection: no running event loop. Please ensure you are running in an async context.)>. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+INFO:mildoc_chat.rag_service:Milvus向量存储初始化成功: mildoc_collection
+INFO:mildoc_chat.rag_service:搜索参数: nprobe=64
+INFO:mildoc_chat.rerank_service:重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+INFO:mildoc_chat.rag_service:重排序服务初始化成功
+INFO:mildoc_chat.rag_service:RAG服务初始化完成
+INFO:mildoc_chat.rag_service:RAG服务实例创建成功
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 你好
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 115 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入296, 输出64, 总计360
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:55:49] "POST /api/ask HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:15] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:16] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:17] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:17] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:17] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:17] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:18] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:38] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:39] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:39] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:40] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:40] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:40] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:40] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:57] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:58] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:58] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:57:58] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:58:18] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:58:18] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:58:19] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:58:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:58:19] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:58:19] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:58:20] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:58:20] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 11:58:31] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:01:25] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:01:25] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:01:26] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:01:26] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:01:26] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:01:26] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:35] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:35] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:35] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:35] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:36] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:36] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:36] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:36] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:41] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:42] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:43] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:43] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:55] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:55] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:57] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:57] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:03:57] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:24] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:25] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:26] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:26] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:26] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:04:28] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:07:46] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:07:47] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:19:33] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:19:34] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+ET / HTTP/1.1" 200 -
+2026-03-02 12:03:42,653 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:42] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:43,029 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:43] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:43,165 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:43] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:55,743 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:55] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:55,942 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:55] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:56,105 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:56,263 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:56,396 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:56,546 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:56,697 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:56,835 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:56,956 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:56] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:57,128 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:57] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:57,287 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:57] "GET / HTTP/1.1" 200 -
+2026-03-02 12:03:57,435 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:03:57] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:24,900 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:24] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:25,020 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:25] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-02 12:04:26,386 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:26] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:26,611 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:26] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:26,950 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:26] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:27,158 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:27,335 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:27,507 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:27,648 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:27,814 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:27,966 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:27] "GET / HTTP/1.1" 200 -
+2026-03-02 12:04:28,131 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:04:28] "GET / HTTP/1.1" 200 -
+2026-03-02 12:07:46,503 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:07:46] "GET / HTTP/1.1" 200 -
+2026-03-02 12:07:47,067 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:07:47] "GET / HTTP/1.1" 200 -
+2026-03-02 12:19:33,987 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:19:33] "GET / HTTP/1.1" 200 -
+2026-03-02 12:19:34,087 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:19:34] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 12:21:04,241 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 12:21:04,241 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 12:21:04,241 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 12:21:04,242 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 12:21:04,242 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:21:15] "GET / HTTP/1.1" 200 -
+2026-03-02 12:21:15,498 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:21:15] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:21:15] "GET /static/css/chat.css?v=3 HTTP/1.1" 200 -
+2026-03-02 12:21:15,564 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:21:15] "GET /static/css/chat.css?v=3 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:21:15] "GET /static/js/chat.js?v=3 HTTP/1.1" 200 -
+2026-03-02 12:21:15,735 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:21:15] "GET /static/js/chat.js?v=3 HTTP/1.1" 200 -
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 12:23:50,799 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 12:23:50,799 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 12:23:50,799 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 12:23:50,801 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 12:23:50,801 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:23:55] "GET / HTTP/1.1" 200 -
+2026-03-02 12:23:55,228 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:23:55] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:23:55] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-02 12:23:55,284 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:23:55] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 12:23:55] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 12:23:55,492 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:23:55] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 12:37:23,644 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-02 12:37:23,644 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-02 12:37:23,644 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 12:37:23,645 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 12:37:23,645 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-02 12:37:47,024 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:37:47] "GET / HTTP/1.1" 200 -
+2026-03-02 12:38:17,172 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-02 12:38:17,176 - mildoc_chat.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-02 12:38:17,177 - mildoc_chat.rag_service - INFO - 向量维度: 768
+2026-03-02 12:38:17,195 - mildoc_chat.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-02 12:38:17,207 - langchain_milvus.vectorstores.milvus - WARNING - Failed to initialize AsyncMilvusClient during Milvus initialization: <ConnectionConfigException: (code=1, message=Cannot create async connection: no running event loop. Please ensure you are running in an async context.)>. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+2026-03-02 12:38:17,208 - mildoc_chat.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection
+2026-03-02 12:38:17,209 - mildoc_chat.rag_service - INFO - 搜索参数: nprobe=64
+2026-03-02 12:38:17,209 - mildoc_chat.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-02 12:38:17,209 - mildoc_chat.rag_service - INFO - 重排序服务初始化成功
+2026-03-02 12:38:17,209 - mildoc_chat.rag_service - INFO - RAG服务初始化完成
+2026-03-02 12:38:17,209 - mildoc_chat.rag_service - INFO - RAG服务实例创建成功
+2026-03-02 12:38:17,345 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-02 12:38:18,692 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-02 12:38:18,856 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:38:18] "GET /health HTTP/1.1" 200 -
+2026-03-02 12:38:19,010 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:38:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-02 12:38:51,317 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:38:51] "GET / HTTP/1.1" 200 -
+2026-03-02 12:38:51,511 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:38:51] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 12:38:51,529 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 12:38:51] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 19:10:10,733 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 19:10:10,733 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 19:10:10,733 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 19:10:10,735 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 19:10:10,735 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:10:27] "GET / HTTP/1.1" 200 -
+2026-03-02 19:10:27,498 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:10:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:10:30] "GET / HTTP/1.1" 200 -
+2026-03-02 19:10:30,245 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:10:30] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:10:30] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 19:10:30,373 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:10:30] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:10:30] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 19:10:30,681 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:10:30] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:10:31] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-02 19:10:31,087 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:10:31] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-02 19:19:21,306 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:嵌入模型初始化成功: text-embedding-v4
+2026-03-02 19:19:21,310 - mildoc_chat.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+INFO:mildoc_chat.rag_service:向量维度: 768
+2026-03-02 19:19:21,310 - mildoc_chat.rag_service - INFO - 向量维度: 768
+INFO:mildoc_chat.rag_service:大语言模型初始化成功: qwen-plus
+2026-03-02 19:19:21,328 - mildoc_chat.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+WARNING:langchain_milvus.vectorstores.milvus:Failed to initialize AsyncMilvusClient during Milvus initialization: <ConnectionConfigException: (code=1, message=Cannot create async connection: no running event loop. Please ensure you are running in an async context.)>. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+2026-03-02 19:19:21,339 - langchain_milvus.vectorstores.milvus - WARNING - Failed to initialize AsyncMilvusClient during Milvus initialization: <ConnectionConfigException: (code=1, message=Cannot create async connection: no running event loop. Please ensure you are running in an async context.)>. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+INFO:mildoc_chat.rag_service:Milvus向量存储初始化成功: mildoc_collection
+2026-03-02 19:19:21,341 - mildoc_chat.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection
+INFO:mildoc_chat.rag_service:搜索参数: nprobe=64
+2026-03-02 19:19:21,341 - mildoc_chat.rag_service - INFO - 搜索参数: nprobe=64
+INFO:mildoc_chat.rerank_service:重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-02 19:19:21,341 - mildoc_chat.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+INFO:mildoc_chat.rag_service:重排序服务初始化成功
+2026-03-02 19:19:21,342 - mildoc_chat.rag_service - INFO - 重排序服务初始化成功
+INFO:mildoc_chat.rag_service:RAG服务初始化完成
+2026-03-02 19:19:21,342 - mildoc_chat.rag_service - INFO - RAG服务初始化完成
+INFO:mildoc_chat.rag_service:RAG服务实例创建成功
+2026-03-02 19:19:21,342 - mildoc_chat.rag_service - INFO - RAG服务实例创建成功
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 你好，你是谁？
+2026-03-02 19:19:21,342 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 你好，你是谁？
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-02 19:19:21,342 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-02 19:19:24,082 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-02 19:19:24,090 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 133 字符
+2026-03-02 19:19:24,090 - mildoc_chat.rag_service - INFO - 📄 答案长度: 133 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入299, 输出73, 总计372
+2026-03-02 19:19:24,090 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入299, 输出73, 总计372
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:19:24] "POST /api/ask HTTP/1.1" 200 -
+2026-03-02 19:19:24,091 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:19:24] "POST /api/ask HTTP/1.1" 200 -
+INFO:werkzeug:124.239.187.108 - - [02/Mar/2026 19:25:35] "GET / HTTP/1.1" 200 -
+2026-03-02 19:25:35,906 - werkzeug - INFO - 124.239.187.108 - - [02/Mar/2026 19:25:35] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:124.239.187.108 - - [02/Mar/2026 19:25:35] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-02 19:25:35,983 - werkzeug - INFO - 124.239.187.108 - - [02/Mar/2026 19:25:35] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:124.239.187.108 - - [02/Mar/2026 19:25:35] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 19:25:35,995 - werkzeug - INFO - 124.239.187.108 - - [02/Mar/2026 19:25:35] "GET /static/js/chat.js HTTP/1.1" 200 -
+INFO:werkzeug:124.239.187.108 - - [02/Mar/2026 19:25:36] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-02 19:25:36,100 - werkzeug - INFO - 124.239.187.108 - - [02/Mar/2026 19:25:36] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:52:47] "GET / HTTP/1.1" 200 -
+2026-03-02 19:52:47,787 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:52:47] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:52:47] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-02 19:52:47,843 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:52:47] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:52:47] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 19:52:47,944 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:52:47] "GET /static/js/chat.js HTTP/1.1" 200 -
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 19:53:44,119 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 19:53:44,119 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 19:53:44,119 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 19:53:44,121 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 19:53:44,121 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:53:48] "GET / HTTP/1.1" 200 -
+2026-03-02 19:53:48,219 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:53:48] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:53:48] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 19:53:48,279 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:53:48] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:53:48] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 19:53:48,369 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:53:48] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:53:51] "GET / HTTP/1.1" 200 -
+2026-03-02 19:53:51,966 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:53:51] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:53:52] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 19:53:52,021 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:53:52] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:53:52] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 19:53:52,116 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:53:52] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-02 19:54:04,405 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:嵌入模型初始化成功: text-embedding-v4
+2026-03-02 19:54:04,409 - mildoc_chat.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+INFO:mildoc_chat.rag_service:向量维度: 768
+2026-03-02 19:54:04,409 - mildoc_chat.rag_service - INFO - 向量维度: 768
+INFO:mildoc_chat.rag_service:大语言模型初始化成功: qwen-plus
+2026-03-02 19:54:04,427 - mildoc_chat.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+WARNING:langchain_milvus.vectorstores.milvus:Failed to initialize AsyncMilvusClient during Milvus initialization: <ConnectionConfigException: (code=1, message=Cannot create async connection: no running event loop. Please ensure you are running in an async context.)>. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+2026-03-02 19:54:04,439 - langchain_milvus.vectorstores.milvus - WARNING - Failed to initialize AsyncMilvusClient during Milvus initialization: <ConnectionConfigException: (code=1, message=Cannot create async connection: no running event loop. Please ensure you are running in an async context.)>. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+INFO:mildoc_chat.rag_service:Milvus向量存储初始化成功: mildoc_collection
+2026-03-02 19:54:04,441 - mildoc_chat.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection
+INFO:mildoc_chat.rag_service:搜索参数: nprobe=64
+2026-03-02 19:54:04,441 - mildoc_chat.rag_service - INFO - 搜索参数: nprobe=64
+INFO:mildoc_chat.rerank_service:重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-02 19:54:04,441 - mildoc_chat.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+INFO:mildoc_chat.rag_service:重排序服务初始化成功
+2026-03-02 19:54:04,441 - mildoc_chat.rag_service - INFO - 重排序服务初始化成功
+INFO:mildoc_chat.rag_service:RAG服务初始化完成
+2026-03-02 19:54:04,441 - mildoc_chat.rag_service - INFO - RAG服务初始化完成
+INFO:mildoc_chat.rag_service:RAG服务实例创建成功
+2026-03-02 19:54:04,441 - mildoc_chat.rag_service - INFO - RAG服务实例创建成功
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:54:04] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-02 19:54:04,441 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:54:04] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 人事
+2026-03-02 19:54:04,442 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 人事
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-02 19:54:04,442 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-02 19:54:06,238 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-02 19:54:06,246 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 108 字符
+2026-03-02 19:54:06,247 - mildoc_chat.rag_service - INFO - 📄 答案长度: 108 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入296, 输出65, 总计361
+2026-03-02 19:54:06,247 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入296, 输出65, 总计361
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:54:46] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-02 19:54:46,867 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:54:46] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 人事聘用原则是什么？
+2026-03-02 19:54:46,867 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 人事聘用原则是什么？
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-02 19:54:46,867 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-02 19:54:48,784 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-02 19:54:48,785 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 96 字符
+2026-03-02 19:54:48,785 - mildoc_chat.rag_service - INFO - 📄 答案长度: 96 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入299, 输出55, 总计354
+2026-03-02 19:54:48,785 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入299, 输出55, 总计354
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:06] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-02 19:55:06,064 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:06] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 聘用原则是什么
+2026-03-02 19:55:06,064 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 聘用原则是什么
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-02 19:55:06,065 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-02 19:55:07,764 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-02 19:55:07,765 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 104 字符
+2026-03-02 19:55:07,765 - mildoc_chat.rag_service - INFO - 📄 答案长度: 104 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入300, 输出59, 总计359
+2026-03-02 19:55:07,765 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入300, 输出59, 总计359
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:22] "GET / HTTP/1.1" 200 -
+2026-03-02 19:55:22,914 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:22] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:22] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-02 19:55:22,959 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:22] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:23] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 19:55:23,040 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:23] "GET /static/js/chat.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:26] "GET / HTTP/1.1" 200 -
+2026-03-02 19:55:26,687 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:26] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:26] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 19:55:26,744 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:26] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:26] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 19:55:26,826 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:26] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:27] "GET / HTTP/1.1" 200 -
+2026-03-02 19:55:27,037 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 19:55:27,092 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 19:55:27,176 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:27] "GET / HTTP/1.1" 200 -
+2026-03-02 19:55:27,435 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 19:55:27,475 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 19:55:27,562 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:27] "GET / HTTP/1.1" 200 -
+2026-03-02 19:55:27,851 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 19:55:27,909 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 19:55:27,998 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:55:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:58:58] "GET / HTTP/1.1" 200 -
+2026-03-02 19:58:58,753 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:58:58] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:58:58] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 19:58:58,808 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:58:58] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:58:58] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 19:58:58,902 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:58:58] "GET /static/js/chat.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:59:01] "GET / HTTP/1.1" 200 -
+2026-03-02 19:59:01,339 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:59:01] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:59:01] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 19:59:01,397 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:59:01] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:59:01] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 19:59:01,454 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:59:01] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:59:01] "GET / HTTP/1.1" 200 -
+2026-03-02 19:59:01,951 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:59:01] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:59:01] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 19:59:01,984 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:59:01] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 19:59:02] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 19:59:02,070 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 19:59:02] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+ERROR:werkzeug:66.132.153.123 - - [02/Mar/2026 20:01:16] code 400, message Bad request version ('À\x14À')
+2026-03-02 20:01:16,630 - werkzeug - ERROR - 66.132.153.123 - - [02/Mar/2026 20:01:16] code 400, message Bad request version ('À\x14À')
+INFO:werkzeug:66.132.153.123 - - [02/Mar/2026 20:01:16] "[31m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x034)\x8c¯x4ô³\x09ðxõè\x9d~©\x82Z;X¼\x03\x16På¿À\x95:+Â` \x0f\x01\x0f\x90\x82brå\x08ã\x12\x07kTA#ê\x9d¸p![\x1cD¯\x0b06IImÍ\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" 400 -
+2026-03-02 20:01:16,630 - werkzeug - INFO - 66.132.153.123 - - [02/Mar/2026 20:01:16] "[31m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x034)\x8c¯x4ô³\x09ðxõè\x9d~©\x82Z;X¼\x03\x16På¿À\x95:+Â` \x0f\x01\x0f\x90\x82brå\x08ã\x12\x07kTA#ê\x9d¸p![\x1cD¯\x0b06IImÍ\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" 400 -
+INFO:werkzeug:66.132.153.123 - - [02/Mar/2026 20:01:17] "GET / HTTP/1.1" 200 -
+2026-03-02 20:01:17,330 - werkzeug - INFO - 66.132.153.123 - - [02/Mar/2026 20:01:17] "GET / HTTP/1.1" 200 -
+ERROR:werkzeug:66.132.153.123 - - [02/Mar/2026 20:01:18] code 505, message Invalid HTTP version (2.0)
+2026-03-02 20:01:18,130 - werkzeug - ERROR - 66.132.153.123 - - [02/Mar/2026 20:01:18] code 505, message Invalid HTTP version (2.0)
+INFO:werkzeug:66.132.153.123 - - [02/Mar/2026 20:01:18] "[35m[1mPRI * HTTP/2.0[0m" 505 -
+2026-03-02 20:01:18,130 - werkzeug - INFO - 66.132.153.123 - - [02/Mar/2026 20:01:18] "[35m[1mPRI * HTTP/2.0[0m" 505 -
+INFO:werkzeug:66.132.153.123 - - [02/Mar/2026 20:01:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-02 20:01:19,050 - werkzeug - INFO - 66.132.153.123 - - [02/Mar/2026 20:01:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+ERROR:werkzeug:66.132.153.123 - - [02/Mar/2026 20:01:26] code 400, message Bad request version ('À\x14À')
+2026-03-02 20:01:26,810 - werkzeug - ERROR - 66.132.153.123 - - [02/Mar/2026 20:01:26] code 400, message Bad request version ('À\x14À')
+INFO:werkzeug:66.132.153.123 - - [02/Mar/2026 20:01:26] "[31m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x031ªvð\x00fä\x18øñ'×\x0eø\x10ä]Ú\x93\x85PZÀÈFqö\x1d¤#©< WÁ>?¾¿ì\x82oqñáÐ¡\x8aÛ\x06Ã®²\x90\x83\x94ÿ¸H\x11\x13%?\x9bÚ\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" 400 -
+2026-03-02 20:01:26,810 - werkzeug - INFO - 66.132.153.123 - - [02/Mar/2026 20:01:26] "[31m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x031ªvð\x00fä\x18øñ'×\x0eø\x10ä]Ú\x93\x85PZÀÈFqö\x1d¤#©< WÁ>?¾¿ì\x82oqñáÐ¡\x8aÛ\x06Ã®²\x90\x83\x94ÿ¸H\x11\x13%?\x9bÚ\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" 400 -
+INFO:werkzeug:66.132.153.123 - - [02/Mar/2026 20:01:28] "[33mGET /security.txt HTTP/1.1[0m" 404 -
+2026-03-02 20:01:28,545 - werkzeug - INFO - 66.132.153.123 - - [02/Mar/2026 20:01:28] "[33mGET /security.txt HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:22] "GET / HTTP/1.1" 200 -
+2026-03-02 20:02:22,214 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:22] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:22] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-02 20:02:22,273 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:22] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:22] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 20:02:22,371 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:22] "GET /static/js/chat.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:27] "GET / HTTP/1.1" 200 -
+2026-03-02 20:02:27,119 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:02:27,169 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:02:27,257 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:27] "GET / HTTP/1.1" 200 -
+2026-03-02 20:02:27,803 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:27] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:02:27,867 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:02:27,965 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:28] "GET / HTTP/1.1" 200 -
+2026-03-02 20:02:28,422 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:28] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:28] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:02:28,463 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:28] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:28] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:02:28,557 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:28] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:54] "GET / HTTP/1.1" 200 -
+2026-03-02 20:02:54,139 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:54] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:54] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-02 20:02:54,196 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:54] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:02:54] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 20:02:54,287 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:02:54] "GET /static/js/chat.js HTTP/1.1" 200 -
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 20:03:30,725 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 20:03:30,725 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 20:03:30,725 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 20:03:30,727 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 20:03:30,727 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:32] "GET / HTTP/1.1" 200 -
+2026-03-02 20:03:32,483 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:32] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:32] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:03:32,528 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:32] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:32] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:03:32,651 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:32] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:33] "GET / HTTP/1.1" 200 -
+2026-03-02 20:03:33,791 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:33] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:33] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:03:33,839 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:33] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:33] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:03:33,921 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:33] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:34] "GET / HTTP/1.1" 200 -
+2026-03-02 20:03:34,009 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:34] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:34] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:03:34,069 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:34] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:34] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:03:34,124 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:34] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:34] "GET / HTTP/1.1" 200 -
+2026-03-02 20:03:34,360 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:34] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:34] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:03:34,409 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:34] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:03:34] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:03:34,497 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:03:34] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 20:07:05,049 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 20:07:05,049 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 20:07:05,049 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 20:07:05,051 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 20:07:05,051 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:07] "GET / HTTP/1.1" 200 -
+2026-03-02 20:07:07,891 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:07] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:07] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-02 20:07:07,952 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:07] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:08] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:07:08,076 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:08] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:08] "GET / HTTP/1.1" 200 -
+2026-03-02 20:07:08,760 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:08] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:08] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:07:08,827 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:08] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:08] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:07:08,923 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:08] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:09] "GET / HTTP/1.1" 200 -
+2026-03-02 20:07:09,418 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:09] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:09] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:07:09,477 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:09] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:09] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:07:09,561 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:09] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:09] "GET / HTTP/1.1" 200 -
+2026-03-02 20:07:09,720 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:09] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:09] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:07:09,761 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:09] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:09] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:07:09,856 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:09] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:10] "GET / HTTP/1.1" 200 -
+2026-03-02 20:07:10,059 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:10] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:10] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:07:10,111 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:10] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:10] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:07:10,204 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:10] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:10] "GET / HTTP/1.1" 200 -
+2026-03-02 20:07:10,523 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:10] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:10] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:07:10,583 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:10] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:10] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:07:10,678 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:10] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:11] "GET / HTTP/1.1" 200 -
+2026-03-02 20:07:11,048 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:11] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:07:11,107 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:07:11,202 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:11] "GET / HTTP/1.1" 200 -
+2026-03-02 20:07:11,361 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:11] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:07:11,398 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:07:11,505 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:11] "GET / HTTP/1.1" 200 -
+2026-03-02 20:07:11,656 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:11] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:07:11,697 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:07:11,797 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:07:11] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 20:11:05,775 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 20:11:05,775 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 20:11:05,775 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 20:11:05,777 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 20:11:05,777 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:11:09] "GET / HTTP/1.1" 200 -
+2026-03-02 20:11:09,017 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:11:09] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:11:09] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-02 20:11:09,077 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:11:09] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:11:09] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:11:09,165 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:11:09] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-02 20:11:28,289 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:嵌入模型初始化成功: text-embedding-v4
+2026-03-02 20:11:28,293 - mildoc_chat.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+INFO:mildoc_chat.rag_service:向量维度: 768
+2026-03-02 20:11:28,293 - mildoc_chat.rag_service - INFO - 向量维度: 768
+INFO:mildoc_chat.rag_service:大语言模型初始化成功: qwen-plus
+2026-03-02 20:11:28,312 - mildoc_chat.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+WARNING:langchain_milvus.vectorstores.milvus:Failed to initialize AsyncMilvusClient during Milvus initialization: <ConnectionConfigException: (code=1, message=Cannot create async connection: no running event loop. Please ensure you are running in an async context.)>. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+2026-03-02 20:11:28,326 - langchain_milvus.vectorstores.milvus - WARNING - Failed to initialize AsyncMilvusClient during Milvus initialization: <ConnectionConfigException: (code=1, message=Cannot create async connection: no running event loop. Please ensure you are running in an async context.)>. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+INFO:mildoc_chat.rag_service:Milvus向量存储初始化成功: mildoc_collection
+2026-03-02 20:11:28,328 - mildoc_chat.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection
+INFO:mildoc_chat.rag_service:搜索参数: nprobe=64
+2026-03-02 20:11:28,328 - mildoc_chat.rag_service - INFO - 搜索参数: nprobe=64
+INFO:mildoc_chat.rerank_service:重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-02 20:11:28,328 - mildoc_chat.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+INFO:mildoc_chat.rag_service:重排序服务初始化成功
+2026-03-02 20:11:28,328 - mildoc_chat.rag_service - INFO - 重排序服务初始化成功
+INFO:mildoc_chat.rag_service:RAG服务初始化完成
+2026-03-02 20:11:28,328 - mildoc_chat.rag_service - INFO - RAG服务初始化完成
+INFO:mildoc_chat.rag_service:RAG服务实例创建成功
+2026-03-02 20:11:28,328 - mildoc_chat.rag_service - INFO - RAG服务实例创建成功
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:11:28] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-02 20:11:28,328 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:11:28] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 你好
+2026-03-02 20:11:28,329 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 你好
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-02 20:11:28,329 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-02 20:11:30,216 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-02 20:11:30,224 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 115 字符
+2026-03-02 20:11:30,224 - mildoc_chat.rag_service - INFO - 📄 答案长度: 115 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入296, 输出64, 总计360
+2026-03-02 20:11:30,224 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入296, 输出64, 总计360
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 20:13:56,378 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 20:13:56,378 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 20:13:56,378 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 20:13:56,380 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 20:13:56,380 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:13:57] "GET / HTTP/1.1" 200 -
+2026-03-02 20:13:57,576 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:13:57] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:13:57] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:13:57,624 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:13:57] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:13:57] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 20:13:57,706 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:13:57] "GET /static/js/chat.js HTTP/1.1" 200 -
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 20:15:24,498 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 20:15:24,498 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 20:15:24,498 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 20:15:24,499 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 20:15:24,499 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:15:24] "GET / HTTP/1.1" 200 -
+2026-03-02 20:15:24,590 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:15:24] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:15:24] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-02 20:15:24,639 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:15:24] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:15:24] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:15:24,717 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:15:24] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 20:18:08,006 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 20:18:08,006 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 20:18:08,006 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 20:18:08,008 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 20:18:08,008 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:18:09] "GET / HTTP/1.1" 200 -
+2026-03-02 20:18:09,151 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:18:09] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:18:09] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:18:09,200 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:18:09] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:18:09] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:18:09,270 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:18:09] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:18:26] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:18:26,878 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:18:26] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:18:26] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-02 20:18:26,879 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:18:26] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:08] "GET / HTTP/1.1" 200 -
+2026-03-02 20:21:08,350 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:08] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:08] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-02 20:21:08,383 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:08] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:08] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:21:08,474 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:08] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:08] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:21:08,487 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:08] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:09] "GET / HTTP/1.1" 200 -
+2026-03-02 20:21:09,121 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:09] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:09] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-02 20:21:09,151 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:09] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:09] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:21:09,227 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:09] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:09] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:21:09,240 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:09] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:__main__:Mildoc Chat Starting...
+2026-03-02 20:21:24,382 - __main__ - INFO - Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+2026-03-02 20:21:24,382 - __main__ - INFO - listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-02 20:21:24,382 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-02 20:21:24,384 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+2026-03-02 20:21:24,384 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:25] "GET / HTTP/1.1" 200 -
+2026-03-02 20:21:25,090 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:25] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:25] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-02 20:21:25,125 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:25] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:25] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:21:25,214 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:25] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:25] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:21:25,222 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:25] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:26] "GET / HTTP/1.1" 200 -
+2026-03-02 20:21:26,259 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:26] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:26] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-02 20:21:26,305 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:26] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:26] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:21:26,374 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:26] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:21:26] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:21:26,387 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:21:26] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-02 20:22:08,230 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:嵌入模型初始化成功: text-embedding-v4
+2026-03-02 20:22:08,234 - mildoc_chat.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+INFO:mildoc_chat.rag_service:向量维度: 768
+2026-03-02 20:22:08,234 - mildoc_chat.rag_service - INFO - 向量维度: 768
+INFO:mildoc_chat.rag_service:大语言模型初始化成功: qwen-plus
+2026-03-02 20:22:08,253 - mildoc_chat.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+WARNING:langchain_milvus.vectorstores.milvus:Failed to initialize AsyncMilvusClient during Milvus initialization: <ConnectionConfigException: (code=1, message=Cannot create async connection: no running event loop. Please ensure you are running in an async context.)>. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+2026-03-02 20:22:08,268 - langchain_milvus.vectorstores.milvus - WARNING - Failed to initialize AsyncMilvusClient during Milvus initialization: <ConnectionConfigException: (code=1, message=Cannot create async connection: no running event loop. Please ensure you are running in an async context.)>. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+INFO:mildoc_chat.rag_service:Milvus向量存储初始化成功: mildoc_collection
+2026-03-02 20:22:08,269 - mildoc_chat.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection
+INFO:mildoc_chat.rag_service:搜索参数: nprobe=64
+2026-03-02 20:22:08,270 - mildoc_chat.rag_service - INFO - 搜索参数: nprobe=64
+INFO:mildoc_chat.rerank_service:重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-02 20:22:08,270 - mildoc_chat.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+INFO:mildoc_chat.rag_service:重排序服务初始化成功
+2026-03-02 20:22:08,270 - mildoc_chat.rag_service - INFO - 重排序服务初始化成功
+INFO:mildoc_chat.rag_service:RAG服务初始化完成
+2026-03-02 20:22:08,270 - mildoc_chat.rag_service - INFO - RAG服务初始化完成
+INFO:mildoc_chat.rag_service:RAG服务实例创建成功
+2026-03-02 20:22:08,270 - mildoc_chat.rag_service - INFO - RAG服务实例创建成功
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:08] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-02 20:22:08,270 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:08] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 你好
+2026-03-02 20:22:08,270 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 你好
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-02 20:22:08,271 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-02 20:22:10,168 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-02 20:22:10,176 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 121 字符
+2026-03-02 20:22:10,176 - mildoc_chat.rag_service - INFO - 📄 答案长度: 121 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入296, 输出69, 总计365
+2026-03-02 20:22:10,176 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入296, 输出69, 总计365
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:39] "GET / HTTP/1.1" 200 -
+2026-03-02 20:22:39,377 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:39] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:39] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-02 20:22:39,433 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:39] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:39] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-02 20:22:39,529 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:39] "GET /static/js/chat.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:39] "GET / HTTP/1.1" 200 -
+2026-03-02 20:22:39,808 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:39] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:39] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:22:39,862 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:39] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:39] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:22:39,947 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:39] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:40] "GET / HTTP/1.1" 200 -
+2026-03-02 20:22:40,180 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:40] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:40] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:22:40,238 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:40] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:40] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:22:40,340 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:40] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:40] "GET / HTTP/1.1" 200 -
+2026-03-02 20:22:40,598 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:40] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:40] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:22:40,660 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:40] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:40] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:22:40,748 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:40] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:41] "GET / HTTP/1.1" 200 -
+2026-03-02 20:22:41,283 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:41] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:41] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:22:41,313 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:41] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:41] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:22:41,435 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:41] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:41] "GET / HTTP/1.1" 200 -
+2026-03-02 20:22:41,609 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:41] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:41] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-02 20:22:41,669 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:41] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:41] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-02 20:22:41,769 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:41] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:22:47] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-02 20:22:47,502 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:22:47] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 你好
+2026-03-02 20:22:47,502 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 你好
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-02 20:22:47,503 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-02 20:22:49,455 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-02 20:22:49,456 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 111 字符
+2026-03-02 20:22:49,457 - mildoc_chat.rag_service - INFO - 📄 答案长度: 111 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入296, 输出64, 总计360
+2026-03-02 20:22:49,457 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入296, 输出64, 总计360
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:23:07] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-02 20:23:07,053 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:23:07] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 帮我总结一下某个合同的关键条款和风险点。
+2026-03-02 20:23:07,053 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 帮我总结一下某个合同的关键条款和风险点。
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-02 20:23:07,054 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-02 20:23:09,255 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-02 20:23:09,256 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 139 字符
+2026-03-02 20:23:09,256 - mildoc_chat.rag_service - INFO - 📄 答案长度: 139 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入307, 输出83, 总计390
+2026-03-02 20:23:09,256 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入307, 输出83, 总计390
+INFO:werkzeug:127.0.0.1 - - [02/Mar/2026 20:24:03] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-02 20:24:03,380 - werkzeug - INFO - 127.0.0.1 - - [02/Mar/2026 20:24:03] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 人事管理制度中的聘用原则是什么?
+2026-03-02 20:24:03,381 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 人事管理制度中的聘用原则是什么?
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-02 20:24:03,381 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-02 20:24:05,001 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-02 20:24:05,002 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 92 字符
+2026-03-02 20:24:05,002 - mildoc_chat.rag_service - INFO - 📄 答案长度: 92 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入301, 输出51, 总计352
+2026-03-02 20:24:05,002 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入301, 输出51, 总计352
+INFO:werkzeug:35.203.211.10 - - [03/Mar/2026 00:49:39] "GET / HTTP/1.1" 200 -
+2026-03-03 00:49:39,073 - werkzeug - INFO - 35.203.211.10 - - [03/Mar/2026 00:49:39] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:22:21] "GET / HTTP/1.1" 200 -
+2026-03-03 10:22:21,555 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:22:21] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:22:21] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-03 10:22:21,628 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:22:21] "GET /static/js/chat.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:22:21] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-03 10:22:21,754 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:22:21] "GET /static/css/chat.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:22:21] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-03 10:22:21,944 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:22:21] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:22:32] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-03 10:22:32,401 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:22:32] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 介绍以西哎deepsekk
+2026-03-03 10:22:32,402 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 介绍以西哎deepsekk
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-03 10:22:32,408 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-03 10:22:34,169 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-03 10:22:34,174 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 101 字符
+2026-03-03 10:22:34,174 - mildoc_chat.rag_service - INFO - 📄 答案长度: 101 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入302, 输出55, 总计357
+2026-03-03 10:22:34,174 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入302, 输出55, 总计357
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:23:05] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-03 10:23:05,983 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:23:05] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 聘用原则是什么？
+2026-03-03 10:23:05,984 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 聘用原则是什么？
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-03 10:23:05,984 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-03 10:23:07,596 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-03 10:23:07,597 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 98 字符
+2026-03-03 10:23:07,597 - mildoc_chat.rag_service - INFO - 📄 答案长度: 98 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入300, 输出56, 总计356
+2026-03-03 10:23:07,597 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入300, 输出56, 总计356
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:23:50] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-03 10:23:50,746 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:23:50] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 1
+2026-03-03 10:23:50,746 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 1
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-03 10:23:50,746 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-03 10:23:52,334 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-03 10:23:52,335 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 85 字符
+2026-03-03 10:23:52,336 - mildoc_chat.rag_service - INFO - 📄 答案长度: 85 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入296, 输出51, 总计347
+2026-03-03 10:23:52,336 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入296, 输出51, 总计347
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-03 10:29:08,777 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-03 10:29:10,120 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:29:10] "GET /health HTTP/1.1" 200 -
+2026-03-03 10:29:10,279 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:29:10] "GET /health HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:29:14] "GET / HTTP/1.1" 200 -
+2026-03-03 10:29:14,556 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:29:14] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:29:14] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-03 10:29:14,623 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:29:14] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:29:14] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-03 10:29:14,744 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:29:14] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+INFO:mildoc_chat.rag_service:🔍 开始处理查询（rerank=True): 聘用原则是什么？
+2026-03-03 10:29:36,905 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 聘用原则是什么？
+INFO:mildoc_chat.rag_service:📄 初始检索到 0 个候选文档
+2026-03-03 10:29:36,906 - mildoc_chat.rag_service - INFO - 📄 初始检索到 0 个候选文档
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-03 10:29:38,541 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag_service:✅ 查询完成，检索到 0 个相关文档
+2026-03-03 10:29:38,542 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 0 个相关文档
+INFO:mildoc_chat.rag_service:📄 答案长度: 101 字符
+2026-03-03 10:29:38,542 - mildoc_chat.rag_service - INFO - 📄 答案长度: 101 字符
+INFO:mildoc_chat.rag_service:💰 Token使用: 输入300, 输出58, 总计358
+2026-03-03 10:29:38,542 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入300, 输出58, 总计358
+INFO:werkzeug:127.0.0.1 - - [03/Mar/2026 10:29:38] "POST /api/ask HTTP/1.1" 200 -
+2026-03-03 10:29:38,542 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:29:38] "POST /api/ask HTTP/1.1" 200 -
+2026-03-03 10:31:26,172 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-03 10:31:26,172 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-03 10:31:26,172 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-03 10:31:26,173 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-03 10:31:26,173 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-03 10:31:35,537 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-03 10:31:35,542 - mildoc_chat.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-03 10:31:35,543 - mildoc_chat.rag_service - INFO - 向量维度: 768
+2026-03-03 10:31:35,609 - mildoc_chat.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-03 10:31:35,622 - langchain_milvus.vectorstores.milvus - WARNING - Failed to initialize AsyncMilvusClient during Milvus initialization: There is no current event loop in thread 'Thread-1 (process_request_thread)'.. Async operations will be unavailable until AsyncMilvusClient is successfully created.
+2026-03-03 10:31:35,631 - mildoc_chat.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection
+2026-03-03 10:31:35,631 - mildoc_chat.rag_service - INFO - Milvus连接: uri=http://127.0.0.1:19530 db=mildoc
+2026-03-03 10:31:35,632 - mildoc_chat.rag_service - INFO - 搜索参数: nprobe=64
+2026-03-03 10:31:35,632 - mildoc_chat.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=gte-rerank-v2, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-03 10:31:35,632 - mildoc_chat.rag_service - INFO - 重排序服务初始化成功
+2026-03-03 10:31:35,632 - mildoc_chat.rag_service - INFO - RAG服务初始化完成
+2026-03-03 10:31:35,632 - mildoc_chat.rag_service - INFO - RAG服务实例创建成功
+2026-03-03 10:31:35,756 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-03 10:31:37,517 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-03 10:31:37,640 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-03 10:31:37,950 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:31:37] "GET /health HTTP/1.1" 200 -
+2026-03-03 10:31:43,135 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 聘用原则是什么？
+2026-03-03 10:31:43,276 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-03 10:31:43,286 - mildoc_chat.rag_service - INFO - 📄 初始检索到 10 个候选文档
+2026-03-03 10:31:43,613 - mildoc_chat.rag_service - INFO - 🔄 重排序完成，选择了 3 个文档
+2026-03-03 10:31:46,204 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-03 10:31:46,205 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 3 个相关文档
+2026-03-03 10:31:46,205 - mildoc_chat.rag_service - INFO - 📄 答案长度: 153 字符
+2026-03-03 10:31:46,205 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入3818, 输出94, 总计3912
+2026-03-03 10:31:46,205 - mildoc_chat.rag_service - INFO - 📖 文档1: 人事管理流程.docx (rerank: 0.296) - # 汇视威管理制度
+
+## 人事管理制度
+
+### 一、聘用
+
+#### **1、聘用原则**
+
+1...
+2026-03-03 10:31:46,205 - mildoc_chat.rag_service - INFO - 📖 文档2: 厦门灿坤实业股份有限公司.pdf (rerank: 0.097) - 姓名
+
+职务
+
+性别
+
+年龄
+
+任职状态
+
+从公司获得
+的税前报酬
+总额
+
+单位：万元
+是否在公司
+...
+2026-03-03 10:31:46,205 - mildoc_chat.rag_service - INFO - 📖 文档3: 机器学习 西瓜书 周志华.pdf (rerank: 0.081) - 有 许 多 可 能 的 选 择 ，如
+在 路 径 上 自 顶 向 下 与 自 底
+向 上 同 时 进...
+2026-03-03 10:31:46,206 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:31:46] "POST /api/ask HTTP/1.1" 200 -
+2026-03-03 10:32:57,488 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:32:57] "GET / HTTP/1.1" 200 -
+2026-03-03 10:32:57,538 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:32:57] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-03 10:32:57,618 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:32:57] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-03 10:33:05,417 - werkzeug - INFO - 127.0.0.1 - - [03/Mar/2026 10:33:05] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-03 10:33:05,417 - mildoc_chat.rag_service - INFO - 🔍 开始处理查询（rerank=True): 人事聘用原则是什么？
+2026-03-03 10:33:05,589 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-03 10:33:05,599 - mildoc_chat.rag_service - INFO - 📄 初始检索到 10 个候选文档
+2026-03-03 10:33:05,920 - mildoc_chat.rag_service - INFO - 🔄 重排序完成，选择了 3 个文档
+2026-03-03 10:33:08,899 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-03 10:33:08,900 - mildoc_chat.rag_service - INFO - ✅ 查询完成，检索到 3 个相关文档
+2026-03-03 10:33:08,900 - mildoc_chat.rag_service - INFO - 📄 答案长度: 169 字符
+2026-03-03 10:33:08,901 - mildoc_chat.rag_service - INFO - 💰 Token使用: 输入3714, 输出104, 总计3818
+2026-03-03 10:33:08,901 - mildoc_chat.rag_service - INFO - 📖 文档1: 人事管理流程.docx (rerank: 0.358) - # 汇视威管理制度
+
+## 人事管理制度
+
+### 一、聘用
+
+#### **1、聘用原则**
+
+1...
+2026-03-03 10:33:08,901 - mildoc_chat.rag_service - INFO - 📖 文档2: 厦门灿坤实业股份有限公司.pdf (rerank: 0.134) - 姓名
+
+职务
+
+性别
+
+年龄
+
+任职状态
+
+从公司获得
+的税前报酬
+总额
+
+单位：万元
+是否在公司
+...
+2026-03-03 10:33:08,901 - mildoc_chat.rag_service - INFO - 📖 文档3: 人事管理流程.docx (rerank: 0.077) - # **考勤管理制度**
+
+### **第一条 目的**
+
+为规范公司人员出勤及休假，确保工作正常有...

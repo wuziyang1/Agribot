@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "Mildoc index Starting... "
+
+source /export/server/anaconda3/etc/profile.d/conda.sh
+conda activate mildocindex
+
+python main.py --mode full-refresh
