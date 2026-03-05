@@ -156,11 +156,15 @@ body {
 }
 
 .header {
-  padding: 14px 20px;
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  padding: 6px 10px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(to right, #ffffff, #f9fafb);
+  justify-content: flex-end;
+  background: transparent;
+  z-index: 10;
 }
 
 .title {
@@ -210,6 +214,17 @@ body {
   border-radius: 999px;
   background: #22c55e;
   box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.35);
+}
+
+/* 知识库关闭时的灰色状态，颜色参考 rag-toggle 关闭态 */
+.badge.off {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.badge.off .badge-dot {
+  background: #9ca3af;
+  box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.35);
 }
 
 .layout {

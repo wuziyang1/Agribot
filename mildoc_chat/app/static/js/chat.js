@@ -3,6 +3,7 @@ const inputEl = document.getElementById('input');
 const sendBtn = document.getElementById('send-btn');
 const sendLabel = document.getElementById('send-label');
 const statusLabel = document.getElementById('status-label');
+const statusBadge = document.querySelector('.badge');
 const hintText = document.getElementById('hint-text');
 const insightsEl = document.getElementById('insights');
 const ragToggleBtn = document.getElementById('rag-toggle-btn');
@@ -144,7 +145,10 @@ function setLoading(loading) {
   } else {
     sendBtn.disabled = false;
     sendBtn.classList.remove('loading');
-    statusLabel.textContent = 'RAG 服务已连接';
+    if (statusLabel) {
+      // 根据是否启用知识库展示不同提示
+      statusLabel.textContent = useRag ? 'RAG 服务已连接' : '知识库未使用';
+    }
     if (hintText) {
       hintText.textContent = '按 Enter 发送，Shift+Enter 换行。';
     }
@@ -250,11 +254,24 @@ function updateRagToggleUI() {
     ragToggleBtn.classList.add('on');
     ragToggleBtn.title = '使用知识库检索（当前：开）。点击关闭';
     ragToggleLabel.textContent = '知识库';
+    if (statusBadge) {
+      statusBadge.classList.remove('off');
+    }
+    if (statusLabel && !sendBtn.classList.contains('loading')) {
+      statusLabel.textContent = 'RAG 服务已连接';
+    }
   } else {
     ragToggleBtn.classList.remove('on');
     ragToggleBtn.classList.add('off');
     ragToggleBtn.title = '不使用知识库（当前：关）。点击开启';
     ragToggleLabel.textContent = '知识库';
+    // 关闭知识库时仅改变右上角徽标样式与文案
+    if (statusBadge) {
+      statusBadge.classList.add('off');
+    }
+    if (statusLabel && !sendBtn.classList.contains('loading')) {
+      statusLabel.textContent = '知识库未使用';
+    }
   }
 }
 

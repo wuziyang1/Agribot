@@ -22,6 +22,13 @@
     <!-- 左侧导航栏，模仿 ChatGPT 的侧边栏风格（仅前端样式，不影响现有接口） -->
     <aside class="nav-sidebar">
       <div class="nav-top">
+        <div class="title">
+          <div class="logo-dot"></div>
+          <div class="title-text">
+            <h1>Mildoc Chat</h1>
+          </div>
+        </div>
+
         <button class="nav-new-chat" type="button">
           <span class="nav-new-chat-icon">＋</span>
           <span>新聊天</span>
@@ -34,12 +41,6 @@
       </div>
 
       <div class="nav-bottom">
-        <div class="nav-section">
-          <div class="nav-item">在线 RAG 服务推荐</div>
-          <div class="nav-item">curl 命令解析</div>
-          <div class="nav-item">Gemini / GPT 对比分析</div>
-        </div>
-
         <div class="nav-user">
           <div class="nav-user-avatar">M</div>
           <div class="nav-user-info">
@@ -53,13 +54,6 @@
     <!-- 右侧主聊天区域 -->
     <div class="shell">
       <header class="header">
-        <div class="title">
-          <div class="logo-dot"></div>
-          <div class="title-text">
-            <h1>Mildoc Chat</h1>
-            <span>企业文档知识库 · RAG 问答</span>
-          </div>
-        </div>
         <div class="badge">
           <span class="badge-dot"></span>
           <span id="status-label">RAG 服务已连接</span>
