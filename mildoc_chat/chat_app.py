@@ -137,36 +137,15 @@ def api_ask_stream():
         }
         return Response(json.dumps(error_obj) + "\n", mimetype="application/json")
 
-    rag = get_rag_service()
-    if rag is None:
-        error_obj = {
-            "type": "error",
-            "data": {
-                "success": False,
-                "content": "",
-                "error_message": "RAG 服务初始化失败，请检查 mildoc_chat 的 .env 配置。",
-                "source_documents": [],
-                "token_usage": None,
-                "scene_info": None,
-            },
-        }
-        return Response(json.dumps(error_obj) + "\n", mimetype="application/json")
-
     def generate():
-        try:
-            # 先返回一个开始事件，前端可以据此清空旧的引用信息等
-            start_obj = {"type": "start"}
-            yield json.dumps(start_obj, ensure_ascii=False) + "\n"
-
-            resp = rag.query_service(question, use_rerank=use_rerank, use_rag=use_rag)
-        except Exception as e:
-            logger.exception("query_service failed (stream)")
+        rag = get_rag_service()
+        if rag is None:
             err_obj = {
                 "type": "error",
                 "data": {
                     "success": False,
                     "content": "",
-                    "error_message": f"查询过程中发生错误：{e}",
+                    "error_message": "RAG 服务初始化失败，请检查 mildoc_chat 的 .env 配置。",
                     "source_documents": [],
                     "token_usage": None,
                     "scene_info": None,
@@ -175,23 +154,21 @@ def api_ask_stream():
             yield json.dumps(err_obj, ensure_ascii=False) + "\n"
             return
 
-        # 如果业务失败，同样只发一条 error
-        if not resp.success:
-            err_obj = {"type": "error", "data": _response_to_dict(resp)}
+        try:
+            # 直接使用 RAGService 自带的 token 级流式接口
+            for event in rag.stream_query(question, use_rerank=use_rerank, use_rag=use_rag):
+                yield json.dumps(event, ensure_ascii=False) + "\n"
+        except Exception as e:  # noqa: BLE001
+            logger.exception("stream_query failed")
+            err_resp = RAGResponse(
+                content="",
+                source_documents=[],
+                success=False,
+                error_message=f"查询过程中发生错误：{e}",
+                scene_info=None,
+            )
+            err_obj = {"type": "error", "data": _response_to_dict(err_resp)}
             yield json.dumps(err_obj, ensure_ascii=False) + "\n"
-            return
-
-        answer = resp.content or ""
-        chunk_size = 60  # 以字符数简单切分，主要用于前端渐进展示
-
-        for i in range(0, len(answer), chunk_size):
-            piece = answer[i : i + chunk_size]
-            chunk_obj = {"type": "chunk", "data": {"content": piece}}
-            yield json.dumps(chunk_obj, ensure_ascii=False) + "\n"
-
-        # 最后一条带有 RAG 元数据，前端可用于展示引用文档、token 用量等
-        end_obj = {"type": "end", "data": _response_to_dict(resp)}
-        yield json.dumps(end_obj, ensure_ascii=False) + "\n"
 
     return Response(stream_with_context(generate()), mimetype="application/json")
 

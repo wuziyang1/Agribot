@@ -6026,3 +6026,55 @@ L
 
 P (好瓜= 是 ...
 2026-03-05 22:53:07,491 - mildoc_chat.rag.rag_service - INFO - 📖 文档3: 机器学习 西瓜书 周志华.pdf (rerank: 0.370) - 么 ，哪 怕 在 其 他 属 性 上 明 显 像 好 瓜 ，分 类 的 结 果 都 将 是 “好 瓜...
+2026-03-05 22:56:30,124 - werkzeug - INFO - 35.203.211.212 - - [05/Mar/2026 22:56:30] "GET / HTTP/1.1" 200 -
+2026-03-05 23:01:54,693 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:01:54,693 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:01:54,693 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:01:54,695 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:01:54,695 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:01:57,299 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:01:57] "GET / HTTP/1.1" 200 -
+2026-03-05 23:01:57,349 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:01:57] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:01:57,560 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:01:57] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:01:58,021 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:01:58] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:02:01,431 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 23:02:01,435 - mildoc_chat.rag.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-05 23:02:01,435 - mildoc_chat.rag.rag_service - INFO - 向量维度: 768
+2026-03-05 23:02:01,500 - mildoc_chat.rag.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-05 23:02:01,541 - mildoc_chat.rag.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection (uri=http://127.0.0.1:19530 db=mildoc rows=232)
+2026-03-05 23:02:01,541 - mildoc_chat.rag.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=qwen3-rerank, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-05 23:02:01,541 - mildoc_chat.rag.rag_service - INFO - 重排序服务初始化成功
+2026-03-05 23:02:01,541 - mildoc_chat.rag.rag_service - INFO - RAG服务初始化完成
+2026-03-05 23:02:01,541 - mildoc_chat.rag.rag_service - INFO - RAG服务实例创建成功
+2026-03-05 23:02:01,541 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:02:01] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-05 23:02:01,685 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 23:02:02,968 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:02:59,736 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:02:59,736 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:02:59,736 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:03:42,569 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:03:42,569 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:03:42,569 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:03:42,571 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:03:42,571 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:03:44,642 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:03:44] "GET / HTTP/1.1" 200 -
+2026-03-05 23:03:44,685 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:03:44] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:03:44,867 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:03:44] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:03:45,327 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:03:45] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:03:49,480 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 23:03:49,484 - mildoc_chat.rag.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-05 23:03:49,485 - mildoc_chat.rag.rag_service - INFO - 向量维度: 768
+2026-03-05 23:03:49,505 - mildoc_chat.rag.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-05 23:03:49,522 - mildoc_chat.rag.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection (uri=http://127.0.0.1:19530 db=mildoc rows=232)
+2026-03-05 23:03:49,522 - mildoc_chat.rag.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=qwen3-rerank, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-05 23:03:49,523 - mildoc_chat.rag.rag_service - INFO - 重排序服务初始化成功
+2026-03-05 23:03:49,523 - mildoc_chat.rag.rag_service - INFO - RAG服务初始化完成
+2026-03-05 23:03:49,523 - mildoc_chat.rag.rag_service - INFO - RAG服务实例创建成功
+2026-03-05 23:03:49,523 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:03:49] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-05 23:03:49,657 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 23:03:50,541 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
