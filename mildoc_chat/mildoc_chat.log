@@ -6078,3 +6078,604 @@ P (好瓜= 是 ...
 2026-03-05 23:03:49,523 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:03:49] "POST /api/ask_stream HTTP/1.1" 200 -
 2026-03-05 23:03:49,657 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
 2026-03-05 23:03:50,541 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:10:28,033 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:10:28,033 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:10:28,033 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:10:28,035 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:10:28,035 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:10:29,641 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:10:29] "GET / HTTP/1.1" 200 -
+2026-03-05 23:10:29,696 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:10:29] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:10:29,908 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:10:29] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:10:30,364 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:10:30] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:11:00,025 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:11:00] "GET / HTTP/1.1" 200 -
+2026-03-05 23:11:00,073 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:11:00] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:11:00,267 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:11:00] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:11:00,732 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:11:00] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:13:07,667 - werkzeug - INFO - 40.77.167.93 - - [05/Mar/2026 23:13:07] "[33mGET /robots.txt HTTP/1.1[0m" 404 -
+2026-03-05 23:13:09,112 - werkzeug - INFO - 40.77.167.14 - - [05/Mar/2026 23:13:09] "[33mGET /sitemap.xml.gz HTTP/1.1[0m" 404 -
+2026-03-05 23:15:39,876 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 23:15:39,880 - mildoc_chat.rag.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-05 23:15:39,880 - mildoc_chat.rag.rag_service - INFO - 向量维度: 768
+2026-03-05 23:15:39,899 - mildoc_chat.rag.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-05 23:15:39,914 - mildoc_chat.rag.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection (uri=http://127.0.0.1:19530 db=mildoc rows=232)
+2026-03-05 23:15:39,914 - mildoc_chat.rag.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=qwen3-rerank, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-05 23:15:39,914 - mildoc_chat.rag.rag_service - INFO - 重排序服务初始化成功
+2026-03-05 23:15:39,914 - mildoc_chat.rag.rag_service - INFO - RAG服务初始化完成
+2026-03-05 23:15:39,915 - mildoc_chat.rag.rag_service - INFO - RAG服务实例创建成功
+2026-03-05 23:15:39,915 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:15:39] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-05 23:15:40,096 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 23:15:40,900 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:20:15,490 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:20:15,491 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:20:15,491 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:20:15,493 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:20:15,493 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:20:17,398 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:20:17] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:20:17,430 - chat_app - ERROR - Exception on /login [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/routers/login_flask.py", line 32, in login
+    return render_template("login.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/export/workspace/rag/mildoc_chat/app/templates/login.html", line 49, in top-level template code
+    <a href="{{ url_for('forgot_password') }}">忘记密码？</a>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'forgot_password'. Did you mean 'api_ask_stream' instead?
+2026-03-05 23:20:17,436 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:20:17] "[35m[1mGET /login HTTP/1.1[0m" 500 -
+2026-03-05 23:20:50,945 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:20:50,946 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:20:50,946 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:20:50,948 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:20:50,949 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:20:52,551 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:20:52] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:20:52,610 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:20:52] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:20:52,750 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:20:52] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:20:53,078 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:20:53] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:21:18,551 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:18] "GET /register HTTP/1.1" 200 -
+2026-03-05 23:21:18,646 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:18] "GET /static/css/register.css?v=2 HTTP/1.1" 200 -
+2026-03-05 23:21:18,834 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:18] "GET /static/js/register.js HTTP/1.1" 200 -
+2026-03-05 23:21:22,429 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:22] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:21:22,564 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:22] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:21:22,706 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:22] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:21:32,307 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:32] "GET /register HTTP/1.1" 200 -
+2026-03-05 23:21:32,451 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:32] "[36mGET /static/css/register.css?v=2 HTTP/1.1[0m" 304 -
+2026-03-05 23:21:32,565 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:32] "[36mGET /static/js/register.js HTTP/1.1[0m" 304 -
+2026-03-05 23:21:33,426 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:33] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:21:33,794 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:33] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:21:33,887 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:33] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:21:40,879 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:40] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:21:40,941 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:40] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:21:41,123 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:41] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:21:47,190 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:21:47,192 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:21:47,192 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:21:47,194 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:21:47,195 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:21:48,737 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:48] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:21:48,768 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:48] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:21:48,995 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:48] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:21:49,246 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:49] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:21:49,704 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:49] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:21:53,172 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:53] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:21:53,548 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:21:53] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-05 23:22:26,538 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:22:26,538 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:22:26,538 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:22:26,541 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:22:26,541 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:22:28,274 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:22:28] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:22:28,302 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:22:28] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:22:28,524 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:22:28] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:22:28,805 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:22:28] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:22:38,316 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:22:38] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-05 23:22:38,334 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:22:38] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:23:37,923 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:23:37,923 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:23:37,923 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:23:37,924 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:23:37,924 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:23:39,349 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:39] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:23:39,401 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:39] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:23:39,591 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:39] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:23:39,858 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:39] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:23:41,161 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:41] "GET /forgot_password HTTP/1.1" 200 -
+2026-03-05 23:23:41,295 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:41] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:23:41,445 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:41] "GET /static/js/forgot_password.js HTTP/1.1" 200 -
+2026-03-05 23:23:47,085 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:47] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:23:47,230 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:47] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:23:47,371 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:47] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:23:58,307 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:58] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-05 23:23:58,355 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:58] "GET / HTTP/1.1" 200 -
+2026-03-05 23:23:58,412 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:58] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-05 23:23:58,814 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:23:58] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-05 23:24:02,932 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:24:02] "POST /login HTTP/1.1" 200 -
+2026-03-05 23:24:02,982 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:24:02] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:24:03,060 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:24:03] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:24:05,607 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:24:05] "GET /forgot_password HTTP/1.1" 200 -
+2026-03-05 23:24:05,714 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:24:05] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:24:05,900 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:24:05] "[36mGET /static/js/forgot_password.js HTTP/1.1[0m" 304 -
+2026-03-05 23:24:11,128 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:24:11] "POST /api/forgot/send_code HTTP/1.1" 200 -
+2026-03-05 23:24:13,803 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:24:13] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:24:14,176 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:24:14] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-05 23:25:24,326 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:25:24] "POST /api/forgot/reset HTTP/1.1" 200 -
+2026-03-05 23:25:25,881 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:25:25] "[32mGET /login HTTP/1.1[0m" 302 -
+2026-03-05 23:25:26,266 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:25:26] "GET / HTTP/1.1" 200 -
+2026-03-05 23:25:27,271 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:25:27] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:25:27,279 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:25:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:25:48,343 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:25:48] "POST /api/forgot/reset HTTP/1.1" 200 -
+2026-03-05 23:26:08,025 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:26:08,025 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:26:08,025 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:26:08,026 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:26:08,026 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:26:10,162 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:10] "GET / HTTP/1.1" 200 -
+2026-03-05 23:26:10,228 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:10] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:26:10,402 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:10] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:26:15,219 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:15] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:26:15,266 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:15] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:26:15,460 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:15] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:26:15,698 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:15] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:26:16,140 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:16] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 -
+2026-03-05 23:26:17,857 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:17] "GET /forgot_password HTTP/1.1" 200 -
+2026-03-05 23:26:18,225 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:18] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:26:18,276 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:18] "GET /static/js/forgot_password.js HTTP/1.1" 200 -
+2026-03-05 23:26:18,707 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:18] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 -
+2026-03-05 23:26:20,999 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:20] "POST /api/forgot/send_code HTTP/1.1" 200 -
+2026-03-05 23:26:41,897 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:41] "POST /api/forgot/reset HTTP/1.1" 200 -
+2026-03-05 23:26:43,446 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:43] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:26:43,838 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:43] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:26:43,930 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:43] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:26:44,342 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:44] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 -
+2026-03-05 23:26:51,628 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:51] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-05 23:26:51,901 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:51] "GET / HTTP/1.1" 200 -
+2026-03-05 23:26:52,396 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:52] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:26:52,416 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:52] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:26:52,587 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:26:52] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 -
+2026-03-05 23:27:12,295 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 23:27:12,299 - mildoc_chat.rag.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-05 23:27:12,299 - mildoc_chat.rag.rag_service - INFO - 向量维度: 768
+2026-03-05 23:27:12,322 - mildoc_chat.rag.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-05 23:27:12,401 - mildoc_chat.rag.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection (uri=http://127.0.0.1:19530 db=mildoc rows=232)
+2026-03-05 23:27:12,401 - mildoc_chat.rag.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=qwen3-rerank, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-05 23:27:12,401 - mildoc_chat.rag.rag_service - INFO - 重排序服务初始化成功
+2026-03-05 23:27:12,401 - mildoc_chat.rag.rag_service - INFO - RAG服务初始化完成
+2026-03-05 23:27:12,401 - mildoc_chat.rag.rag_service - INFO - RAG服务实例创建成功
+2026-03-05 23:27:12,402 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:27:12] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-05 23:27:12,523 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 23:27:13,475 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:28:20,063 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:28:20,064 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:28:20,064 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:28:20,065 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:28:20,065 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:28:22,001 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:28:22] "GET / HTTP/1.1" 200 -
+2026-03-05 23:28:22,069 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:28:22] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-05 23:28:22,244 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:28:22] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-05 23:28:22,668 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:28:22] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:29:33,940 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:29:33,940 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:29:33,940 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:29:33,942 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:29:33,942 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:29:35,492 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:29:35] "GET / HTTP/1.1" 200 -
+2026-03-05 23:29:35,571 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:29:35] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:29:35,777 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:29:35] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:29:39,955 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:29:39] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:29:40,008 - chat_app - ERROR - Exception on /login [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/routers/login_flask.py", line 32, in login
+    return render_template("login.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: login.html
+2026-03-05 23:29:40,014 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:29:40] "[35m[1mGET /login HTTP/1.1[0m" 500 -
+2026-03-05 23:29:40,218 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:29:40] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:31:14,959 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:31:14,960 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:31:14,960 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:31:14,961 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:31:14,961 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:31:16,601 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:31:16] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:31:16,641 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:31:16] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:31:16,869 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:31:16] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:31:33,061 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:31:33,061 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:31:33,061 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:31:33,062 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:31:33,062 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:31:34,848 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:31:34] "GET / HTTP/1.1" 200 -
+2026-03-05 23:31:34,925 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:31:34] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:31:35,027 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:31:35] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:31:35,466 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:31:35] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:36:10,512 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:36:10,512 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:36:10,512 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:36:10,514 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:36:10,514 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:36:12,127 - chat_app - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 48, in index
+    return render_template("chat.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/export/workspace/rag/mildoc_chat/app/templates/chat.html", line 38, in top-level template code
+    已登录 · <a href="{{ url_for('mildoc_chat_login.logout') }}" style="color: inherit; text-decoration: underline;">退出</a>
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'mildoc_chat_login.logout'. Did you mean 'health' instead?
+2026-03-05 23:36:12,131 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:36:12] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-03-05 23:36:12,245 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:36:12] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:36:56,475 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:36:56,475 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:36:56,476 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:36:56,477 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:36:56,477 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:36:58,104 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:36:58] "GET / HTTP/1.1" 200 -
+2026-03-05 23:36:58,148 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:36:58] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:36:58,334 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:36:58] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:36:58,781 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:36:58] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:38:20,879 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:38:20,879 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:38:20,879 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:38:20,880 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:38:20,880 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:38:22,556 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:38:22] "GET / HTTP/1.1" 200 -
+2026-03-05 23:38:22,617 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:38:22] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:38:22,832 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:38:22] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:38:23,288 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:38:23] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:38:29,905 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 23:38:29,909 - mildoc_chat.rag.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-05 23:38:29,909 - mildoc_chat.rag.rag_service - INFO - 向量维度: 768
+2026-03-05 23:38:29,931 - mildoc_chat.rag.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-05 23:38:29,946 - mildoc_chat.rag.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection (uri=http://127.0.0.1:19530 db=mildoc rows=232)
+2026-03-05 23:38:29,947 - mildoc_chat.rag.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=qwen3-rerank, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-05 23:38:29,947 - mildoc_chat.rag.rag_service - INFO - 重排序服务初始化成功
+2026-03-05 23:38:29,947 - mildoc_chat.rag.rag_service - INFO - RAG服务初始化完成
+2026-03-05 23:38:29,947 - mildoc_chat.rag.rag_service - INFO - RAG服务实例创建成功
+2026-03-05 23:38:29,947 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:38:29] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-05 23:38:30,084 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 23:38:30,963 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 23:40:43,125 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:40:43,125 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:40:43,125 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:40:43,127 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:40:43,127 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:40:45,121 - chat_app - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 47, in index
+    return render_template("chat.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: chat.html
+2026-03-05 23:40:45,123 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:40:45] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-03-05 23:41:09,725 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:41:09,725 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:41:09,725 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:41:09,727 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:41:09,727 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:41:11,331 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:41:11] "GET / HTTP/1.1" 200 -
+2026-03-05 23:41:11,399 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:41:11] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:41:11,577 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:41:11] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:46:09,465 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:46:09,465 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:46:09,465 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:46:09,466 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:46:09,466 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:46:11,247 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:46:11] "GET / HTTP/1.1" 200 -
+2026-03-05 23:46:11,312 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:46:11] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-05 23:46:11,507 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:46:11] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-05 23:46:11,935 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:46:11] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:48:05,582 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:48:05,582 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:48:05,582 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:48:05,584 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:48:05,584 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:48:06,948 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:48:06] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:48:07,007 - chat_app - ERROR - Exception on /login [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/routers/login_flask.py", line 32, in login
+    return render_template("login.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/export/workspace/rag/mildoc_chat/app/templates/login.html", line 49, in top-level template code
+    <a href="{{ url_for('forgot_password') }}">忘记密码？</a>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'forgot_password'. Did you mean 'api_ask_stream' instead?
+2026-03-05 23:48:07,009 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:48:07] "[35m[1mGET /login HTTP/1.1[0m" 500 -
+2026-03-05 23:48:07,228 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:48:07] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:49:14,655 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:49:14,655 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:49:14,656 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:49:14,657 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:49:14,657 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:49:15,913 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:15] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:49:15,941 - chat_app - ERROR - Exception on /login [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/routers/login_flask.py", line 32, in login
+    return render_template("login.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/export/workspace/rag/mildoc_chat/app/templates/login.html", line 50, in top-level template code
+    <!-- <a href="{{ url_for('forgot_password') }}">忘记密码？</a>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'forgot_password'. Did you mean 'api_ask_stream' instead?
+2026-03-05 23:49:15,943 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:15] "[35m[1mGET /login HTTP/1.1[0m" 500 -
+2026-03-05 23:49:50,586 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:49:50,586 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:49:50,586 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:49:50,587 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:49:50,587 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:49:52,512 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:52] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:49:52,587 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:52] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:49:52,698 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:52] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:49:53,020 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:53] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:49:53,469 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:53] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:49:54,730 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:54] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-05 23:49:54,969 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:54] "GET / HTTP/1.1" 200 -
+2026-03-05 23:49:55,426 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:55] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:49:55,446 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:49:55] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:53:05,819 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 23:53:05,819 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 23:53:05,819 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 23:53:05,821 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 23:53:05,821 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 23:53:08,345 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:08] "GET / HTTP/1.1" 200 -
+2026-03-05 23:53:08,402 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:08] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:53:08,566 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:08] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 23:53:14,145 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:14] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 23:53:14,190 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:14] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:53:14,399 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:14] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:53:14,649 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:14] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:53:15,113 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:15] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 23:53:16,667 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:16] "GET /forgot HTTP/1.1" 200 -
+2026-03-05 23:53:17,043 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:17] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:53:17,113 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:17] "GET /static/js/forgot_password.js HTTP/1.1" 200 -
+2026-03-05 23:53:21,934 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:21] "POST /api/forgot/send_code HTTP/1.1" 200 -
+2026-03-05 23:53:45,005 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:45] "POST /api/forgot/reset HTTP/1.1" 200 -
+2026-03-05 23:53:46,989 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:46] "GET /login HTTP/1.1" 200 -
+2026-03-05 23:53:47,066 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:47] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 23:53:47,235 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:47] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 23:53:56,812 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:56] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-05 23:53:56,848 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:56] "GET / HTTP/1.1" 200 -
+2026-03-05 23:53:56,943 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:56] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 23:53:57,364 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 23:53:57] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -

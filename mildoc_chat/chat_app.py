@@ -3,16 +3,107 @@ import os
 import json
 from typing import Any, Dict
 
-from flask import Flask, jsonify, request, render_template, Response, stream_with_context
+from flask import (
+    Flask,
+    Response,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    stream_with_context,
+    url_for,
+)
 
 from mildoc_chat.routers.logging_utils import setup_logging
 from mildoc_chat.rag.rag_config import Config
 from mildoc_chat.rag.rag_service import get_rag_service, RAGResponse
+from mildoc_chat.routers.login_flask import login_bp
+from mildoc_chat.routers.register_flask import register_bp
+from mildoc_chat.forgot_password_smtp import send_reset_code, reset_password
 
 
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__, template_folder="templates", static_folder="static")
+# 使用 app 目录下的模板和静态资源
+app = Flask(__name__, template_folder="app/templates", static_folder="app/static")
+
+# session 加密密钥（生产环境请通过环境变量覆盖）
+app.secret_key = os.getenv("MILDOC_CHAT_SECRET_KEY", "change-me-in-production")
+
+# 注册登录 / 注册蓝图
+app.register_blueprint(login_bp)
+app.register_blueprint(register_bp)
+
+
+@app.before_request
+def _require_login():
+    """全局登录校验：未登录时先进入登录页，再访问聊天界面或接口。"""
+    exempt_endpoints = {
+        "health",
+        "mildoc_chat_login.login",
+        "mildoc_chat_login.login_post",
+        "mildoc_chat_login.logout",
+        "mildoc_chat_register.register",
+        "mildoc_chat_register.register_post",
+        "mildoc_chat_register.api_register_send_code",
+        "forgot_password",          # 找回密码页本身
+        "api_forgot_send_code",     # 找回密码：发送验证码
+        "api_forgot_reset",         # 找回密码：重置密码
+        "static",
+    }
+
+    # 某些情况 request.endpoint 可能为 None（如 404），直接放行
+    if not request.endpoint or request.endpoint in exempt_endpoints:
+        return
+
+    if "chat_username" in session:
+        return
+
+    # 未登录访问 API：返回 JSON 提示
+    if request.path.startswith("/api/"):
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "content": "",
+                    "error_message": "请先登录后再使用聊天功能",
+                    "source_documents": [],
+                    "token_usage": None,
+                    "scene_info": None,
+                }
+            ),
+            401,
+        )
+
+    # 其它页面：跳转到登录页
+    return redirect(url_for("mildoc_chat_login.login"))
+
+
+@app.get("/forgot")
+def forgot_password():
+    """找回密码页面：通过邮箱验证码重置密码。"""
+    return render_template("forgot_password.html")
+
+
+@app.post("/api/forgot/send_code")
+def api_forgot_send_code():
+    """找回密码：发送邮箱验证码。"""
+    payload = request.get_json(silent=True) or {}
+    email = (payload.get("email") or "").strip()
+    result = send_reset_code(email)
+    return jsonify(result)
+
+
+@app.post("/api/forgot/reset")
+def api_forgot_reset():
+    """找回密码：提交验证码 + 新密码，重置登录密码。"""
+    payload = request.get_json(silent=True) or {}
+    email = (payload.get("email") or "").strip()
+    code = (payload.get("verification_code") or "").strip()
+    new_password = (payload.get("new_password") or "").strip()
+    result = reset_password(email, code, new_password)
+    return jsonify(result)
 
 
 def _response_to_dict(resp: RAGResponse) -> Dict[str, Any]:

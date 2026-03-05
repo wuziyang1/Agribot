@@ -5,8 +5,52 @@ const sendLabel = document.getElementById('send-label');
 const statusLabel = document.getElementById('status-label');
 const hintText = document.getElementById('hint-text');
 const insightsEl = document.getElementById('insights');
+const ragToggleBtn = document.getElementById('rag-toggle-btn');
+const ragToggleLabel = document.getElementById('rag-toggle-label');
+
+/** 是否使用知识库（RAG）检索，默认开启 */
+let useRag = true;
 
 const messages = [];
+
+function typesetMath(targetEl) {
+  if (!targetEl) return;
+  if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+    window.MathJax.typesetPromise([targetEl]).catch(function (err) {
+      console.error('MathJax 渲染出错:', err);
+    });
+  }
+}
+
+function getMarkedRenderer() {
+  if (!window.marked) return null;
+  if (getMarkedRenderer._renderer) return getMarkedRenderer._renderer;
+  const renderer = new window.marked.Renderer();
+  renderer.html = function () {
+    return '';
+  };
+  getMarkedRenderer._renderer = renderer;
+  return renderer;
+}
+
+function renderBotMarkdown(targetEl, text, opts) {
+  if (!targetEl) return;
+  const options = opts || {};
+  const safeText = text || '';
+
+  if (window.marked && typeof window.marked.parse === 'function') {
+    const renderer = getMarkedRenderer();
+    targetEl.innerHTML = window.marked.parse(safeText, {
+      breaks: true,
+      gfm: true,
+      renderer: renderer || undefined
+    });
+  } else {
+    targetEl.textContent = safeText;
+  }
+
+  if (options.typesetMath) typesetMath(targetEl);
+}
 
 function createMessageElements(role, content) {
   const row = document.createElement('div');
@@ -25,7 +69,11 @@ function createMessageElements(role, content) {
 
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble ' + (role === 'user' ? 'user' : 'bot');
-  bubble.textContent = content;
+  if (role === 'user') {
+    bubble.textContent = content;
+  } else {
+    renderBotMarkdown(bubble, content, { typesetMath: true });
+  }
 
   body.appendChild(name);
   body.appendChild(bubble);
@@ -53,14 +101,13 @@ function renderInsights(data) {
   if (!insightsEl) return;
 
   const docs = Array.isArray(data.source_documents) ? data.source_documents : [];
-  const tokenUsage = data.token_usage || null;
 
-  if (docs.length === 0 && !tokenUsage) {
+  if (docs.length === 0) {
     insightsEl.innerHTML = '';
     return;
   }
 
-  let html = '<div class="insights-header"><span>本次回答基于以下文档与上下文</span></div>';
+  let html = '';
 
   if (docs.length > 0) {
     html += '<div class="insights-section">';
@@ -83,29 +130,20 @@ function renderInsights(data) {
     html += '</div></div>';
   }
 
-  if (tokenUsage) {
-    html += '<div class="insights-section insights-tokens">';
-    html += '<span class="insights-title">Token</span>';
-    html += '<span class="insights-token-item">提示：' + (tokenUsage.prompt_tokens ?? '-') + '</span>';
-    html += '<span class="insights-token-item">回答：' + (tokenUsage.completion_tokens ?? '-') + '</span>';
-    html += '<span class="insights-token-item">总计：' + (tokenUsage.total_tokens ?? '-') + '</span>';
-    html += '</div>';
-  }
-
   insightsEl.innerHTML = html;
 }
 
 function setLoading(loading) {
   if (loading) {
     sendBtn.disabled = true;
-    sendLabel.textContent = '思考中…';
+    sendBtn.classList.add('loading');
     statusLabel.textContent = '正在生成回答…';
     if (hintText) {
       hintText.textContent = '正在处理你的问题，请稍候…';
     }
   } else {
     sendBtn.disabled = false;
-    sendLabel.textContent = '发送';
+    sendBtn.classList.remove('loading');
     statusLabel.textContent = 'RAG 服务已连接';
     if (hintText) {
       hintText.textContent = '按 Enter 发送，Shift+Enter 换行。';
@@ -127,8 +165,9 @@ async function sendQuestion() {
   inputEl.value = '';
   setLoading(true);
 
-  // 预先创建一个空的 AI 气泡，用于流式追加内容
   const { row: botRow, bubble: botBubble } = createMessageElements('bot', '');
+  botBubble.classList.add('streaming');
+  botBubble.textContent = '';
   messagesEl.appendChild(botRow);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 
@@ -139,7 +178,7 @@ async function sendQuestion() {
     const resp = await fetch('/api/ask_stream', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: text, use_rerank: true })
+      body: JSON.stringify({ question: text, use_rerank: true, use_rag: useRag })
     });
 
     if (!resp.ok || !resp.body) {
@@ -176,6 +215,8 @@ async function sendQuestion() {
           botBubble.textContent = accumulated;
           messagesEl.scrollTop = messagesEl.scrollHeight;
         } else if (msg.type === 'end' && msg.data) {
+          botBubble.classList.remove('streaming');
+          renderBotMarkdown(botBubble, accumulated, { typesetMath: true });
           renderInsights(msg.data);
         } else if (msg.type === 'error' && msg.data) {
           const errMsg = msg.data.error_message || '查询失败，请查看后端日志。';
@@ -187,18 +228,42 @@ async function sendQuestion() {
       }
     }
 
-    // 如果后端没返回任何 chunk，就给一个兜底文案
     if (!accumulated) {
-      botBubble.textContent = '（后端未返回内容）';
+      botBubble.classList.remove('streaming');
+      renderBotMarkdown(botBubble, '（后端未返回内容）', { typesetMath: false });
     }
   } catch (err) {
     console.error(err);
-    botBubble.textContent = '请求异常，请检查服务是否正常运行。';
+    botBubble.classList.remove('streaming');
+    renderBotMarkdown(botBubble, '请求异常，请检查服务是否正常运行。', { typesetMath: false });
     statusLabel.textContent = '请求异常';
     renderInsights({ source_documents: [], token_usage: null });
   } finally {
     setLoading(false);
   }
+}
+
+function updateRagToggleUI() {
+  if (!ragToggleBtn || !ragToggleLabel) return;
+  if (useRag) {
+    ragToggleBtn.classList.remove('off');
+    ragToggleBtn.classList.add('on');
+    ragToggleBtn.title = '使用知识库检索（当前：开）。点击关闭';
+    ragToggleLabel.textContent = '知识库';
+  } else {
+    ragToggleBtn.classList.remove('on');
+    ragToggleBtn.classList.add('off');
+    ragToggleBtn.title = '不使用知识库（当前：关）。点击开启';
+    ragToggleLabel.textContent = '知识库';
+  }
+}
+
+if (ragToggleBtn) {
+  ragToggleBtn.addEventListener('click', function () {
+    useRag = !useRag;
+    updateRagToggleUI();
+  });
+  updateRagToggleUI();
 }
 
 sendBtn.addEventListener('click', sendQuestion);
@@ -219,6 +284,5 @@ document.querySelectorAll('.suggestion[data-question]').forEach((btn) => {
   });
 });
 
-// 初始欢迎消息
 appendMessage('bot', '你好，我是 Mildoc Chat，可以基于 Milvus + 文档知识库回答你的问题，并在下方展示引用的文档来源。');
 
