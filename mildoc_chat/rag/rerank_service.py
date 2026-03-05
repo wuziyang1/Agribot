@@ -10,7 +10,7 @@ import requests
 from enum import Enum
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
-from mildoc_chat.rag_config import Config
+from mildoc_chat.rag.rag_config import Config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

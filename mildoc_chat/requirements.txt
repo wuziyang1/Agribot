@@ -6,5 +6,6 @@ Flask==3.1.1
 
 langchain==0.3.26
 langchain-openai==0.3.28
-langchain-milvus==0.2.1
 langchain-community==0.3.27
+pymilvus==2.5.15
+PyMySQL>=1.1.0

@@ -1,0 +1,516 @@
+2026-03-05 20:18:25,545 - __main__ - ERROR - ensure users table failed
+Traceback (most recent call last):
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 80, in _ensure_db_ready
+    ensure_users_table_exists()
+  File "/export/workspace/rag/mildoc_chat/routers/database.py", line 79, in ensure_users_table_exists
+    with mysql_conn(cfg) as conn:
+         ^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/routers/database.py", line 43, in mysql_conn
+    conn = pymysql.connect(
+           ^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/connections.py", line 681, in connect
+    self._request_authentication()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/connections.py", line 958, in _request_authentication
+    auth_packet = self._read_packet()
+                  ^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'172.17.0.1' (using password: NO)")
+2026-03-05 20:18:25,549 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 20:18:25,549 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 20:18:25,549 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 20:18:25,550 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 20:18:25,551 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 20:18:29,869 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:18:29] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 20:18:29,912 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:18:29] "GET /login HTTP/1.1" 200 -
+2026-03-05 20:18:30,457 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:18:30] "GET /static/css/login.css?v=3 HTTP/1.1" 200 -
+2026-03-05 20:18:30,480 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:18:30] "GET /static/js/login.js HTTP/1.1" 200 -
+2026-03-05 20:18:30,680 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:18:30] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 20:18:37,645 - __main__ - ERROR - db get_user_by_username failed
+Traceback (most recent call last):
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 190, in login_post
+    user = get_user_by_username(username)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/routers/database.py", line 91, in get_user_by_username
+    with mysql_conn(cfg) as conn:
+         ^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/routers/database.py", line 43, in mysql_conn
+    conn = pymysql.connect(
+           ^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/connections.py", line 365, in __init__
+    self.connect()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/connections.py", line 681, in connect
+    self._request_authentication()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/connections.py", line 958, in _request_authentication
+    auth_packet = self._read_packet()
+                  ^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/connections.py", line 782, in _read_packet
+    packet.raise_for_error()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/pymysql/err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'172.17.0.1' (using password: NO)")
+2026-03-05 20:18:37,647 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:18:37] "POST /login HTTP/1.1" 200 -
+2026-03-05 20:18:37,720 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:18:37] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 20:18:37,912 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:18:37] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 20:21:03,649 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 20:21:03,649 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 20:21:03,649 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 20:21:03,652 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 20:21:03,652 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 20:21:05,477 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:05] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 20:21:05,514 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:05] "GET /login HTTP/1.1" 200 -
+2026-03-05 20:21:05,743 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:05] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 20:21:06,017 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:06] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 20:21:10,078 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:10] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-05 20:21:10,129 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:10] "GET / HTTP/1.1" 200 -
+2026-03-05 20:21:10,316 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:10] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-05 20:21:10,620 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:10] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-05 20:21:18,978 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:18] "POST /login HTTP/1.1" 200 -
+2026-03-05 20:21:19,358 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:19] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 20:21:19,358 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:19] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 20:21:38,940 - chat_app - ERROR - Exception on /login [POST]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 198, in login_post
+    if check_password_hash(user["hashed_password"], password):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/security.py", line 142, in check_password_hash
+    return hmac.compare_digest(_hash_internal(method, salt, password)[0], hashval)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/security.py", line 81, in _hash_internal
+    raise ValueError(f"Invalid hash method '{method}'.")
+ValueError: Invalid hash method ''.
+2026-03-05 20:21:38,943 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:21:38] "[35m[1mPOST /login HTTP/1.1[0m" 500 -
+2026-03-05 20:26:47,008 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 20:26:47,008 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 20:26:47,009 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 20:26:47,010 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 20:26:47,010 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 20:26:49,098 - chat_app - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 82, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 124, in index
+    return render_template("chat.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/export/workspace/rag/mildoc_chat/app/templates/chat.html", line 38, in top-level template code
+    已登录 · <a href="{{ url_for('logout') }}" style="color: inherit; text-decoration: underline;">退出</a>
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'logout'. Did you mean 'mildoc_chat_login.logout' instead?
+2026-03-05 20:26:49,104 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:26:49] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-03-05 20:27:09,549 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 20:27:09,549 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 20:27:09,550 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 20:27:09,551 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 20:27:09,551 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 20:27:12,479 - chat_app - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 81, in decorated
+    return redirect(url_for("login"))
+                    ^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/helpers.py", line 232, in url_for
+    return current_app.url_for(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'login'. Did you mean 'index' instead?
+2026-03-05 20:27:12,482 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:27:12] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-03-05 20:27:13,048 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:27:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 20:27:37,256 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 20:27:37,257 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 20:27:37,257 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 20:27:37,258 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 20:27:37,258 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 20:27:38,856 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:27:38] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 20:27:38,896 - chat_app - ERROR - Exception on /login [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/routers/login_flask.py", line 29, in login
+    return render_template("login.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/export/workspace/rag/mildoc_chat/app/templates/login.html", line 12, in top-level template code
+    <form id="login-form" method="post" action="{{ url_for('login_post') }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'login_post'. Did you mean 'mildoc_chat_login.login_post' instead?
+2026-03-05 20:27:38,899 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:27:38] "[35m[1mGET /login HTTP/1.1[0m" 500 -
+2026-03-05 20:27:54,175 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 20:27:54,175 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 20:27:54,175 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 20:27:54,176 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 20:27:54,177 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 20:27:58,741 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:27:58] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 20:27:58,782 - chat_app - ERROR - Exception on /login [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/routers/login_flask.py", line 29, in login
+    return render_template("login.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/export/workspace/rag/mildoc_chat/app/templates/login.html", line 12, in top-level template code
+    <form id="login-form" method="post" action="{{ url_for('login_post') }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'login_post'. Did you mean 'mildoc_chat_login.login_post' instead?
+2026-03-05 20:27:58,785 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:27:58] "[35m[1mGET /login HTTP/1.1[0m" 500 -
+2026-03-05 20:28:49,507 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 20:28:49,508 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 20:28:49,508 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 20:28:49,509 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 20:28:49,509 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 20:28:51,425 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:28:51] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 20:28:51,895 - chat_app - ERROR - Exception on /login [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/routers/login_flask.py", line 29, in login
+    return render_template("login.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/export/workspace/rag/mildoc_chat/app/templates/login.html", line 51, in top-level template code
+    <a href="{{ url_for('register') }}">注册账号</a>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'register'. Did you mean 'mildoc_chat_register.register' instead?
+2026-03-05 20:28:51,897 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:28:51] "[35m[1mGET /login HTTP/1.1[0m" 500 -
+2026-03-05 20:28:52,165 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:28:52] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 20:29:12,395 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 20:29:12,395 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 20:29:12,395 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 20:29:12,397 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 20:29:12,397 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 20:29:14,360 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:29:14] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 20:29:14,401 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:29:14] "GET /login HTTP/1.1" 200 -
+2026-03-05 20:29:14,640 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:29:14] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 20:29:14,926 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:29:14] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 20:29:22,046 - mildoc_chat.routers.login_flask - ERROR - bcrypt verify failed for user=root
+Traceback (most recent call last):
+  File "/export/workspace/rag/mildoc_chat/routers/login_flask.py", line 61, in login_post
+    from passlib.context import CryptContext
+ModuleNotFoundError: No module named 'passlib'
+2026-03-05 20:29:22,048 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:29:22] "POST /login HTTP/1.1" 200 -
+2026-03-05 20:29:22,110 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:29:22] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 20:29:22,376 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:29:22] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 20:30:07,600 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:30:07] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-05 20:30:07,649 - chat_app - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 83, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 125, in index
+    return render_template("chat.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/export/workspace/rag/mildoc_chat/app/templates/chat.html", line 38, in top-level template code
+    已登录 · <a href="{{ url_for('logout') }}" style="color: inherit; text-decoration: underline;">退出</a>
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'logout'. Did you mean 'mildoc_chat_login.logout' instead?
+2026-03-05 20:30:07,652 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:30:07] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-03-05 20:31:35,104 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:31:35] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-05 20:31:35,150 - chat_app - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 83, in decorated
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/export/workspace/rag/mildoc_chat/chat_app.py", line 125, in index
+    return render_template("chat.html")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/export/workspace/rag/mildoc_chat/app/templates/chat.html", line 38, in top-level template code
+    已登录 · <a href="{{ url_for('mildoc_chat_login.logout') }}" style="color: inherit; text-decoration: underline;">退出</a>
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/export/server/anaconda3/envs/mildocchat/lib/python3.12/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'logout'. Did you mean 'mildoc_chat_login.logout' instead?
+2026-03-05 20:31:35,152 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:31:35] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2026-03-05 20:31:45,370 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 20:31:45,370 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 20:31:45,370 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 20:31:45,372 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 20:31:45,372 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 20:31:47,072 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:31:47] "GET / HTTP/1.1" 200 -
+2026-03-05 20:31:47,150 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:31:47] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 20:31:47,271 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:31:47] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 20:31:53,955 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:31:53] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 20:31:54,389 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:31:54] "GET /login HTTP/1.1" 200 -
+2026-03-05 20:31:54,726 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:31:54] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 20:31:54,933 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:31:54] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 20:31:55,134 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:31:55] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 20:32:01,029 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:32:01] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-05 20:32:01,076 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:32:01] "GET / HTTP/1.1" 200 -
+2026-03-05 20:32:01,181 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:32:01] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 20:32:01,589 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:32:01] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 20:33:07,252 - mildoc_chat.routers.login_flask - ERROR - bcrypt verify failed for user=root
+Traceback (most recent call last):
+  File "/export/workspace/rag/mildoc_chat/routers/login_flask.py", line 61, in login_post
+    from passlib.context import CryptContext
+ModuleNotFoundError: No module named 'passlib'
+2026-03-05 20:33:07,253 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:33:07] "POST /login HTTP/1.1" 200 -
+2026-03-05 20:33:07,314 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:33:07] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 20:33:07,516 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:33:07] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 20:33:10,264 - mildoc_chat.routers.login_flask - ERROR - bcrypt verify failed for user=root
+Traceback (most recent call last):
+  File "/export/workspace/rag/mildoc_chat/routers/login_flask.py", line 61, in login_post
+    from passlib.context import CryptContext
+ModuleNotFoundError: No module named 'passlib'
+2026-03-05 20:33:10,265 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:33:10] "POST /login HTTP/1.1" 200 -
+2026-03-05 20:33:10,327 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:33:10] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 20:33:10,572 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:33:10] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 20:35:50,053 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 20:35:50,054 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 20:35:50,054 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 20:35:50,055 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 20:35:50,055 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 20:35:51,643 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:35:51] "GET / HTTP/1.1" 200 -
+2026-03-05 20:35:51,701 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:35:51] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 20:35:53,250 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:35:53] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-05 20:35:57,681 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:35:57] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-05 20:35:58,884 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:35:58] "GET /login HTTP/1.1" 200 -
+2026-03-05 20:35:59,156 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:35:59] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-05 20:35:59,367 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:35:59] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 20:35:59,477 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:35:59] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-05 20:36:11,894 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:36:11] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-05 20:36:11,942 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:36:11] "GET / HTTP/1.1" 200 -
+2026-03-05 20:36:12,005 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:36:12] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-05 20:36:12,512 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 20:36:12] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -

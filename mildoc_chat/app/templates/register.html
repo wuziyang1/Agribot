@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Mildoc Chat 注册</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css', v='2') }}" />
+</head>
+<body>
+  <div class="login-root">
+    <div class="login-card">
+      <form id="register-form" method="post" action="{{ url_for('register_post') }}">
+        <h2 class="login-title-main">注册 Mildoc Chat</h2>
+        <p class="login-subtitle">邮箱验证通过后即可创建账号</p>
+
+        <div class="form-group">
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="邮箱"
+            autocomplete="email"
+            value="{{ last_email or '' }}"
+            required
+          />
+        </div>
+
+        <div class="form-group code-row">
+          <input
+            id="email_code"
+            name="email_code"
+            type="text"
+            placeholder="邮箱验证码"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            required
+          />
+          <button id="send-code-btn" class="login-btn-secondary" type="button">
+            发送验证码
+          </button>
+        </div>
+
+        <div class="form-group">
+          <input
+            id="username"
+            name="username"
+            type="text"
+            placeholder="用户名"
+            autocomplete="username"
+            value="{{ last_username or '' }}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="密码（至少 6 位）"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+
+        {% if error_message %}
+        <div class="login-error">{{ error_message }}</div>
+        {% endif %}
+
+        <button class="login-btn-primary" type="submit">
+          注 册
+        </button>
+      </form>
+
+      <div class="footer-links">
+        <a href="{{ url_for('login') }}">返回登录</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+</body>
+</html>
+

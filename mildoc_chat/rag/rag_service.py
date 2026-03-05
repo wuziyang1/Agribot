@@ -10,13 +10,17 @@ RAG服务工具类 (基于LangChain实现)
 
 '''这个才是llm rag，这个才是真正的rag核心'''
 import logging
-from typing import List, Optional, Dict, Any
+import queue
+import threading
+from typing import Iterable, List, Optional, Dict, Any
+
 from pydantic import BaseModel
-from langchain_milvus import Milvus
+from pymilvus import MilvusClient  # 直接使用 pymilvus，避免 langchain-milvus 黑盒导致 0 结果
 from langchain_openai import ChatOpenAI
 from langchain_community.callbacks.manager import get_openai_callback
-from mildoc_chat.rag_config import Config
-from mildoc_chat.rerank_service import get_rerank_service
+
+from mildoc_chat.rag.rag_config import Config
+from mildoc_chat.rag.rerank_service import get_rerank_service
 
 # 配置日志
 logger = logging.getLogger(__name__)
@@ -71,39 +75,27 @@ class RAGService:
     请只返回场景类型对应的数字（1-6）：
     """
     
-    # 统一的提示词模板 - 专业客服版本
+    # 统一的提示词模板 - 通用知识库问答版本
     PROMPT_TEMPLATE = """
-    你是一位专业的客服人员，请根据提供的知识库内容来回答用户的问题。
+    你是一个基于企业文档知识库的问答助手，优先利用检索到的文档内容来回答用户问题，但在知识库没有覆盖时可以结合通用常识进行补充说明。
 
-        知识库内容:
-        {context}
+    知识库内容（可能来自多个文档片段，可能为空或不相关）:
+    {context}
 
-        用户问题: {question}
+    用户问题: {question}
 
-        回答要求：
-            1. 【角色定位】你是一位专业、耐心、友善的客服代表
-            2. 【回答原则】严格基于知识库内容回答，不得编造或推测信息
-            3. 【准确性要求】
-            - 如果知识库中有明确答案，请准确完整地回答
-            - 如果知识库中信息不完整，说明现有信息并提示用户可联系人工客服获取更详细信息
-            - 如果知识库中完全没有相关信息，请礼貌地说明无法找到相关资料，建议用户转接人工客服
-            4. 【回答格式】
-            - 使用纯文本格式，不使用markdown格式
-            - 语言简洁明了，适合微信对话环境
-            - 使用礼貌、专业的语调
-            - 如需列举，使用数字序号或简单的分行
-            5. 【转人工提示】当遇到以下情况时，主动建议用户转接人工客服：
-            - 复杂的售后问题
-            - 需要个人账户信息查询的问题
-            - 投诉或纠纷相关问题
-            - 知识库无法覆盖的专业技术问题
+    回答要求：
+        1. 当上方“知识库内容”中存在与问题明显相关的信息时，应以这些内容为主进行回答，对关键信息做整理、概括和重组。
+        2. 当知识库中的信息只覆盖了问题的一部分时，先基于已有内容回答“已知部分”，然后可以适度结合通用经验补充，但不要与知识库中已有结论相矛盾。
+        3. 当知识库内容与问题几乎无关或基本为空时，可以直接基于通用知识/常识完整回答用户问题，此时不必刻意强调“知识库里查不到”，但也不要虚构具体文档中才会出现的细节（如具体公司名称、条款编号等）。
+        4. 回答使用自然流畅的中文，语言简洁、逻辑清晰，可以合理使用 Markdown 语法（如标题、列表、加粗、代码块等）提升可读性。
 
-    请基于以上要求，为用户提供专业的客服回答：
-"""
+    请基于以上要求，使用 Markdown 格式给出对用户问题的最终回答：
+    """
     
     def __init__(self):
         """初始化RAG服务"""
-        self.vector_store = None
+        self.milvus_client: Optional[MilvusClient] = None
         self.embeddings = None
         self.llm = None
         self.rerank_service = None  # 重排序服务
@@ -118,7 +110,7 @@ class RAGService:
             # 初始化大语言模型
             self._initialize_llm()
             
-            # 初始化向量存储
+            # 初始化向量存储（基于 pymilvus 客户端）
             self._initialize_vector_store()
             
             # 初始化重排序服务
@@ -197,49 +189,58 @@ class RAGService:
         except Exception as e:
             logger.error(f"大语言模型初始化失败: {e}")
             raise
+
+    def _create_llm(self, *, streaming: bool, callbacks: Optional[list] = None) -> ChatOpenAI:
+        """创建 LLM 客户端（按需开启 streaming）"""
+        kwargs: Dict[str, Any] = {
+            "model": Config.LLM_MODEL_NAME,
+            "openai_api_key": Config.LLM_API_KEY,
+            "openai_api_base": Config.LLM_BASE_URL,
+            "temperature": 0.1,
+            "max_tokens": 800,
+        }
+        if streaming:
+            kwargs["streaming"] = True
+        if callbacks:
+            kwargs["callbacks"] = callbacks
+        return ChatOpenAI(**kwargs)
     
     def _initialize_vector_store(self):
-        """初始化向量存储"""
+        """初始化向量存储（pymilvus 客户端）
+
+        说明：
+          - 这里直接使用 pymilvus.MilvusClient，而不再依赖 langchain-milvus 的封装，
+            避免因为连接别名 / 默认配置等问题导致“集合里明明有数据但始终检索到 0 条”的情况。
+          - mildoc_index 构建集合时的字段是：
+              id, doc_name, doc_path_name, doc_type, doc_md5, doc_length, content, content_vector, embedding_model
+        """
         try:
-            # 构建 Milvus 连接参数（显式使用 uri + db_name，避免因默认值导致连到错误实例/库）
-            connection_args = {
-                "uri": f"http://{Config.MILVUS_HOST}:{Config.MILVUS_PORT}",
-                "db_name": Config.MILVUS_DATABASE,
-            }
-            
-            # 如果有用户名和密码，添加到连接参数中
-            if Config.MILVUS_USER:
-                connection_args["user"] = Config.MILVUS_USER
-            if Config.MILVUS_PASSWORD:
-                connection_args["password"] = Config.MILVUS_PASSWORD
-            
-            # 配置搜索参数，针对IVF_FLAT索引优化
-            search_params = {
-                "metric_type": "COSINE",  # 与索引保持一致
-                "params": {
-                    "nprobe": 64  # 建议设置为nlist的6.25% (64/1024)，平衡性能和召回率
-                    #nlist：聚类中心数量，将向量空间分成 nlist 个簇
-                    # nprobe = 1    # 只搜索1个簇，速度最快，但可能漏掉结果
-                    # nprobe = 64   # 搜索64个簇，速度适中
-                    # nprobe = 1024 # 搜索所有簇，速度最慢，但召回率最高
-                }
-            }
-            
-            # 初始化Milvus向量存储
-            self.vector_store = Milvus(
-                embedding_function=self.embeddings,
-                collection_name=Config.MILVUS_COLLECTION_NAME,
-                connection_args=connection_args,
-                text_field="content",  # 文本内容字段 milvus既存储原始文本又存储原始文本向量后的向量
-                vector_field="content_vector",  # 向量字段
-                auto_id=True,
-                primary_field="id",
-                search_params=search_params  # 添加搜索参数
+            # 显式使用 uri + db_name，直连 mildoc_index 使用的 Milvus 实例
+            uri = f"http://{Config.MILVUS_HOST}:{Config.MILVUS_PORT}"
+            self.milvus_client = MilvusClient(
+                uri=uri,
+                db_name=Config.MILVUS_DATABASE or "default",
+                user=Config.MILVUS_USER or "",
+                password=Config.MILVUS_PASSWORD or "",
             )
-            
-            logger.info(f"Milvus向量存储初始化成功: {Config.MILVUS_COLLECTION_NAME}")
-            logger.info(f"Milvus连接: uri={connection_args.get('uri')} db={connection_args.get('db_name')}")
-            logger.info(f"搜索参数: nprobe={search_params['params']['nprobe']}")
+
+            # 做一次轻量级的探测，确认集合存在且可搜索
+            try:
+                stats = self.milvus_client.get_collection_stats(
+                    collection_name=Config.MILVUS_COLLECTION_NAME
+                )
+                row_count = int(stats.get("row_count", -1))
+            except Exception as e:  # noqa: BLE001
+                logger.warning(f"获取集合统计信息失败: {e}")
+                row_count = -1
+
+            logger.info(
+                "Milvus向量存储初始化成功: %s (uri=%s db=%s rows=%s)",
+                Config.MILVUS_COLLECTION_NAME,
+                uri,
+                Config.MILVUS_DATABASE,
+                row_count,
+            )
             
         except Exception as e:
             logger.error(f"Milvus向量存储初始化失败: {e}")
@@ -259,18 +260,19 @@ class RAGService:
             logger.warning(f"重排序服务初始化失败: {e}")
             self.rerank_service = None
 
-    def query_service(self, query: str, use_rerank: bool = True) -> RAGResponse:
+    def query_service(self, query: str, use_rerank: bool = True, use_rag: bool = True) -> RAGResponse:
         """核心查询服务方法
         
         Args:
             query: 用户输入的查询内容
             use_rerank: 是否使用重排序功能
+            use_rag: 是否使用知识库检索（为 False 时不查库，仅用 LLM 回答）
             
         Returns:
             RAGResponse: 包含回答内容、源文档和token使用情况的响应对象
         """
         try:
-            logger.info(f"🔍 开始处理查询（rerank={use_rerank}): {query}")
+            logger.info(f"🔍 开始处理查询（use_rag={use_rag}, rerank={use_rerank}): {query}")
             
             if not query or not query.strip():
                 return RAGResponse(
@@ -284,17 +286,60 @@ class RAGService:
             # scene_info = self.detect_user_scene(query)
             scene_info = None # 暂时不使用场景检测
             
-            # 第一步：向量检索获取候选文档
-            initial_k = 10 if use_rerank and self.rerank_service else 3 #如果启用重排就检索10个，不启用就检索3个
-            retriever = self.vector_store.as_retriever(
-                search_type="similarity",
-                search_kwargs={"k": initial_k}
-            )
-            
-            # 获取候选文档
-            candidate_docs = retriever.invoke(query) #这是文本不是向量
+            # 第一步：向量检索获取候选文档（use_rag=False 时跳过，不查库）
+            initial_k = 10 if use_rerank and self.rerank_service else 3  # 如果启用重排就检索10个，不启用就检索3个
+            candidate_docs: List[Any] = []
+            if use_rag and self.milvus_client is not None:
+                try:
+                    # 1. 先对查询做向量化
+                    query_vector = self.embeddings.embed_query(query)
+
+                    # 2. 调用 Milvus 相似度搜索
+                    search_params = {
+                        "metric_type": "COSINE",
+                        "params": {"nprobe": 64},
+                    }
+                    results = self.milvus_client.search(
+                        collection_name=Config.MILVUS_COLLECTION_NAME,
+                        data=[query_vector],
+                        anns_field="content_vector",
+                        search_params=search_params,
+                        limit=initial_k,
+                        output_fields=[
+                            "doc_name",
+                            "doc_path_name",
+                            "doc_type",
+                            "content",
+                        ],
+                    )
+
+                    hits = results[0] if results else []
+                    for hit in hits:
+                        # hit 结构: {'id': ..., 'distance': ..., 'entity': {...}}
+                        entity = hit.get("entity", {})
+                        page_content = entity.get("content", "")
+                        metadata = {
+                            "doc_name": entity.get("doc_name", ""),
+                            "doc_path_name": entity.get("doc_path_name", ""),
+                            "doc_type": entity.get("doc_type", ""),
+                            "score": float(hit.get("distance", 0.0)),
+                        }
+
+                        # 简单的对象，后面当成有 .page_content / .metadata 属性的对象使用
+                        class _Doc:
+                            def __init__(self, content, meta):
+                                self.page_content = content
+                                self.metadata = meta
+
+                        candidate_docs.append(_Doc(page_content, metadata))
+
+                except Exception as se:  # noqa: BLE001
+                    logger.error(f"向量检索失败: {se}")
+            elif use_rag and self.milvus_client is None:
+                logger.error("Milvus 客户端尚未初始化")
+
             logger.info(f"📄 初始检索到 {len(candidate_docs)} 个候选文档")
-            
+
             # 第二步：重排序（如果启用）
             final_docs = candidate_docs
             if use_rerank and self.rerank_service and len(candidate_docs) > 1: #候选文档数量大于1
@@ -435,6 +480,238 @@ class RAGService:
                 error_message=f"查询过程中发生错误：{str(e)}",
                 scene_info=None
             )
+
+    def stream_query(self, query: str, use_rerank: bool = True, use_rag: bool = True) -> Iterable[Dict[str, Any]]:
+        """真正的流式输出（token 级别），逐条 yield 事件字典。
+
+        事件格式：
+          - {"type": "start"}
+          - {"type": "chunk", "data": {"content": "<token>"}}
+          - {"type": "end", "data": <RAGResponse dict>}
+          - {"type": "error", "data": <RAGResponse dict>}
+        """
+        # 兼容不同 LangChain 版本的回调基类路径
+        try:  # pragma: no cover
+            from langchain_core.callbacks.base import BaseCallbackHandler  # type: ignore
+        except Exception:  # noqa: BLE001
+            from langchain.callbacks.base import BaseCallbackHandler  # type: ignore
+
+        def _resp_to_dict(resp: RAGResponse) -> Dict[str, Any]:
+            return {
+                "success": resp.success,
+                "content": resp.content,
+                "error_message": resp.error_message,
+                "source_documents": [
+                    {
+                        "doc_name": d.doc_name,
+                        "doc_path_name": d.doc_path_name,
+                        "doc_type": d.doc_type,
+                        "content_preview": d.content_preview,
+                        "similarity_score": d.similarity_score,
+                    }
+                    for d in (resp.source_documents or [])
+                ],
+                "token_usage": {
+                    "prompt_tokens": resp.token_usage.prompt_tokens,
+                    "completion_tokens": resp.token_usage.completion_tokens,
+                    "total_tokens": resp.token_usage.total_tokens,
+                }
+                if resp.token_usage
+                else None,
+                "scene_info": resp.scene_info,
+            }
+
+        yield {"type": "start"}
+
+        if not query or not query.strip():
+            resp = RAGResponse(
+                content="",
+                source_documents=[],
+                success=False,
+                error_message="查询内容为空",
+                scene_info=None,
+            )
+            yield {"type": "error", "data": _resp_to_dict(resp)}
+            return
+
+        # 第0步：场景检测（当前不启用，保持与 query_service 一致）
+        scene_info = None
+
+        # 第一步：向量检索获取候选文档（use_rag=False 时跳过，不查库）
+        initial_k = 10 if use_rerank and self.rerank_service else 3
+        candidate_docs: List[Any] = []
+
+        if use_rag and self.milvus_client is not None:
+            try:
+                query_vector = self.embeddings.embed_query(query)
+                search_params = {
+                    "metric_type": "COSINE",
+                    "params": {"nprobe": 64},
+                }
+                results = self.milvus_client.search(
+                    collection_name=Config.MILVUS_COLLECTION_NAME,
+                    data=[query_vector],
+                    anns_field="content_vector",
+                    search_params=search_params,
+                    limit=initial_k,
+                    output_fields=[
+                        "doc_name",
+                        "doc_path_name",
+                        "doc_type",
+                        "content",
+                    ],
+                )
+
+                hits = results[0] if results else []
+                for hit in hits:
+                    entity = hit.get("entity", {})
+                    page_content = entity.get("content", "")
+                    metadata = {
+                        "doc_name": entity.get("doc_name", ""),
+                        "doc_path_name": entity.get("doc_path_name", ""),
+                        "doc_type": entity.get("doc_type", ""),
+                        "score": float(hit.get("distance", 0.0)),
+                    }
+
+                    class _Doc:
+                        def __init__(self, content, meta):
+                            self.page_content = content
+                            self.metadata = meta
+
+                    candidate_docs.append(_Doc(page_content, metadata))
+
+            except Exception as se:  # noqa: BLE001
+                logger.error(f"向量检索失败: {se}")
+        elif use_rag and self.milvus_client is None:
+            logger.error("Milvus 客户端尚未初始化")
+
+        # 第二步：重排序（如果启用）
+        final_docs = candidate_docs
+        if use_rerank and self.rerank_service and len(candidate_docs) > 1:
+            doc_contents = [doc.page_content for doc in candidate_docs]
+            rerank_top_n = min(5, len(candidate_docs))
+            rerank_response = self.rerank_service.rerank_documents(
+                query=query,
+                documents=doc_contents,
+                top_n=rerank_top_n,
+            )
+            if rerank_response.success:
+                reranked_docs = []
+                for rerank_doc in rerank_response.documents:
+                    if 0 <= rerank_doc.index < len(candidate_docs):
+                        original_doc = candidate_docs[rerank_doc.index]
+                        if hasattr(original_doc, "metadata"):
+                            original_doc.metadata["rerank_score"] = rerank_doc.relevance_score
+                        reranked_docs.append(original_doc)
+
+                if candidate_docs and len(reranked_docs) > 0:
+                    first_doc = candidate_docs[0]
+                    first_doc_in_rerank = any(
+                        hasattr(doc, "metadata")
+                        and doc.metadata.get("doc_name") == first_doc.metadata.get("doc_name")
+                        and doc.page_content == first_doc.page_content
+                        for doc in reranked_docs
+                    )
+                    if not first_doc_in_rerank:
+                        if hasattr(first_doc, "metadata"):
+                            first_doc.metadata["rerank_score"] = 1.0
+                        reranked_docs.insert(0, first_doc)
+
+                final_docs = reranked_docs[:3]
+            else:
+                logger.warning(f"重排序失败，使用原始检索结果: {rerank_response.error_message}")
+
+        # 处理源文档信息（可提前算好，end 事件里带上）
+        processed_source_docs: List[SourceDocument] = []
+        for i, doc in enumerate(final_docs):
+            try:
+                metadata = doc.metadata if hasattr(doc, "metadata") else {}
+                doc_name = metadata.get("doc_name", f"文档{i+1}")
+                doc_path_name = metadata.get("doc_path_name", "")
+                doc_type = metadata.get("doc_type", "unknown")
+                rerank_score = metadata.get("rerank_score")
+                content_preview = doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content
+                processed_source_docs.append(
+                    SourceDocument(
+                        doc_name=doc_name,
+                        doc_path_name=doc_path_name,
+                        doc_type=doc_type,
+                        content_preview=content_preview,
+                        similarity_score=rerank_score,
+                    )
+                )
+            except Exception as e:
+                logger.warning(f"处理源文档{i+1}时出错: {e}")
+                processed_source_docs.append(
+                    SourceDocument(
+                        doc_name=f"文档{i+1}",
+                        doc_path_name="",
+                        doc_type="unknown",
+                        content_preview="无法获取文档信息",
+                    )
+                )
+
+        # 第三步：流式生成回答
+        context = "\n\n".join([doc.page_content for doc in final_docs])
+        prompt = self.PROMPT_TEMPLATE.format(context=context, question=query)
+
+        _STOP = object()
+        token_q: "queue.Queue[object]" = queue.Queue()
+        state: Dict[str, Any] = {"answer": "", "token_usage": None, "error": None}
+
+        class _TokenQueueCallbackHandler(BaseCallbackHandler):
+            def on_llm_new_token(self, token: str, **kwargs: Any) -> None:  # noqa: ANN401
+                if token:
+                    token_q.put(token)
+
+        def _worker() -> None:
+            try:
+                cb_handler = _TokenQueueCallbackHandler()
+                llm_stream = self._create_llm(streaming=True, callbacks=[cb_handler])
+                with get_openai_callback() as cb:
+                    result = llm_stream.invoke(prompt)
+                content = getattr(result, "content", "") or ""
+                state["answer"] = content
+                state["token_usage"] = TokenUsage(
+                    prompt_tokens=cb.prompt_tokens,
+                    completion_tokens=cb.completion_tokens,
+                    total_tokens=cb.total_tokens,
+                )
+            except Exception as e:  # noqa: BLE001
+                state["error"] = e
+            finally:
+                token_q.put(_STOP)
+
+        t = threading.Thread(target=_worker, daemon=True)
+        t.start()
+
+        while True:
+            item = token_q.get()
+            if item is _STOP:
+                break
+            yield {"type": "chunk", "data": {"content": str(item)}}
+
+        if state["error"] is not None:
+            err = state["error"]
+            resp = RAGResponse(
+                content="",
+                source_documents=[],
+                success=False,
+                error_message=f"查询过程中发生错误：{err}",
+                scene_info=None,
+            )
+            yield {"type": "error", "data": _resp_to_dict(resp)}
+            return
+
+        resp = RAGResponse(
+            content=state.get("answer") or "",
+            source_documents=processed_source_docs,
+            token_usage=state.get("token_usage"),
+            success=True,
+            error_message=None,
+            scene_info=scene_info,
+        )
+        yield {"type": "end", "data": _resp_to_dict(resp)}
     
     def get_similar_documents(self, query: str, top_k: int = 3) -> List[Dict[str, Any]]:
         """获取相似文档（用于调试和分析）
@@ -449,24 +726,38 @@ class RAGService:
         """
         try:
             logger.info(f"🔍 搜索相似文档: {query} (top_k={top_k})")
-            
-            # 使用向量存储进行相似性搜索
-            docs = self.vector_store.similarity_search_with_score(query, k=top_k)
-            
-            results = []
-            for doc, score in docs:
-                result = {
-                    "content": doc.page_content,
-                    "metadata": doc.metadata,
-                    "similarity_score": float(score),
-                    "doc_name": doc.metadata.get("doc_name", "未知文档"),
-                    "doc_path_name": doc.metadata.get("doc_path_name", ""),
-                    "doc_type": doc.metadata.get("doc_type", "unknown")
-                }
-                results.append(result)
-            
-            logger.info(f"✅ 找到 {len(results)} 个相似文档")
-            return results
+
+            if self.milvus_client is None:
+                logger.warning("Milvus 客户端未初始化，无法检索")
+                return []
+
+            query_vector = self.embeddings.embed_query(query)
+            results = self.milvus_client.search(
+                collection_name=Config.MILVUS_COLLECTION_NAME,
+                data=[query_vector],
+                anns_field="content_vector",
+                search_params={"metric_type": "COSINE", "params": {"nprobe": 64}},
+                limit=top_k,
+                output_fields=["doc_name", "doc_path_name", "doc_type", "content"],
+            )
+
+            hits = results[0] if results else []
+            out: List[Dict[str, Any]] = []
+            for hit in hits:
+                entity = hit.get("entity", {}) or {}
+                out.append(
+                    {
+                        "content": entity.get("content", ""),
+                        "metadata": entity,
+                        "similarity_score": float(hit.get("distance", 0.0)),
+                        "doc_name": entity.get("doc_name", "未知文档"),
+                        "doc_path_name": entity.get("doc_path_name", ""),
+                        "doc_type": entity.get("doc_type", "unknown"),
+                    }
+                )
+
+            logger.info(f"✅ 找到 {len(out)} 个相似文档")
+            return out
             
         except Exception as e:
             logger.error(f"❌ 获取相似文档失败: {e}")
@@ -523,11 +814,23 @@ class RAGService:
             
             # 检查向量存储
             try:
-                test_docs = self.vector_store.similarity_search("测试", k=1)
+                if self.milvus_client is None:
+                    raise RuntimeError("Milvus client not initialized")
+
+                query_vector = self.embeddings.embed_query("测试")
+                results = self.milvus_client.search(
+                    collection_name=Config.MILVUS_COLLECTION_NAME,
+                    data=[query_vector],
+                    anns_field="content_vector",
+                    search_params={"metric_type": "COSINE", "params": {"nprobe": 64}},
+                    limit=1,
+                    output_fields=["doc_name"],
+                )
+                hits = results[0] if results else []
                 status["components"]["vector_store"] = {
                     "status": "healthy",
                     "collection": Config.MILVUS_COLLECTION_NAME,
-                    "test_results": len(test_docs)
+                    "test_results": len(hits),
                 }
             except Exception as e:
                 status["components"]["vector_store"] = {

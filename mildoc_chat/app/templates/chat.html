@@ -33,8 +33,10 @@
         <div class="nav-user">
           <div class="nav-user-avatar">M</div>
           <div class="nav-user-info">
-            <div class="nav-user-name">Mildoc 用户</div>
-            <div class="nav-user-desc">企业知识库助手</div>
+            <div class="nav-user-name">{{ session.get('chat_username', 'Mildoc 用户') }}</div>
+            <div class="nav-user-desc">
+              已登录 · <a href="{{ url_for('mildoc_chat_login.logout') }}" style="color: inherit; text-decoration: underline;">退出</a>
+            </div>
           </div>
         </div>
       </div>
