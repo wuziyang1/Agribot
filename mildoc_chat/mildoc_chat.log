@@ -5936,3 +5936,93 @@ OSError: [Errno 101] Network is unreachable
 2026-03-05 19:30:55,698 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 19:30:55] "GET /login HTTP/1.1" 200 -
 2026-03-05 19:30:55,810 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 19:30:55] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
 2026-03-05 19:30:55,952 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 19:30:55] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-05 22:48:16,076 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-05 22:48:16,076 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-05 22:48:16,076 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-05 22:48:16,078 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-05 22:48:16,078 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-05 22:48:18,028 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 22:48:18] "GET / HTTP/1.1" 200 -
+2026-03-05 22:48:18,075 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 22:48:18] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-05 22:48:18,311 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 22:48:18] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-05 22:48:25,594 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 22:48:25,598 - mildoc_chat.rag.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-05 22:48:25,598 - mildoc_chat.rag.rag_service - INFO - 向量维度: 768
+2026-03-05 22:48:25,617 - mildoc_chat.rag.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-05 22:48:25,630 - mildoc_chat.rag.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection (uri=http://127.0.0.1:19530 db=mildoc rows=232)
+2026-03-05 22:48:25,631 - mildoc_chat.rag.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=qwen3-rerank, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-05 22:48:25,631 - mildoc_chat.rag.rag_service - INFO - 重排序服务初始化成功
+2026-03-05 22:48:25,631 - mildoc_chat.rag.rag_service - INFO - RAG服务初始化完成
+2026-03-05 22:48:25,631 - mildoc_chat.rag.rag_service - INFO - RAG服务实例创建成功
+2026-03-05 22:48:25,631 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 22:48:25] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-05 22:48:25,631 - mildoc_chat.rag.rag_service - INFO - 🔍 开始处理查询（use_rag=True, rerank=True): 霓虹
+2026-03-05 22:48:25,774 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 22:48:25,781 - mildoc_chat.rag.rag_service - INFO - 📄 初始检索到 10 个候选文档
+2026-03-05 22:48:26,112 - mildoc_chat.rag.rag_service - INFO - 🔄 重排序完成，选择了 3 个文档
+2026-03-05 22:48:44,609 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 22:48:44,616 - mildoc_chat.rag.rag_service - INFO - ✅ 查询完成，检索到 3 个相关文档
+2026-03-05 22:48:44,616 - mildoc_chat.rag.rag_service - INFO - 📄 答案长度: 1022 字符
+2026-03-05 22:48:44,617 - mildoc_chat.rag.rag_service - INFO - 💰 Token使用: 输入4495, 输出685, 总计5180
+2026-03-05 22:48:44,617 - mildoc_chat.rag.rag_service - INFO - 📖 文档1: 机器学习 西瓜书 周志华.pdf (rerank: 0.324) - 是 使 £  a i y i   = 0 成立的常数.用
+
+m
+
+i=l
+
+Q4yli  + QjU...
+2026-03-05 22:48:44,617 - mildoc_chat.rag.rag_service - INFO - 📖 文档2: 机器学习 西瓜书 周志华.pdf (rerank: 0.297) - 色泽更重要.
+
+本 章 介 绍 几 种 经 典 的 线 性 模 型 .我 们 先 从 回 归 任 务...
+2026-03-05 22:48:44,617 - mildoc_chat.rag.rag_service - INFO - 📖 文档3: 机器学习 西瓜书 周志华.pdf (rerank: 0.287) - 电 仅 "(宓 /- 1 +  &)  =  0  ,
+
+(6.41)
+
+、& ) 。，从忐= 。­...
+2026-03-05 22:53:01,003 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2026 22:53:01] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-05 22:53:01,003 - mildoc_chat.rag.rag_service - INFO - 🔍 开始处理查询（use_rag=True, rerank=True): 你好
+2026-03-05 22:53:01,161 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-05 22:53:01,168 - mildoc_chat.rag.rag_service - INFO - 📄 初始检索到 10 个候选文档
+2026-03-05 22:53:01,520 - mildoc_chat.rag.rag_service - INFO - 🔄 重排序完成，选择了 3 个文档
+2026-03-05 22:53:07,489 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-05 22:53:07,491 - mildoc_chat.rag.rag_service - INFO - ✅ 查询完成，检索到 3 个相关文档
+2026-03-05 22:53:07,491 - mildoc_chat.rag.rag_service - INFO - 📄 答案长度: 326 字符
+2026-03-05 22:53:07,491 - mildoc_chat.rag.rag_service - INFO - 💰 Token使用: 输入5120, 输出199, 总计5319
+2026-03-05 22:53:07,491 - mildoc_chat.rag.rag_service - INFO - 📖 文档1: 机器学习 西瓜书 周志华.pdf (rerank: 0.447) - c
+1
+1
+1
+1
+L
+1
+1
+1
+
+青
+乌
+乌
+青
+浅
+青
+乌
+乌
+
+绿
+黑
+黑
+绿
+白
+绿
+黑
+...
+2026-03-05 22:53:07,491 - mildoc_chat.rag.rag_service - INFO - 📖 文档2: 机器学习 西瓜书 周志华.pdf (rerank: 0.404) - 0.697
+
+0.460
+
+?
+
+首先估计类先验概率P ( c ) , 显然有
+
+P (好瓜= 是 ...
+2026-03-05 22:53:07,491 - mildoc_chat.rag.rag_service - INFO - 📖 文档3: 机器学习 西瓜书 周志华.pdf (rerank: 0.370) - 么 ，哪 怕 在 其 他 属 性 上 明 显 像 好 瓜 ，分 类 的 结 果 都 将 是 “好 瓜...

@@ -74,15 +74,23 @@ def send_email_code(email: str, code: str, *, scene: str = "register") -> Tuple[
             f"你的 Mildoc Chat { '注册' if scene == 'register' else '找回密码' }验证码是：{code}\n\n有效期 10 分钟。"
         )
 
-        with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
-            server.ehlo()
-            try:
-                server.starttls()
-            except Exception:  # noqa: BLE001
-                pass
-            if smtp_user and smtp_password:
-                server.login(smtp_user, smtp_password)
-            server.send_message(msg)
+        # 支持 465 端口走 SSL，其它端口走 STARTTLS（如 587/25）
+        if smtp_port == 465:
+            with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=10) as server:
+                server.ehlo()
+                if smtp_user and smtp_password:
+                    server.login(smtp_user, smtp_password)
+                server.send_message(msg)
+        else:
+            with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
+                server.ehlo()
+                try:
+                    server.starttls()
+                except Exception:  # noqa: BLE001
+                    pass
+                if smtp_user and smtp_password:
+                    server.login(smtp_user, smtp_password)
+                server.send_message(msg)
         return True, "验证码已发送"
     except Exception as e:  # noqa: BLE001
         logger.exception("send email failed")

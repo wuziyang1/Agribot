@@ -1,0 +1,680 @@
+/* Mildoc Chat - RAG 聊天界面（浅色简洁风） */
+html {
+  color-scheme: light;
+}
+
+:root {
+  color-scheme: light;
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --surface-soft: #f9fafb;
+  --border: #e5e7eb;
+  --primary: #2563eb;
+  --primary-soft: rgba(37, 99, 235, 0.08);
+  --text: #111827;
+  --muted: #6b7280;
+  --danger: #dc2626;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f4f4f5;
+  color: var(--text);
+}
+
+.app-root {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* 左侧整体导航栏，模仿 ChatGPT 布局 */
+.nav-sidebar {
+  width: 270px;
+  flex-shrink: 0;
+  background: #f9fafb;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* 固定在左侧，不随主聊天内容滚动 */
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.nav-top {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-new-chat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  background: #111827;
+  color: #f9fafb;
+  border-radius: 999px;
+  border: none;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.nav-new-chat-icon {
+  font-size: 18px;
+}
+
+.nav-section {
+  margin-top: 8px;
+}
+
+.nav-section-title {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.nav-item {
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: default;
+  color: #111827;
+}
+
+.nav-item.muted {
+  color: #9ca3af;
+}
+
+.nav-item:hover {
+  background: #e5e7eb;
+}
+
+.nav-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+.nav-user-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: #111827;
+  color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.nav-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-user-name {
+  font-size: 13px;
+}
+
+.nav-user-desc {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* 右侧主聊天区域，参考 ChatGPT 主界面 */
+.shell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.header {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(to right, #ffffff, #f9fafb);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 20%, #bfdbfe, #2563eb);
+  box-shadow:
+    0 0 0 3px rgba(191, 219, 254, 0.8),
+    0 0 16px rgba(37, 99, 235, 0.6);
+}
+
+.title-text h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.title-text span {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.badge {
+  font-size: 12px;
+  color: #166534;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #ecfdf5;
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.35);
+}
+
+.layout {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  padding: 16px 120px 18px;
+  background: #ffffff;
+}
+
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  padding: 14px 14px 16px;
+  border-radius: 0;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sidebar-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.sidebar-desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.sidebar-section {
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.sidebar-section-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.suggestion {
+  width: 100%;
+  text-align: left;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 8px 9px;
+  font-size: 12px;
+  color: #111827;
+  background: #f9fafb;
+  cursor: pointer;
+  margin-bottom: 6px;
+  white-space: normal;
+}
+
+.suggestion:hover {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.tips {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tips span {
+  font-weight: 500;
+  color: #111827;
+}
+
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.chat-footer-card {
+  margin-top: 8px;
+  padding: 8px 20px 4px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 52px 4px;
+  background: #ffffff;
+}
+
+.msg-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.msg-row.user {
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.avatar.user {
+  background: #e0f2fe;
+  color: #1d4ed8;
+}
+
+.avatar.bot {
+  background: #111827;
+  color: #f9fafb;
+}
+
+.msg-body {
+  max-width: min(640px, 100%);
+}
+
+.msg-name {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.msg-bubble {
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-size: 16px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border: 1px solid transparent;
+}
+
+.msg-bubble.user {
+  background: #2563eb;
+  color: #f9fafb;
+  border-color: transparent;
+}
+
+.msg-bubble.bot {
+  /* 模型回答区域：不再使用独立气泡背景，直接展示 Markdown 内容 */
+  background: transparent;
+  color: #111827;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  /* 使用正常换行，避免 Markdown HTML 与原始换行叠加导致大量空行 */
+  white-space: normal;
+}
+
+/* 流式输出阶段：按纯文本显示，保留换行 */
+.msg-bubble.bot.streaming {
+  white-space: pre-wrap;
+}
+
+/* 模型回答中的 Markdown 样式优化 */
+.msg-bubble.bot h1,
+.msg-bubble.bot h2,
+.msg-bubble.bot h3 {
+  color: #111827;
+  margin: 0.6em 0 0.4em;
+}
+
+.msg-bubble.bot p {
+  margin: 0.4em 0;
+}
+
+.msg-bubble.bot code {
+  background-color: #f4f4f4;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 14px;
+}
+
+.msg-bubble.bot pre {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+.msg-bubble.bot pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.insights {
+  margin-top: 0;
+  padding: 0 2px 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.chat-footer-card .insights:not(:empty) {
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+}
+
+.insights-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.insights-header span {
+  font-size: 12px;
+}
+
+.insights-section {
+  margin-top: 2px;
+}
+
+.insights-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  margin-right: 6px;
+}
+
+.insights-doc-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.doc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #93c5fd; /* 更浅的蓝色边框 */
+  background: #dbeafe;       /* 更浅的蓝色背景 */
+  font-size: 12px;
+  color: #1d4ed8;
+  cursor: default;
+}
+
+.doc-chip-index {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #bfdbfe;
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.insights-tokens {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.insights-token-item {
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.input-area {
+  padding-top: 2px;
+  margin-top: 0;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+textarea {
+  flex: 1;
+  resize: none;
+  min-height: 44px;
+  max-height: 140px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.5;
+  outline: none;
+}
+
+textarea::placeholder {
+  color: #9ca3af;
+}
+
+textarea:focus {
+  outline: none;
+}
+
+button {
+  border-radius: 999px;
+  border: none;
+  padding: 0 18px;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  color: #f9fafb;
+  white-space: nowrap;
+  min-width: 80px;
+  box-shadow: none;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.08s ease;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+  box-shadow: none;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: none;
+}
+
+button:not(:disabled):active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+/* 知识库开关：控制是否使用 RAG 检索 */
+#rag-toggle-btn.rag-toggle {
+  min-width: 72px;
+  height: 32px;
+  padding: 0 12px;
+  margin-top: 4px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+#rag-toggle-btn.rag-toggle.on {
+  background: #2563eb;
+  color: #f9fafb;
+  border: 1px solid #2563eb;
+}
+#rag-toggle-btn.rag-toggle.off {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+#rag-toggle-btn.rag-toggle.off:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* 发送按钮仿照示例气泡样式 */
+#send-btn {
+  position: relative;
+  min-width: 32px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-top: 4px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #2563eb;
+  box-shadow: none;
+}
+
+#send-btn span {
+  font-size: 14px;
+}
+
+/* 加载态：隐藏文字，仅在按钮中央显示白色圆角方块 */
+#send-btn.loading #send-label {
+  font-size: 0;
+}
+
+#send-btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: #ffffff;
+}
+
+.hint {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #9ca3af;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hint code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 11px;
+  padding: 2px 6px;
+  background: #111827;
+  border-radius: 4px;
+  color: #e5e7eb;
+}
+
+.error {
+  color: var(--danger);
+}
+
+@media (max-width: 900px) {
+  body {
+    padding: 8px;
+  }
+
+  .shell {
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .layout {
+    flex-direction: column;
+  }
+
+  /* 移动端不需要左侧固定高度和独立滚动 */
+  .nav-sidebar {
+    position: static;
+    height: auto;
+    overflow-y: visible;
+  }
+
+  .sidebar {
+    width: 100%;
+    order: -1;
+  }
+}

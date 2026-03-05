@@ -11,7 +11,10 @@ from flask import (
     url_for,
 )
 
-from mildoc_chat.routers.database import get_user_by_username
+from mildoc_chat.routers.database import (
+    get_user_by_username,
+    get_user_by_email,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -32,18 +35,29 @@ def login():
 @login_bp.post("/login")
 def login_post():
     data = request.form or {}
-    username = (data.get("username") or "").strip()
+    identifier = (data.get("username") or "").strip()  # 可以是用户名或邮箱
     password = (data.get("password") or "").strip()
+
+    if not identifier or not password:
+        return render_template(
+            "login.html",
+            error_message="账号和密码均不能为空",
+            last_username=identifier,
+        )
 
     user: Optional[Dict[str, Any]] = None
     try:
-        user = get_user_by_username(username)
+        # 简单规则：包含 @ 时优先按邮箱查，否则按用户名查
+        if "@" in identifier:
+            user = get_user_by_email(identifier)
+        if not user:
+            user = get_user_by_username(identifier)
     except Exception:  # noqa: BLE001
         logger.exception("db get_user_by_username failed")
         return render_template(
             "login.html",
             error_message="数据库连接失败，请检查本地 MySQL 配置",
-            last_username=username,
+            last_username=identifier,
         )
 
     if user and isinstance(user.get("hashed_password"), str):
@@ -63,29 +77,29 @@ def login_post():
                     bcrypt_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
                     ok = bcrypt_ctx.verify(password, stored)
                 except Exception:  # noqa: BLE001
-                    logger.exception("bcrypt verify failed for user=%s", username)
+                    logger.exception("bcrypt verify failed for user=%s", user.get("username"))
                     ok = False
             else:
                 # 其他情况按 werkzeug 默认格式尝试一次
                 ok = check_password_hash(stored, password)
         except Exception:  # noqa: BLE001
-            logger.exception("check_password failed for user=%s", username)
+            logger.exception("check_password failed for user=%s", user.get("username"))
             ok = False
 
         if ok:
-            session["chat_username"] = username
+            session["chat_username"] = user.get("username") or identifier
             return redirect(url_for("index"))
-        return render_template("login.html", error_message="用户名或密码错误", last_username=username)
+        return render_template("login.html", error_message="账号或密码错误", last_username=identifier)
 
-    if CHAT_USERNAME and CHAT_PASSWORD and username == CHAT_USERNAME and password == CHAT_PASSWORD:
-        session["chat_username"] = username
+    if CHAT_USERNAME and CHAT_PASSWORD and identifier == CHAT_USERNAME and password == CHAT_PASSWORD:
+        session["chat_username"] = identifier
         return redirect(url_for("index"))
 
-    return render_template("login.html", error_message="用户名或密码错误", last_username=username)
+    return render_template("login.html", error_message="账号或密码错误", last_username=identifier)
 
 
 @login_bp.get("/logout")
 def logout():
     session.pop("chat_username", None)
-    return redirect(url_for("login"))
+    return redirect(url_for("mildoc_chat_login.login"))
 

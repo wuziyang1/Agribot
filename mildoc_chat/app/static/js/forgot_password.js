@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
-  var usernameInput = document.getElementById('fp-username');
   var emailInput = document.getElementById('fp-email');
   var codeInput = document.getElementById('fp-code');
   var newPwdInput = document.getElementById('fp-new-password');
   var submitBtn = document.getElementById('fp-submit');
   var sendBtn = document.getElementById('fp-send-code');
   var errorEl = document.getElementById('fp-error');
+  var sendTimer = null;
 
-  if (usernameInput) {
-    usernameInput.focus();
+  if (emailInput) {
+    emailInput.focus();
   }
 
   function showError(msg) {
@@ -30,13 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function sendCode() {
-    var username = (usernameInput && usernameInput.value || '').trim();
     var email = (emailInput && emailInput.value || '').trim();
-    if (!username) {
-      showError('请先填写用户名');
-      if (usernameInput) usernameInput.focus();
-      return;
-    }
     if (!email) {
       showError('请先填写邮箱');
       if (emailInput) emailInput.focus();
@@ -44,25 +38,62 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     showError('');
 
-    postJson('/api/forgot/send_code', { username: username, email: email }).then(function (resp) {
+    if (!sendBtn) {
+      return;
+    }
+
+    // 先禁用按钮，避免重复点击
+    sendBtn.disabled = true;
+
+    postJson('/api/forgot/send_code', { email: email }).then(function (resp) {
       if (resp && resp.success) {
-        alert('验证码已发送到邮箱（或写入服务日志），请查收');
+        // 启动 60 秒倒计时（若后端返回 cooldown_seconds，则使用后端值）
+        var remain = (resp.cooldown_seconds || 60);
+
+        // 清理旧计时器
+        if (sendTimer) {
+          clearInterval(sendTimer);
+        }
+
+        // 立即更新按钮文本
+        sendBtn.textContent = '重新发送（' + remain + 's）';
+
+        sendTimer = setInterval(function () {
+          remain -= 1;
+          if (remain <= 0) {
+            clearInterval(sendTimer);
+            sendTimer = null;
+            sendBtn.disabled = false;
+            sendBtn.textContent = '发送验证码';
+            return;
+          }
+          sendBtn.textContent = '重新发送（' + remain + 's）';
+        }, 1000);
+
         if (codeInput) codeInput.focus();
       } else {
         showError((resp && resp.error_message) || '发送验证码失败');
+        sendBtn.disabled = false;
       }
     }).catch(function () {
       showError('发送验证码失败，请稍后重试');
+      if (sendTimer) {
+        clearInterval(sendTimer);
+        sendTimer = null;
+      }
+      if (sendBtn) {
+        sendBtn.disabled = false;
+        sendBtn.textContent = '发送验证码';
+      }
     });
   }
 
   function resetPassword() {
-    var username = (usernameInput && usernameInput.value || '').trim();
     var email = (emailInput && emailInput.value || '').trim();
     var code = (codeInput && codeInput.value || '').trim();
     var newPwd = (newPwdInput && newPwdInput.value || '').trim();
 
-    if (!username || !email || !code || !newPwd) {
+    if (!email || !code || !newPwd) {
       showError('请完整填写所有字段');
       return;
     }
@@ -70,15 +101,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     submitBtn.disabled = true;
     postJson('/api/forgot/reset', {
-      username: username,
       email: email,
       verification_code: code,
       new_password: newPwd
     }).then(function (resp) {
       submitBtn.disabled = false;
       if (resp && resp.success) {
-        alert('密码重置成功，请使用新密码登录');
-        window.location.href = '/login';
+        // 成功提示使用非红色样式，然后跳转登录页
+        if (errorEl) {
+          errorEl.style.color = '#0a7c2f'; // 绿色提示
+        }
+        showError('密码重置成功，请使用新密码登录');
+        setTimeout(function () {
+          window.location.href = '/login';
+        }, 1500);
       } else {
         showError((resp && resp.error_message) || '重置密码失败');
       }
@@ -126,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // 在用户名或邮箱输入框上双击快速发送验证码（开发调试方便）
-  [usernameInput, emailInput].forEach(function (el) {
+  [emailInput].forEach(function (el) {
     if (!el) return;
     el.addEventListener('dblclick', function () {
       sendCode();
