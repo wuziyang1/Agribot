@@ -71,14 +71,22 @@
           <!-- 底部卡片：输入框与发送按钮（引用文档已移至每条模型回答下方） -->
           <div class="chat-footer-card">
             <div class="input-area">
-              <div class="input-row">
+              <input type="file" id="upload-doc-input" accept=".pdf,.doc,.docx,.txt,.md" multiple style="display: none" />
+              <div class="input-row input-row-text">
                 <textarea
                   id="input"
                   placeholder="请输入你的问题，例如：知识库里的某个合同有哪些关键条款？"
                 ></textarea>
-                <button id="rag-toggle-btn" type="button" class="rag-toggle on" title="使用知识库检索（当前：开）。点击切换">
-                  <span id="rag-toggle-label">知识库</span>
-                </button>
+              </div>
+              <div class="input-row input-row-buttons">
+                <div class="input-row-buttons-left">
+                  <button id="upload-doc-btn" type="button" class="upload-doc-btn" title="上传文档到知识库">
+                    <span id="upload-doc-label">上传文档</span>
+                  </button>
+                  <button id="rag-toggle-btn" type="button" class="rag-toggle on" title="使用知识库检索（当前：开）。点击切换">
+                    <span id="rag-toggle-label">知识库</span>
+                  </button>
+                </div>
                 <button id="send-btn" type="button">
                   <span id="send-label">➤</span>
                 </button>

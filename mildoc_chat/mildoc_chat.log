@@ -7897,3 +7897,400 @@ werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'forgot
 2026-03-06 12:45:34,553 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
 2026-03-06 12:45:35,761 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
 2026-03-06 12:45:43,404 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 12:45:43] "POST /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 13:10:39,454 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:10:39,454 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:10:39,454 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:10:39,455 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:10:39,455 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:10:41,132 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:41] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-06 13:10:41,161 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:41] "GET /login HTTP/1.1" 200 -
+2026-03-06 13:10:41,352 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:41] "GET /static/css/login.css?v=3 HTTP/1.1" 200 -
+2026-03-06 13:10:41,601 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:41] "GET /static/js/login.js HTTP/1.1" 200 -
+2026-03-06 13:10:42,033 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:42] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-06 13:10:42,576 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:42] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-06 13:10:42,876 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:42] "GET / HTTP/1.1" 200 -
+2026-03-06 13:10:43,338 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:43] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 13:10:43,356 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:43] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-06 13:10:43,587 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:43] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:10:43,868 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:43] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:10:44,003 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:44] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:10:44,330 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:10:44] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:13:25,443 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:13:25,443 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:13:25,443 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:13:25,444 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:13:25,445 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:13:26,846 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:13:26] "GET / HTTP/1.1" 200 -
+2026-03-06 13:13:26,903 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:13:26] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-06 13:13:27,113 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:13:27] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 13:13:27,522 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:13:27] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:13:27,833 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:13:27] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:13:27,963 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:13:27] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:13:28,387 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:13:28] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:14:14,158 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:14:14,158 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:14:14,158 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:14:14,159 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:14:14,159 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:14:15,980 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:14:15] "GET / HTTP/1.1" 200 -
+2026-03-06 13:14:16,047 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:14:16] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 13:14:16,259 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:14:16] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-06 13:14:16,686 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:14:16] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:14:17,003 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:14:17] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:14:17,149 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:14:17] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:14:17,603 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:14:17] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:15:27,511 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:15:27,511 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:15:27,511 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:15:27,512 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:15:27,513 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:15:29,966 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:15:29] "GET / HTTP/1.1" 200 -
+2026-03-06 13:15:30,013 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:15:30] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-06 13:15:30,209 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:15:30] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-06 13:15:30,645 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:15:30] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:15:30,946 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:15:30] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:15:31,074 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:15:31] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:15:31,509 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:15:31] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:17:26,144 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:17:26,144 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:17:26,144 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:17:26,146 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:17:26,146 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:17:28,132 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:17:28] "GET / HTTP/1.1" 200 -
+2026-03-06 13:17:28,178 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:17:28] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-06 13:17:28,382 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:17:28] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 13:17:28,805 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:17:28] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:17:29,135 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:17:29] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:17:29,274 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:17:29] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:17:29,723 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:17:29] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:17:37,840 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:17:37] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 13:17:38,192 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:17:38] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-06 13:18:52,675 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:18:52,675 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:18:52,675 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:18:52,677 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:18:52,677 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:18:54,134 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:18:54] "GET / HTTP/1.1" 200 -
+2026-03-06 13:18:54,196 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:18:54] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-06 13:18:54,363 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:18:54] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-06 13:18:54,777 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:18:54] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:18:55,091 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:18:55] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:18:55,222 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:18:55] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:18:55,667 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:18:55] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:19:26,505 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:19:26,505 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:19:26,505 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:19:26,506 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:19:26,507 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:19:28,457 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:19:28] "GET / HTTP/1.1" 200 -
+2026-03-06 13:19:28,524 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:19:28] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-06 13:19:28,680 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:19:28] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-06 13:19:29,092 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:19:29] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:19:29,407 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:19:29] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:19:29,523 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:19:29] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:19:29,940 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:19:29] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:21:02,243 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:21:02,243 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:21:02,243 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:21:02,244 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:21:02,245 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:21:03,900 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:21:03] "GET / HTTP/1.1" 200 -
+2026-03-06 13:21:03,940 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:21:03] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-06 13:21:04,160 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:21:04] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-06 13:21:04,570 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:21:04] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:21:04,887 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:21:04] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:21:05,001 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:21:05] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:21:05,400 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:21:05] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:26:24,276 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:26:24,276 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:26:24,276 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:26:24,278 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:26:24,278 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:26:27,935 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:26:27] "GET / HTTP/1.1" 200 -
+2026-03-06 13:26:27,990 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:26:27] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 13:26:28,210 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:26:28] "GET /static/css/chat.css HTTP/1.1" 200 -
+2026-03-06 13:26:28,643 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:26:28] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:26:28,707 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:26:28] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-06 13:26:28,920 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:26:28] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:26:29,068 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:26:29] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:26:29,379 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:26:29] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:29:44,826 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:29:44,826 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:29:44,826 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:29:44,828 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:29:44,828 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:29:46,443 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:29:46] "GET / HTTP/1.1" 200 -
+2026-03-06 13:29:46,496 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:29:46] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 13:29:46,702 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:29:46] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 13:29:47,118 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:29:47] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:29:47,447 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:29:47] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:29:47,553 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:29:47] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:29:47,992 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:29:47] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:29:56,271 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:29:56] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 13:29:56,635 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:29:56] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-06 13:30:41,543 - werkzeug - INFO - 185.247.137.122 - - [06/Mar/2026 13:30:41] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-06 13:31:00,569 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:31:00,570 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:31:00,570 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:31:00,571 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:31:00,571 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:31:02,055 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:31:02] "GET / HTTP/1.1" 200 -
+2026-03-06 13:31:02,117 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:31:02] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 13:31:02,326 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:31:02] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 13:31:02,732 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:31:02] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:31:03,037 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:31:03] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:31:03,139 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:31:03] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:31:03,616 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:31:03] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:31:09,170 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:31:09] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 13:31:09,528 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:31:09] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-06 13:34:21,302 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:34:21,303 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:34:21,303 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:34:21,304 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:34:21,305 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:34:23,097 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:34:23] "GET / HTTP/1.1" 200 -
+2026-03-06 13:34:23,144 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:34:23] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 13:34:23,524 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:34:23] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-06 13:34:38,448 - __main__ - WARNING - vendor marked fetch failed: <urlopen error timed out>
+2026-03-06 13:34:38,449 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:34:38] "[35m[1mGET /vendor/marked.min.js HTTP/1.1[0m" 502 -
+2026-03-06 13:34:38,540 - __main__ - WARNING - vendor mathjax fetch failed: <urlopen error timed out>
+2026-03-06 13:34:38,541 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:34:38] "[35m[1mGET /vendor/tex-mml-chtml.js HTTP/1.1[0m" 502 -
+2026-03-06 13:34:38,917 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:34:38] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:34:39,345 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:34:39] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:34:39,651 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:34:39] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:34:39,811 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:34:39] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:35:07,084 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:35:07,084 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:35:07,084 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:35:07,085 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:35:07,086 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:35:08,429 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:35:08] "GET / HTTP/1.1" 200 -
+2026-03-06 13:35:08,476 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:35:08] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 13:35:08,660 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:35:08] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 13:35:09,071 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:35:09] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:35:09,410 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:35:09] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:35:09,496 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:35:09] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:35:09,929 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:35:09] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 13:37:36,288 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 13:37:36,288 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 13:37:36,288 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 13:37:36,290 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 13:37:36,290 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 13:37:37,867 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:37:37] "GET / HTTP/1.1" 200 -
+2026-03-06 13:37:37,913 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:37:37] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 13:37:38,121 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:37:38] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 13:37:38,535 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:37:38] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:37:38,850 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:37:38] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 13:37:38,985 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:37:38] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 13:37:39,320 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 13:37:39] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 16:23:00,313 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 16:23:00,314 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 16:23:00,314 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 16:23:00,315 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 16:23:00,315 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 16:23:02,232 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:02] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-06 16:23:02,261 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:02] "GET /login HTTP/1.1" 200 -
+2026-03-06 16:23:02,687 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:02] "GET /static/css/login.css?v=3 HTTP/1.1" 200 -
+2026-03-06 16:23:02,696 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:02] "GET /static/js/login.js HTTP/1.1" 200 -
+2026-03-06 16:23:03,144 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:03] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-06 16:23:04,146 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:04] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-06 16:23:04,390 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:04] "GET / HTTP/1.1" 200 -
+2026-03-06 16:23:04,813 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:04] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 16:23:04,824 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:04] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 16:23:05,146 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:05] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:23:05,298 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:05] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 16:23:05,706 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:05] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:23:06,014 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:06] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 16:23:09,699 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:09] "POST /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 16:23:10,592 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-06 16:23:10,596 - mildoc_chat.rag.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-06 16:23:10,596 - mildoc_chat.rag.rag_service - INFO - 向量维度: 768
+2026-03-06 16:23:10,616 - mildoc_chat.rag.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-06 16:23:10,709 - mildoc_chat.rag.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection (uri=http://127.0.0.1:19530 db=mildoc rows=232)
+2026-03-06 16:23:10,709 - mildoc_chat.rag.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=qwen3-rerank, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-06 16:23:10,709 - mildoc_chat.rag.rag_service - INFO - 重排序服务初始化成功
+2026-03-06 16:23:10,709 - mildoc_chat.rag.rag_service - INFO - RAG服务初始化完成
+2026-03-06 16:23:10,709 - mildoc_chat.rag.rag_service - INFO - RAG服务实例创建成功
+2026-03-06 16:23:10,709 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:10] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-06 16:23:10,833 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-06 16:23:12,020 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 16:23:14,551 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:23:14] "POST /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 16:32:23,073 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 16:32:23,073 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 16:32:23,073 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 16:32:23,074 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 16:32:23,074 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 16:32:24,954 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:24] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-06 16:32:24,979 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:24] "GET /login HTTP/1.1" 200 -
+2026-03-06 16:32:25,178 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:25] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-06 16:32:25,406 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:25] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-06 16:32:27,370 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:27] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-06 16:32:27,400 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:27] "GET / HTTP/1.1" 200 -
+2026-03-06 16:32:27,477 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:27] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 16:32:27,815 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:27] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 16:32:28,258 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:28] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:32:28,556 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:28] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 16:32:28,711 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:28] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:32:28,968 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:28] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 16:32:35,098 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:35] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 16:32:35,459 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:32:35] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-06 16:36:52,934 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 16:36:52,934 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 16:36:52,934 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 16:36:52,936 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 16:36:52,936 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 16:36:54,668 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:36:54] "GET / HTTP/1.1" 200 -
+2026-03-06 16:36:54,732 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:36:54] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 16:36:55,128 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:36:55] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-06 16:37:00,580 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:00] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-06 16:37:14,978 - __main__ - WARNING - vendor fetch https://cdn.jsdelivr.net/npm/marked/marked.min.js failed: <urlopen error timed out>
+2026-03-06 16:37:14,979 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:14] "GET /vendor/marked.min.js HTTP/1.1" 200 -
+2026-03-06 16:37:15,124 - __main__ - WARNING - vendor fetch https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml failed: <urlopen error timed out>
+2026-03-06 16:37:15,125 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:15] "GET /vendor/tex-mml-chtml.js HTTP/1.1" 200 -
+2026-03-06 16:37:15,399 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:15] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:37:15,822 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:15] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 16:37:16,078 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:16] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:37:16,231 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:16] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 16:37:20,215 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:20] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 16:37:20,620 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:20] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:37:20,886 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:20] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 16:37:21,030 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:21] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 16:37:21,180 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:21] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:37:21,620 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:21] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 16:37:21,626 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:21] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 16:37:22,029 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:22] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:37:22,435 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:22] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 16:37:23,597 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:37:23] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-06 16:42:58,285 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 16:42:58,285 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 16:42:58,285 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 16:42:58,286 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 16:42:58,286 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 16:43:00,709 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:43:00] "GET / HTTP/1.1" 200 -
+2026-03-06 16:43:00,747 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:43:00] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 16:43:01,111 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:43:01] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 16:43:07,968 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:43:07] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-06 16:43:20,960 - __main__ - WARNING - vendor fetch https://cdn.jsdelivr.net/npm/marked/marked.min.js failed: <urlopen error timed out>
+2026-03-06 16:43:20,960 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:43:20] "GET /vendor/marked.min.js HTTP/1.1" 200 -
+2026-03-06 16:43:21,144 - __main__ - WARNING - vendor fetch https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml failed: <urlopen error timed out>
+2026-03-06 16:43:21,145 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:43:21] "GET /vendor/tex-mml-chtml.js HTTP/1.1" 200 -
+2026-03-06 16:43:21,394 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:43:21] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:43:21,838 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:43:21] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 16:43:22,081 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:43:22] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:43:22,261 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:43:22] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 16:58:09,327 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 16:58:09,328 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 16:58:09,328 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 16:58:09,329 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 16:58:09,329 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 16:58:10,776 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:58:10] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-06 16:58:10,812 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:58:10] "GET /login HTTP/1.1" 200 -
+2026-03-06 16:58:11,035 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:58:11] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-06 16:58:11,280 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:58:11] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-06 16:58:11,671 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:58:11] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-06 16:58:12,370 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:58:12] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-06 16:58:12,619 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:58:12] "GET / HTTP/1.1" 200 -
+2026-03-06 16:58:13,061 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:58:13] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 16:58:13,069 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:58:13] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 16:58:20,205 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:58:20] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-03-06 16:58:35,827 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 16:58:35,827 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 16:58:35,827 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 16:58:35,829 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 16:58:35,829 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 16:58:58,438 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 16:58:58,438 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 16:58:58,438 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 16:58:58,440 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 16:58:58,440 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 16:59:02,385 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:02] "GET / HTTP/1.1" 200 -
+2026-03-06 16:59:02,822 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:02] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 16:59:02,832 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:02] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 16:59:04,245 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:04] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:59:04,502 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:04] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 16:59:04,648 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:04] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:59:04,910 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:04] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 16:59:12,555 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 16:59:12,555 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 16:59:12,555 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 16:59:12,557 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 16:59:12,557 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 16:59:14,279 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:14] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-06 16:59:14,314 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:14] "GET /login HTTP/1.1" 200 -
+2026-03-06 16:59:14,514 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:14] "[36mGET /static/css/login.css?v=3 HTTP/1.1[0m" 304 -
+2026-03-06 16:59:14,745 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:14] "[36mGET /static/js/login.js HTTP/1.1[0m" 304 -
+2026-03-06 16:59:15,128 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:15] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-06 16:59:15,699 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:15] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-06 16:59:15,923 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:15] "GET / HTTP/1.1" 200 -
+2026-03-06 16:59:16,353 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:16] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-06 16:59:16,363 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:16] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 16:59:16,623 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:16] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:59:16,887 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:16] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 16:59:17,038 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:17] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 16:59:17,301 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:17] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
