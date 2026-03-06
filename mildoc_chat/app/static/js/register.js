@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var sendBtn = document.getElementById('send-code-btn');
   var form = document.getElementById('register-form');
 
-  if (emailInput) {
-    emailInput.focus();
+  if (usernameInput) {
+    usernameInput.focus();
   }
 
   function postJson(url, data) {

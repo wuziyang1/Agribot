@@ -30,7 +30,7 @@ from mildoc_chat.routers.database import (
     list_messages,
     list_sessions,
     set_active_session,
-    soft_delete_session,
+    delete_session,
     update_session_title,
     update_user_profile,
 )
@@ -246,7 +246,7 @@ def api_sessions_delete(session_id: str):
     _, user = _current_user()
     if not user:
         return jsonify({"success": False, "error_message": "请先登录"}), 401
-    ok = soft_delete_session(user_id=int(user["id"]), session_id=session_id)
+    ok = delete_session(user_id=int(user["id"]), session_id=session_id)
     return jsonify({"success": ok})
 
 
@@ -292,6 +292,21 @@ def api_ask():
     question = (payload.get("question") or "").strip()
     use_rerank = bool(payload.get("use_rerank", True))
     use_rag = bool(payload.get("use_rag", True))
+    session_id = (payload.get("session_id") or "").strip() or None
+
+    chat_history = []
+    if session_id:
+        _, user = _current_user()
+        if user:
+            try:
+                rows = list_messages(user_id=int(user["id"]), session_id=session_id)
+                for m in rows:
+                    role = (m.get("role") or "").strip().lower()
+                    content = (m.get("content") or "").strip()
+                    if role in ("user", "assistant", "system") and content:
+                        chat_history.append({"role": role if role != "system" else "assistant", "content": content})
+            except Exception:  # noqa: BLE001
+                pass
 
     if not question:
         return jsonify(
@@ -319,7 +334,7 @@ def api_ask():
         )
 
     try:
-        resp = rag.query_service(question, use_rerank=use_rerank, use_rag=use_rag)
+        resp = rag.query_service(question, use_rerank=use_rerank, use_rag=use_rag, chat_history=chat_history)
     except Exception as e:
         logger.exception("query_service failed")
         return jsonify(
@@ -349,6 +364,22 @@ def api_ask_stream():
     question = (payload.get("question") or "").strip()
     use_rerank = bool(payload.get("use_rerank", True))
     use_rag = bool(payload.get("use_rag", True))
+    session_id = (payload.get("session_id") or "").strip() or None
+
+    # 若提供 session_id 且已登录，则加载该会话的历史消息供模型参考
+    chat_history: list = []
+    if session_id:
+        _, user = _current_user()
+        if user:
+            try:
+                rows = list_messages(user_id=int(user["id"]), session_id=session_id)
+                for m in rows:
+                    role = (m.get("role") or "").strip().lower()
+                    content = (m.get("content") or "").strip()
+                    if role in ("user", "assistant", "system") and content:
+                        chat_history.append({"role": role if role != "system" else "assistant", "content": content})
+            except Exception:  # noqa: BLE001
+                pass
 
     if not question:
         error_obj = {
@@ -382,8 +413,8 @@ def api_ask_stream():
             return
 
         try:
-            # 直接使用 RAGService 自带的 token 级流式接口
-            for event in rag.stream_query(question, use_rerank=use_rerank, use_rag=use_rag):
+            # 直接使用 RAGService 自带的 token 级流式接口（传入会话历史）
+            for event in rag.stream_query(question, use_rerank=use_rerank, use_rag=use_rag, chat_history=chat_history):
                 yield json.dumps(event, ensure_ascii=False) + "\n"
         except Exception as e:  # noqa: BLE001
             logger.exception("stream_query failed")

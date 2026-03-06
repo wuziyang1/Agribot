@@ -75,23 +75,47 @@ class RAGService:
     请只返回场景类型对应的数字（1-6）：
     """
     
-    # 统一的提示词模板 - 通用知识库问答版本
+    # 统一的提示词模板 - 通用知识库问答版本（支持对话历史）
     PROMPT_TEMPLATE = """
     你是一个基于企业文档知识库的问答助手，优先利用检索到的文档内容来回答用户问题，但在知识库没有覆盖时可以结合通用常识进行补充说明。
 
     知识库内容（可能来自多个文档片段，可能为空或不相关）:
     {context}
 
-    用户问题: {question}
+    以下是本对话的近期历史（请结合历史理解并回答当前问题）:
+    {chat_history}
+
+    当前用户问题: {question}
 
     回答要求：
         1. 当上方“知识库内容”中存在与问题明显相关的信息时，应以这些内容为主进行回答，对关键信息做整理、概括和重组。
         2. 当知识库中的信息只覆盖了问题的一部分时，先基于已有内容回答“已知部分”，然后可以适度结合通用经验补充，但不要与知识库中已有结论相矛盾。
         3. 当知识库内容与问题几乎无关或基本为空时，可以直接基于通用知识/常识完整回答用户问题，此时不必刻意强调“知识库里查不到”，但也不要虚构具体文档中才会出现的细节（如具体公司名称、条款编号等）。
-        4. 回答使用自然流畅的中文，语言简洁、逻辑清晰，可以合理使用 Markdown 语法（如标题、列表、加粗、代码块等）提升可读性。
+        4. 若有近期对话历史，请结合历史上下文理解当前问题，保持回答连贯、不重复已说明过的内容。
+        5. 回答使用自然流畅的中文，语言简洁、逻辑清晰，可以合理使用 Markdown 语法（如标题、列表、加粗、代码块等）提升可读性。
 
     请基于以上要求，使用 Markdown 格式给出对用户问题的最终回答：
     """
+
+    # 对话历史最多保留条数（避免 prompt 过长）
+    CHAT_HISTORY_MAX_MESSAGES = 10
+
+    def _format_chat_history(self, chat_history: Optional[List[Dict[str, str]]] = None) -> str:
+        """将对话历史格式化为 prompt 中的一段文字。"""
+        if not chat_history:
+            return "（无近期历史）"
+        lines = []
+        # 只取最近 N 条，避免超出上下文
+        for msg in chat_history[-self.CHAT_HISTORY_MAX_MESSAGES :]:
+            role = (msg.get("role") or "").strip().lower()
+            content = (msg.get("content") or "").strip()
+            if not content:
+                continue
+            if role == "user":
+                lines.append("用户：" + content)
+            else:
+                lines.append("助手：" + content)
+        return "\n".join(lines) if lines else "（无近期历史）"
     
     def __init__(self):
         """初始化RAG服务"""
@@ -260,16 +284,14 @@ class RAGService:
             logger.warning(f"重排序服务初始化失败: {e}")
             self.rerank_service = None
 
-    def query_service(self, query: str, use_rerank: bool = True, use_rag: bool = True) -> RAGResponse:
+    def query_service(self, query: str, use_rerank: bool = True, use_rag: bool = True, chat_history: Optional[List[Dict[str, str]]] = None) -> RAGResponse:
         """核心查询服务方法
-        
+
         Args:
             query: 用户输入的查询内容
             use_rerank: 是否使用重排序功能
             use_rag: 是否使用知识库检索（为 False 时不查库，仅用 LLM 回答）
-            
-        Returns:
-            RAGResponse: 包含回答内容、源文档和token使用情况的响应对象
+            chat_history: 本会话的近期对话历史 [{"role":"user"|"assistant","content":"..."}, ...]，可选
         """
         try:
             logger.info(f"🔍 开始处理查询（use_rag={use_rag}, rerank={use_rerank}): {query}")
@@ -408,9 +430,8 @@ class RAGService:
             with get_openai_callback() as cb:  ## 在上下文中获取 OpenAI 回调处理器，方便地公开令牌和成本信息
                 # 构建上下文
                 context = "\n\n".join([doc.page_content for doc in final_docs])
-                
-                # 使用统一的提示模板生成回答
-                prompt = self.PROMPT_TEMPLATE.format(context=context, question=query)
+                chat_history_str = self._format_chat_history(chat_history)
+                prompt = self.PROMPT_TEMPLATE.format(context=context, chat_history=chat_history_str, question=query)
                 answer = self.llm.invoke(prompt).content
             
             # 更新文档引用为最终选择的文档
@@ -481,14 +502,10 @@ class RAGService:
                 scene_info=None
             )
 
-    def stream_query(self, query: str, use_rerank: bool = True, use_rag: bool = True) -> Iterable[Dict[str, Any]]:
+    def stream_query(self, query: str, use_rerank: bool = True, use_rag: bool = True, chat_history: Optional[List[Dict[str, str]]] = None) -> Iterable[Dict[str, Any]]:
         """真正的流式输出（token 级别），逐条 yield 事件字典。
 
-        事件格式：
-          - {"type": "start"}
-          - {"type": "chunk", "data": {"content": "<token>"}}
-          - {"type": "end", "data": <RAGResponse dict>}
-          - {"type": "error", "data": <RAGResponse dict>}
+        支持传入 chat_history 使模型结合同一会话的历史对话回答。
         """
         # 兼容不同 LangChain 版本的回调基类路径
         try:  # pragma: no cover
@@ -653,7 +670,8 @@ class RAGService:
 
         # 第三步：流式生成回答
         context = "\n\n".join([doc.page_content for doc in final_docs])
-        prompt = self.PROMPT_TEMPLATE.format(context=context, question=query)
+        chat_history_str = self._format_chat_history(chat_history)
+        prompt = self.PROMPT_TEMPLATE.format(context=context, chat_history=chat_history_str, question=query)
 
         _STOP = object()
         token_q: "queue.Queue[object]" = queue.Queue()

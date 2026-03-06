@@ -163,9 +163,6 @@ def reset_password(email: str, verification_code: str, new_password: str) -> Dic
     if not email or not verification_code or not new_password:
         return {"success": False, "error_message": "邮箱、验证码和新密码均不能为空"}
 
-    if len(new_password) < 6:
-        return {"success": False, "error_message": "新密码长度至少为 6 位"}
-
     user = get_user_by_email(email)
     if not user:
         return {"success": False, "error_message": "该邮箱未绑定任何用户"}

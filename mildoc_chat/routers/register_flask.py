@@ -34,8 +34,8 @@ def validate_username(username: str) -> Optional[str]:
 
 def validate_password(password: str) -> Optional[str]:
     p = (password or "").strip()
-    if len(p) < 6:
-        return "密码至少 6 位"
+    if not p:
+        return "密码不能为空"
     return None
 
 

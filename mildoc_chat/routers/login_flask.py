@@ -20,10 +20,6 @@ logger = logging.getLogger(__name__)
 
 login_bp = Blueprint("mildoc_chat_login", __name__)
 
-# 兼容旧的环境变量账号（可选）
-CHAT_USERNAME = os.getenv("CHAT_USERNAME")
-CHAT_PASSWORD = os.getenv("CHAT_PASSWORD")
-
 
 @login_bp.get("/login")
 def login():
@@ -90,10 +86,6 @@ def login_post():
             session["chat_username"] = user.get("username") or identifier
             return redirect(url_for("index"))
         return render_template("login.html", error_message="账号或密码错误", last_username=identifier)
-
-    if CHAT_USERNAME and CHAT_PASSWORD and identifier == CHAT_USERNAME and password == CHAT_PASSWORD:
-        session["chat_username"] = identifier
-        return redirect(url_for("index"))
 
     return render_template("login.html", error_message="账号或密码错误", last_username=identifier)
 

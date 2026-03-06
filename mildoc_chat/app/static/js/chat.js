@@ -337,7 +337,12 @@ async function sendQuestion() {
     const resp = await fetch('/api/ask_stream', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: text, use_rerank: true, use_rag: useRag })
+      body: JSON.stringify({
+        question: text,
+        use_rerank: true,
+        use_rag: useRag,
+        session_id: activeSessionId || undefined
+      })
     });
 
     if (!resp.ok || !resp.body) {
