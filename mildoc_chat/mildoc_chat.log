@@ -8294,3 +8294,86 @@ werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'forgot
 2026-03-06 16:59:16,887 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:16] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
 2026-03-06 16:59:17,038 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:17] "GET /api/sessions HTTP/1.1" 200 -
 2026-03-06 16:59:17,301 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 16:59:17] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 18:33:30,257 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 18:33:30,259 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 18:33:30,259 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 18:33:30,260 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 18:33:30,260 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 18:33:54,530 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 18:33:54,531 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 18:33:54,531 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 18:33:56,515 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:33:56] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-06 18:33:56,542 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:33:56] "GET /login HTTP/1.1" 200 -
+2026-03-06 18:33:56,763 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:33:56] "GET /static/css/login.css?v=3 HTTP/1.1" 200 -
+2026-03-06 18:33:56,974 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:33:56] "GET /static/js/login.js HTTP/1.1" 200 -
+2026-03-06 18:33:57,395 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:33:57] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-06 18:33:59,075 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:33:59] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-06 18:33:59,296 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:33:59] "GET / HTTP/1.1" 200 -
+2026-03-06 18:33:59,751 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:33:59] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 18:33:59,765 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:33:59] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 18:34:00,053 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:34:00] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 18:34:00,269 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:34:00] "PATCH /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745 HTTP/1.1" 200 -
+2026-03-06 18:34:00,499 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:34:00] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 18:34:00,725 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 18:34:00] "GET /api/sessions/7a371eb0-3bcc-4c2f-9a97-1cdd132db745/messages HTTP/1.1" 200 -
+2026-03-06 21:16:20,799 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 21:16:20,800 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 21:16:20,800 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 21:16:20,802 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 21:16:20,802 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 21:16:22,308 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:22] "[32mGET / HTTP/1.1[0m" 302 -
+2026-03-06 21:16:22,344 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:22] "GET /login HTTP/1.1" 200 -
+2026-03-06 21:16:22,556 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:22] "GET /static/css/login.css?v=3 HTTP/1.1" 200 -
+2026-03-06 21:16:22,770 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:22] "GET /static/js/login.js HTTP/1.1" 200 -
+2026-03-06 21:16:23,206 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:23] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-06 21:16:23,808 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:23] "[32mPOST /login HTTP/1.1[0m" 302 -
+2026-03-06 21:16:24,105 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:24] "GET / HTTP/1.1" 200 -
+2026-03-06 21:16:24,570 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:24] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 21:16:24,585 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:24] "GET /static/js/chat.js HTTP/1.1" 200 -
+2026-03-06 21:16:24,852 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:24] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 21:16:25,086 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:25] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 21:16:25,282 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:25] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 21:16:25,521 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:25] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 21:16:32,348 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:32] "POST /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 21:16:33,251 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-06 21:16:33,255 - mildoc_chat.rag.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-06 21:16:33,255 - mildoc_chat.rag.rag_service - INFO - 向量维度: 768
+2026-03-06 21:16:33,275 - mildoc_chat.rag.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-06 21:16:43,415 - mildoc_chat.rag.rag_service - ERROR - Milvus向量存储初始化失败: <MilvusException: (code=2, message=Fail connecting to server on 127.0.0.1:19530, illegal connection params or server unavailable)>
+2026-03-06 21:16:43,415 - mildoc_chat.rag.rag_service - ERROR - RAG服务初始化失败: <MilvusException: (code=2, message=Fail connecting to server on 127.0.0.1:19530, illegal connection params or server unavailable)>
+2026-03-06 21:16:43,415 - mildoc_chat.rag.rag_service - ERROR - RAG服务实例创建失败: <MilvusException: (code=2, message=Fail connecting to server on 127.0.0.1:19530, illegal connection params or server unavailable)>
+2026-03-06 21:16:43,415 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:16:43] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-06 21:18:16,251 - __main__ - INFO - Mildoc Chat Starting...
+2026-03-06 21:18:16,251 - __main__ - INFO - listen: http://0.0.0.0:8890
+2026-03-06 21:18:16,251 - __main__ - INFO - milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+2026-03-06 21:18:16,252 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+2026-03-06 21:18:16,252 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-06 21:18:17,694 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:18:17] "GET / HTTP/1.1" 200 -
+2026-03-06 21:18:17,761 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:18:17] "[36mGET /static/css/chat.css HTTP/1.1[0m" 304 -
+2026-03-06 21:18:17,960 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:18:17] "[36mGET /static/js/chat.js HTTP/1.1[0m" 304 -
+2026-03-06 21:18:18,379 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:18:18] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 21:18:18,693 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:18:18] "PATCH /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657 HTTP/1.1" 200 -
+2026-03-06 21:18:18,795 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:18:18] "GET /api/sessions HTTP/1.1" 200 -
+2026-03-06 21:18:19,266 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:18:19] "GET /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 21:18:25,345 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:18:25] "POST /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -
+2026-03-06 21:18:26,126 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-06 21:18:26,130 - mildoc_chat.rag.rag_service - INFO - 嵌入模型初始化成功: text-embedding-v4
+2026-03-06 21:18:26,130 - mildoc_chat.rag.rag_service - INFO - 向量维度: 768
+2026-03-06 21:18:26,149 - mildoc_chat.rag.rag_service - INFO - 大语言模型初始化成功: qwen-plus
+2026-03-06 21:18:26,168 - mildoc_chat.rag.rag_service - INFO - Milvus向量存储初始化成功: mildoc_collection (uri=http://127.0.0.1:19530 db=mildoc rows=232)
+2026-03-06 21:18:26,168 - mildoc_chat.rag.rerank_service - INFO - 重排序服务初始化完成: provider=dashscope, model=qwen3-rerank, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+2026-03-06 21:18:26,168 - mildoc_chat.rag.rag_service - INFO - 重排序服务初始化成功
+2026-03-06 21:18:26,169 - mildoc_chat.rag.rag_service - INFO - RAG服务初始化完成
+2026-03-06 21:18:26,169 - mildoc_chat.rag.rag_service - INFO - RAG服务实例创建成功
+2026-03-06 21:18:26,169 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:18:26] "POST /api/ask_stream HTTP/1.1" 200 -
+2026-03-06 21:18:26,382 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+2026-03-06 21:18:27,183 - httpx - INFO - HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-06 21:18:38,334 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2026 21:18:38] "POST /api/sessions/98cf72ad-a664-4161-9e08-feb2b68c3657/messages HTTP/1.1" 200 -

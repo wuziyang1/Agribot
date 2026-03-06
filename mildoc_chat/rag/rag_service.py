@@ -1,11 +1,8 @@
 """
-RAG服务工具类 (基于LangChain实现)
+RAG服务工具类
 
 使用LangChain + Milvus实现RAG服务
 从Milvus向量数据库检索相关文档并通过大模型生成回答
-
-作者：开发工程师
-日期：2025年01月
 """
 
 '''这个才是llm rag，这个才是真正的rag核心'''
@@ -15,7 +12,7 @@ import threading
 from typing import Iterable, List, Optional, Dict, Any
 
 from pydantic import BaseModel
-from pymilvus import MilvusClient  # 直接使用 pymilvus，避免 langchain-milvus 黑盒导致 0 结果
+from pymilvus import MilvusClient  
 from langchain_openai import ChatOpenAI
 from langchain_community.callbacks.manager import get_openai_callback
 
@@ -25,6 +22,9 @@ from mildoc_chat.rag.rerank_service import get_rerank_service
 # 配置日志
 logger = logging.getLogger(__name__)
 
+#=======================================================
+#数据标准化定义
+#=======================================================
 
 class SourceDocument(BaseModel):
     """源文档信息模型"""
@@ -53,10 +53,9 @@ class RAGResponse(BaseModel):
 
 
 class RAGService:
-    """RAG服务类 (基于LangChain实现)
-    
-    使用LangChain + Milvus向量数据库实现检索增强生成服务
-    支持OpenAI兼容的大模型和嵌入模型
+    """
+        RAG服务类
+        使用Milvus向量数据库实现检索增强生成服务，通过大模型生成回答
     """
     
     # 场景检测提示词模板
