@@ -1,0 +1,192 @@
+/* Mildoc Chat 个人主页 */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f4f4f5;
+  color: #111827;
+}
+
+.profile-root {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.profile-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+}
+
+.profile-header {
+  padding: 40px 32px;
+  text-align: center;
+  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-title {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.profile-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.profile-section {
+  padding: 24px 32px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.profile-section-title {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.profile-info {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.profile-info dt {
+  margin: 0;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.profile-info dd {
+  margin: 0 0 4px;
+  font-size: 15px;
+  color: #111827;
+}
+
+/* 可编辑项：悬停显示编辑图标 */
+.profile-editable {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 4px 0;
+  border-radius: 6px;
+  transition: background-color 0.15s;
+}
+
+.profile-editable:hover {
+  background: #f3f4f6;
+}
+
+.profile-editable-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-editable-icon {
+  opacity: 0;
+  font-size: 14px;
+  color: #6b7280;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.profile-editable:hover .profile-editable-icon {
+  opacity: 1;
+}
+
+.profile-editable-input {
+  display: none;
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  border: 1px solid #2563eb;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+}
+
+.profile-editable.editing .profile-editable-text,
+.profile-editable.editing .profile-editable-icon {
+  display: none;
+}
+
+.profile-editable.editing .profile-editable-input {
+  display: block;
+}
+
+.profile-editable.editing {
+  cursor: default;
+  background: transparent;
+}
+
+.profile-actions {
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn {
+  display: block;
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.15s, background-color 0.15s;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+.btn-outline:hover {
+  background: #f3f4f6;
+  color: #374151;
+}

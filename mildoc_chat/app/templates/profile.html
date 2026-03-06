@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="color-scheme" content="light" />
+  <title>个人主页 - Mildoc Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}" />
+</head>
+<body>
+  <div class="profile-root">
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar">{{ (username or 'M')[0]|upper }}</div>
+        <h1 class="profile-title">{{ username }}</h1>
+        <p class="profile-subtitle">Mildoc Chat 用户</p>
+      </div>
+
+      <div class="profile-section">
+        <h2 class="profile-section-title">账户信息</h2>
+        <dl class="profile-info">
+          <dt>用户名</dt>
+          <dd class="profile-editable" data-field="username" title="点击修改">
+            <span class="profile-editable-text">{{ username }}</span>
+            <span class="profile-editable-icon" aria-hidden="true">✎</span>
+            <input type="text" class="profile-editable-input" value="{{ username }}" maxlength="50" />
+          </dd>
+          <dt>邮箱</dt>
+          <dd class="profile-editable" data-field="email" title="点击修改">
+            <span class="profile-editable-text">{{ email or '未设置' }}</span>
+            <span class="profile-editable-icon" aria-hidden="true">✎</span>
+            <input type="email" class="profile-editable-input" value="{{ email or '' }}" placeholder="未设置" maxlength="100" />
+          </dd>
+          <dt>注册时间</dt>
+          <dd>{{ created_at }}</dd>
+        </dl>
+      </div>
+
+      <div class="profile-actions">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">返回聊天</a>
+        <a href="{{ url_for('mildoc_chat_login.logout') }}" class="btn btn-outline">退出登录</a>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+</body>
+</html>

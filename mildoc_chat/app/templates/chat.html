@@ -37,18 +37,20 @@
 
         <div class="nav-section">
           <div class="nav-section-title">你的聊天</div>
-          <div class="nav-item muted">这里会展示你的历史对话（仅样式示意）</div>
+          <div class="nav-sessions-list" id="nav-sessions-list">
+            <!-- session 列表由 JS 动态渲染 -->
+          </div>
         </div>
       </div>
 
       <div class="nav-bottom">
-        <div class="nav-user">
-          <div class="nav-user-avatar">M</div>
+        <a href="{{ url_for('profile') }}" class="nav-user" title="进入个人主页">
+          <div class="nav-user-avatar">{{ (username or 'M')[0]|upper }}</div>
           <div class="nav-user-info">
-            <div class="nav-user-name">Mildoc 用户</div>
-            <div class="nav-user-desc">企业知识库助手</div>
+            <div class="nav-user-name">{{ username }}</div>
+            <div class="nav-user-desc">点击进入个人主页</div>
           </div>
-        </div>
+        </a>
       </div>
     </aside>
     <button type="button" class="nav-sidebar-open-tab" title="展开侧边栏" aria-label="展开侧边栏"><span class="nav-sidebar-toggle-icon">☰</span></button>
