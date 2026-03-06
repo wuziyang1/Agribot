@@ -32,7 +32,9 @@ body {
 
 .app-root {
   display: flex;
+  height: 100vh;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 /* 左侧整体导航栏，模仿 ChatGPT 布局 */
@@ -40,7 +42,7 @@ body {
   width: 270px;
   flex-shrink: 0;
   background: #f9fafb;
-  padding: 12px 10px;
+  padding: 12px 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -49,12 +51,19 @@ body {
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
+  transition: width 0.2s ease, padding 0.2s ease;
 }
 
 .nav-top {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.nav-top .title {
+  margin-top: 10px;
+  margin-bottom: 14px;
 }
 
 .nav-new-chat {
@@ -170,7 +179,83 @@ body {
 .title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+}
+
+.title-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-sidebar-toggle {
+  flex-shrink: 0;
+  width: 24px;
+  height: 32px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #374151;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.nav-sidebar-toggle-icon {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.nav-sidebar-toggle:hover {
+  color: #111827;
+}
+
+/* 侧边栏收起状态：完全隐藏 */
+.nav-sidebar.collapsed {
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* 收起后贴在左侧的“展开”按钮 */
+.nav-sidebar-open-tab {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  width: 28px;
+  height: 56px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #374151;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.nav-sidebar-open-tab.visible {
+  display: flex;
+}
+
+.nav-sidebar-open-tab:hover {
+  color: #111827;
 }
 
 .logo-dot {
@@ -185,9 +270,10 @@ body {
 
 .title-text h1 {
   margin: 0;
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 600;
   letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
 .title-text span {
@@ -229,6 +315,7 @@ body {
 
 .layout {
   flex: 1;
+  min-height: 0;
   display: flex;
   gap: 20px;
   padding: 16px 120px 18px;
@@ -307,13 +394,17 @@ body {
 
 .chat-main {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
 .chat-footer-card {
+  flex-shrink: 0;
   margin-top: 8px;
+  margin-left: 80px;
+  margin-right: 80px;
   padding: 8px 20px 4px;
   border-radius: 18px;
   background: #ffffff;
@@ -328,6 +419,25 @@ body {
   overflow-y: auto;
   padding: 8px 52px 4px;
   background: #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .msg-row {
@@ -389,49 +499,209 @@ body {
 }
 
 .msg-bubble.bot {
-  /* 模型回答区域：不再使用独立气泡背景，直接展示 Markdown 内容 */
+  /* 模型回答区域：Markdown 内容排版美化 */
   background: transparent;
-  color: #111827;
+  color: #1f2937;
   border: none;
   border-radius: 0;
   padding: 0;
-  /* 使用正常换行，避免 Markdown HTML 与原始换行叠加导致大量空行 */
   white-space: normal;
+  font-size: 15px;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
 }
 
 .msg-bubble.bot.streaming {
   white-space: pre-wrap;
 }
 
+/* 标题层级 */
 .msg-bubble.bot h1,
 .msg-bubble.bot h2,
-.msg-bubble.bot h3 {
+.msg-bubble.bot h3,
+.msg-bubble.bot h4,
+.msg-bubble.bot h5,
+.msg-bubble.bot h6 {
   color: #111827;
-  margin: 0.6em 0 0.4em;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
 }
 
+.msg-bubble.bot h1:first-child,
+.msg-bubble.bot h2:first-child,
+.msg-bubble.bot h3:first-child,
+.msg-bubble.bot h4:first-child,
+.msg-bubble.bot h5:first-child,
+.msg-bubble.bot h6:first-child {
+  margin-top: 0;
+}
+
+.msg-bubble.bot h1 { font-size: 1.5em; font-weight: 700; padding-bottom: 0.3em; border-bottom: 1px solid #e5e7eb; }
+.msg-bubble.bot h2 { font-size: 1.3em; font-weight: 700; padding-bottom: 0.25em; border-bottom: 1px solid #e5e7eb; }
+.msg-bubble.bot h3 { font-size: 1.15em; }
+.msg-bubble.bot h4 { font-size: 1.05em; }
+.msg-bubble.bot h5 { font-size: 1em; color: #4b5563; }
+.msg-bubble.bot h6 { font-size: 0.95em; color: #6b7280; }
+
+/* 段落 */
 .msg-bubble.bot p {
-  margin: 0.4em 0;
+  margin: 0.6em 0;
 }
 
+.msg-bubble.bot p:first-child {
+  margin-top: 0;
+}
+
+.msg-bubble.bot p:last-child {
+  margin-bottom: 0;
+}
+
+/* 列表 */
+.msg-bubble.bot ul,
+.msg-bubble.bot ol {
+  margin: 0.6em 0;
+  padding-left: 1.6em;
+}
+
+.msg-bubble.bot li {
+  margin: 0.25em 0;
+}
+
+.msg-bubble.bot ul ul,
+.msg-bubble.bot ul ol,
+.msg-bubble.bot ol ul,
+.msg-bubble.bot ol ol {
+  margin: 0.2em 0;
+}
+
+/* 引用块 */
+.msg-bubble.bot blockquote {
+  margin: 0.8em 0;
+  padding: 0.5em 0 0.5em 1em;
+  border-left: 4px solid #93c5fd;
+  background: #f8fafc;
+  border-radius: 0 6px 6px 0;
+  color: #374151;
+}
+
+.msg-bubble.bot blockquote p {
+  margin: 0.35em 0;
+}
+
+.msg-bubble.bot blockquote p:first-child { margin-top: 0; }
+.msg-bubble.bot blockquote p:last-child { margin-bottom: 0; }
+
+/* 行内代码 */
 .msg-bubble.bot code {
-  background-color: #f4f4f4;
-  padding: 2px 6px;
-  border-radius: 3px;
+  background: #f1f5f9;
+  color: #1e40af;
+  padding: 0.2em 0.45em;
+  border-radius: 6px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 14px;
+  font-size: 0.9em;
+  border: 1px solid #e2e8f0;
 }
 
+/* 代码块 */
 .msg-bubble.bot pre {
-  background-color: #f4f4f4;
-  padding: 10px;
-  border-radius: 5px;
+  margin: 0.8em 0;
+  padding: 1em 1.1em;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .msg-bubble.bot pre code {
   padding: 0;
   background: transparent;
+  color: #334155;
+  border: none;
+  font-size: inherit;
+}
+
+/* 链接 */
+.msg-bubble.bot a {
+  color: #2563eb;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.msg-bubble.bot a:hover {
+  color: #1d4ed8;
+  border-bottom-color: #93c5fd;
+}
+
+/* 表格 */
+.msg-bubble.bot table {
+  width: 100%;
+  margin: 0.8em 0;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.msg-bubble.bot th,
+.msg-bubble.bot td {
+  padding: 0.5em 0.75em;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.msg-bubble.bot th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+}
+
+.msg-bubble.bot tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.msg-bubble.bot tr:hover {
+  background: #f3f4f6;
+}
+
+/* 分割线 */
+.msg-bubble.bot hr {
+  margin: 1.25em 0;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* 加粗 / 斜体 */
+.msg-bubble.bot strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+.msg-bubble.bot em {
+  font-style: italic;
+  color: #4b5563;
+}
+
+/* 图片 */
+.msg-bubble.bot img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+/* 引用文档：紧跟在每条模型回答气泡下方 */
+.msg-insights {
+  margin-top: 10px;
+  padding: 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.msg-insights:empty {
+  display: none;
 }
 
 .insights {
@@ -475,29 +745,49 @@ body {
   margin-top: 2px;
 }
 
+/* 引用文档芯片：圆角矩形，与知识库按钮形态一致，颜色保持蓝色系 */
 .doc-chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  max-width: 220px;
   border-radius: 999px;
   border: 1px solid #93c5fd;
   background: #dbeafe;
   font-size: 12px;
+  font-weight: 500;
   color: #1d4ed8;
   cursor: default;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.doc-chip:hover {
+  background: #bfdbfe;
+  border-color: #60a5fa;
 }
 
 .doc-chip-index {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 999px;
   background: #bfdbfe;
   color: #1d4ed8;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 10px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.doc-chip-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .insights-tokens {
@@ -677,6 +967,11 @@ button:not(:disabled):active {
 
   .layout {
     flex-direction: column;
+  }
+
+  .chat-footer-card {
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
   .nav-sidebar {

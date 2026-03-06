@@ -5,7 +5,6 @@ const sendLabel = document.getElementById('send-label');
 const statusLabel = document.getElementById('status-label');
 const statusBadge = document.querySelector('.badge');
 const hintText = document.getElementById('hint-text');
-const insightsEl = document.getElementById('insights');
 const ragToggleBtn = document.getElementById('rag-toggle-btn');
 const ragToggleLabel = document.getElementById('rag-toggle-label');
 
@@ -79,6 +78,12 @@ function createMessageElements(role, content) {
   body.appendChild(name);
   body.appendChild(bubble);
 
+  if (role === 'bot') {
+    const insightsContainer = document.createElement('div');
+    insightsContainer.className = 'msg-insights';
+    body.appendChild(insightsContainer);
+  }
+
   if (role === 'user') {
     row.appendChild(body);
     row.appendChild(avatar);
@@ -98,40 +103,44 @@ function appendMessage(role, content) {
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
-function renderInsights(data) {
-  if (!insightsEl) return;
+function renderInsightsInto(containerEl, data) {
+  if (!containerEl) return;
 
-  const docs = Array.isArray(data.source_documents) ? data.source_documents : [];
+  const raw = Array.isArray(data.source_documents) ? data.source_documents : [];
+  const seen = new Set();
+  const docs = raw.filter((d) => {
+    const key = d.doc_name || d.doc_path_name || '未命名文档';
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 
   if (docs.length === 0) {
-    insightsEl.innerHTML = '';
+    containerEl.innerHTML = '';
     return;
   }
 
   let html = '';
+  html += '<div class="insights-section">';
+  html += '<span class="insights-title">引用文档</span>';
+  html += '<div class="insights-doc-list">';
 
-  if (docs.length > 0) {
-    html += '<div class="insights-section">';
-    html += '<span class="insights-title">引用文档</span>';
-    html += '<div class="insights-doc-list">';
+  docs.slice(0, 4).forEach((d, index) => {
+    const name = d.doc_name || d.doc_path_name || '未命名文档';
+    const titleAttr = name.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    html +=
+      '<button class="doc-chip" type="button" title="' + titleAttr + '">' +
+      '<span class="doc-chip-index">' +
+      (index + 1) +
+      '</span>' +
+      '<span class="doc-chip-name">' +
+      name +
+      '</span>' +
+      '</button>';
+  });
 
-    docs.slice(0, 4).forEach((d, index) => {
-      const name = d.doc_name || d.doc_path_name || '未命名文档';
-      html +=
-        '<button class="doc-chip" type="button">' +
-        '<span class="doc-chip-index">' +
-        (index + 1) +
-        '</span>' +
-        '<span class="doc-chip-name">' +
-        name +
-        '</span>' +
-        '</button>';
-    });
-
-    html += '</div></div>';
-  }
-
-  insightsEl.innerHTML = html;
+  html += '</div></div>';
+  containerEl.innerHTML = html;
 }
 
 function setLoading(loading) {
@@ -176,7 +185,6 @@ async function sendQuestion() {
   messagesEl.scrollTop = messagesEl.scrollHeight;
 
   let accumulated = '';
-  renderInsights({ source_documents: [], token_usage: null });
 
   try {
     const resp = await fetch('/api/ask_stream', {
@@ -221,12 +229,12 @@ async function sendQuestion() {
         } else if (msg.type === 'end' && msg.data) {
           botBubble.classList.remove('streaming');
           renderBotMarkdown(botBubble, accumulated, { typesetMath: true });
-          renderInsights(msg.data);
+          renderInsightsInto(botRow.querySelector('.msg-insights'), msg.data);
         } else if (msg.type === 'error' && msg.data) {
           const errMsg = msg.data.error_message || '查询失败，请查看后端日志。';
           botBubble.textContent = '错误：' + errMsg;
           statusLabel.textContent = '后端返回错误';
-          renderInsights({ source_documents: [], token_usage: null });
+          renderInsightsInto(botRow.querySelector('.msg-insights'), { source_documents: [], token_usage: null });
           return;
         }
       }
@@ -241,7 +249,7 @@ async function sendQuestion() {
     botBubble.classList.remove('streaming');
     renderBotMarkdown(botBubble, '请求异常，请检查服务是否正常运行。', { typesetMath: false });
     statusLabel.textContent = '请求异常';
-    renderInsights({ source_documents: [], token_usage: null });
+    renderInsightsInto(botRow.querySelector('.msg-insights'), { source_documents: [], token_usage: null });
   } finally {
     setLoading(false);
   }
@@ -302,4 +310,21 @@ document.querySelectorAll('.suggestion[data-question]').forEach((btn) => {
 });
 
 appendMessage('bot', '你好，我是 Mildoc Chat，可以基于 Milvus + 文档知识库回答你的问题，并在下方展示引用的文档来源。');
+
+/* 侧边栏折叠/展开 */
+const navSidebar = document.querySelector('.nav-sidebar');
+const sidebarToggleBtn = document.querySelector('.nav-sidebar-toggle');
+const sidebarOpenTab = document.querySelector('.nav-sidebar-open-tab');
+if (navSidebar && sidebarToggleBtn) {
+  sidebarToggleBtn.addEventListener('click', function () {
+    navSidebar.classList.add('collapsed');
+    if (sidebarOpenTab) sidebarOpenTab.classList.add('visible');
+  });
+}
+if (navSidebar && sidebarOpenTab) {
+  sidebarOpenTab.addEventListener('click', function () {
+    navSidebar.classList.remove('collapsed');
+    sidebarOpenTab.classList.remove('visible');
+  });
+}
 
