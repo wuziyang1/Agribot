@@ -116,18 +116,52 @@ EXTRACT_PROMPT = """你是一个中药材种植领域的知识图谱构建专家
 - 品种相关：属于品种、变种为、别名为、同科属
 - 病害相关：易感染、防治方法为、症状为、用药为
 
-## 关键要求：保留具体数值和指标（非常重要！）
-- 文本中出现的**具体数值、范围、百分比、浓度、剂量、时间、温度、含水量、pH值**等量化信息，
-  必须保留在对应实体或关系的 properties 中，绝不能丢弃。
-- 实体 properties 中应包含：description（简要描述）、value（具体数值或范围，如有）、unit（单位，如有）。
-- 关系 properties 中应包含：value（具体数值或范围，如有）、unit（单位，如有）、description（补充说明，如有）。
-- 示例：如果文本说"灵芝培养基含水量为60%~65%"，则关系应为：
-  {{"source": "灵芝", "source_type": "Herb", "target": "含水量", "target_type": "GrowingCondition",
-    "relation": "需要条件", "properties": {{"value": "60%~65%", "description": "培养基含水量"}}}}
-- 示例：如果文本说"黄芪播种深度2~3厘米"，则关系应为：
-  {{"source": "黄芪", "source_type": "Herb", "target": "播种", "target_type": "CultivationMethod",
-    "relation": "种植技术", "properties": {{"value": "2~3", "unit": "厘米", "description": "播种深度"}}}}
-- 如果一段文本包含多个数值指标，每个指标都应该单独作为一条关系抽取出来。
+## 关键要求：数值指标的处理方式（非常重要！）
+
+### 绝对禁止：
+- **禁止**将纯数值（如 "25°C"、"60%~65%"、"2~3厘米"、"pH5.5"、"3月"）作为独立实体。
+  纯数值不能出现在 entities 的 name 字段中。
+- **禁止**创建没有任何关系连接的孤立实体。每个实体至少应出现在一条关系中。
+
+### 正确做法：
+数值指标必须通过**关系的 properties** 挂载到有语义的实体上。具体规则：
+1. 实体的 name 必须是有语义含义的名词概念（如"温度"、"含水量"、"播种深度"），而不是数值本身。
+2. 具体数值放在**关系的 properties.value** 字段中，单位放在 **properties.unit** 字段中。
+3. 每条含数值的关系都必须有明确的 source（如某种药材）和 target（如某个条件/方法）。
+
+### 示例（务必严格参照）：
+
+原文："灵芝培养基含水量为60%~65%"
+正确抽取：
+- entities: [{{"name": "灵芝", "type": "Herb", "properties": {{}}}},
+             {{"name": "含水量", "type": "GrowingCondition", "properties": {{"description": "培养基含水量"}}}}]
+- relations: [{{"source": "灵芝", "source_type": "Herb",
+               "target": "含水量", "target_type": "GrowingCondition",
+               "relation": "生长条件", "properties": {{"value": "60%~65%", "description": "培养基含水量"}}}}]
+错误示范：❌ 将 "60%~65%" 作为实体的 name
+
+原文："黄芪适宜生长温度为20~25℃，播种深度2~3厘米，土壤pH值6.5~8.0"
+正确抽取（每个数值指标一条关系）：
+- entities: [{{"name": "黄芪", "type": "Herb", "properties": {{}}}},
+             {{"name": "生长温度", "type": "GrowingCondition", "properties": {{}}}},
+             {{"name": "播种深度", "type": "CultivationMethod", "properties": {{}}}},
+             {{"name": "土壤pH值", "type": "GrowingCondition", "properties": {{}}}}]
+- relations: [{{"source": "黄芪", "source_type": "Herb", "target": "生长温度", "target_type": "GrowingCondition",
+               "relation": "适宜条件", "properties": {{"value": "20~25", "unit": "℃"}}}},
+              {{"source": "黄芪", "source_type": "Herb", "target": "播种深度", "target_type": "CultivationMethod",
+               "relation": "种植技术", "properties": {{"value": "2~3", "unit": "厘米"}}}},
+              {{"source": "黄芪", "source_type": "Herb", "target": "土壤pH值", "target_type": "GrowingCondition",
+               "relation": "适宜条件", "properties": {{"value": "6.5~8.0"}}}}]
+错误示范：❌ 将 "20~25℃"、"2~3厘米"、"6.5~8.0" 作为实体的 name
+
+原文："灵芝子实体生长阶段温度控制在25~28℃，空气湿度85%~95%，CO2浓度低于0.1%"
+正确抽取（三条关系，数值全部在 properties 中）：
+- relations: [{{"source": "灵芝", ..., "target": "子实体生长温度", "target_type": "GrowingCondition",
+               "relation": "生长条件", "properties": {{"value": "25~28", "unit": "℃", "description": "子实体生长阶段"}}}},
+              {{"source": "灵芝", ..., "target": "空气湿度", "target_type": "GrowingCondition",
+               "relation": "生长条件", "properties": {{"value": "85%~95%", "description": "子实体生长阶段"}}}},
+              {{"source": "灵芝", ..., "target": "CO2浓度", "target_type": "GrowingCondition",
+               "relation": "生长条件", "properties": {{"value": "低于0.1%", "description": "子实体生长阶段"}}}}]
 
 ## 输出格式
 严格遵循以下 JSON 格式，不要输出多余文字：
@@ -147,7 +181,10 @@ EXTRACT_PROMPT = """你是一个中药材种植领域的知识图谱构建专家
 文本内容：
 {text}
 
-请充分抽取上述文本中与中药材相关的所有实体和关系，特别注意保留所有具体数值和指标参数，过滤掉无关内容，以 JSON 格式输出："""
+请充分抽取上述文本中与中药材相关的所有实体和关系。
+重要提醒：具体数值（温度、含水量、pH值、浓度、用量等）绝不能作为实体名称，只能放在关系的 properties.value 中。
+每个实体必须至少出现在一条关系中，不允许孤立节点。
+以 JSON 格式输出："""
 
 
 # =========================================================================
