@@ -8,4 +8,6 @@ langchain==0.3.26
 langchain-openai==0.3.28
 langchain-community==0.3.27
 pymilvus==2.5.15
+neo4j>=5.0
+langchain-neo4j>=0.2.0,<0.3.0
 PyMySQL>=1.1.0

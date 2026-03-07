@@ -13,6 +13,9 @@ const navNewChatBtn = document.querySelector('.nav-new-chat');
 /** 是否使用知识库（RAG）检索，默认开启 */
 let useRag = true;
 
+/** 始终使用知识图谱（Graph RAG）检索 */
+const useGraph = true;
+
 /** Session 管理（数据库持久化） */
 const WELCOME_MSG = '你好，我是 Mildoc Chat，可以基于 Milvus + 文档知识库回答你的问题，并在下方展示引用的文档来源。';
 
@@ -334,7 +337,8 @@ async function sendQuestion() {
   let accumulated = '';
 
   try {
-    const resp = await fetch('/api/ask_stream', {
+    const apiUrl = '/api/graph/ask_stream';
+    const resp = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -463,6 +467,8 @@ if (ragToggleBtn) {
   });
   updateRagToggleUI();
 }
+
+
 
 var uploadDocBtn = document.getElementById('upload-doc-btn');
 var uploadDocInput = document.getElementById('upload-doc-input');

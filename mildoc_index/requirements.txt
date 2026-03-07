@@ -21,3 +21,5 @@ langchain-text-splitters==0.3.9
 
 # MinerU文档解析（安装包非常大默认不安装，需要时再安装）
 #mineru[core]==2.0.6
+# Neo4j 知识图谱驱动
+neo4j==5.27.0

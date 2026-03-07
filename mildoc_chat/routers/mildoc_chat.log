@@ -1786,3 +1786,66 @@ L
 
 P (好瓜= 是 ...
 2026-03-05 22:44:01,866 - mildoc_chat.rag.rag_service - INFO - 📖 文档3: 机器学习 西瓜书 周志华.pdf (rerank: 0.370) - 么 ，哪 怕 在 其 他 属 性 上 明 显 像 好 瓜 ，分 类 的 结 果 都 将 是 “好 瓜...
+INFO:__main__:Mildoc Chat Starting...
+INFO:__main__:listen: http://0.0.0.0:8890
+INFO:__main__:milvus: 127.0.0.1:19530 db=mildoc col=mildoc_collection
+ * Serving Flask app 'chat_app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8890
+ * Running on http://10.2.0.7:8890
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:10:52] "POST /api/sessions/fb3d2417-3296-4cfd-a710-a41537c5b02d/messages HTTP/1.1" 200 -
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+INFO:mildoc_chat.rag.rag_service:嵌入模型初始化成功: text-embedding-v4
+INFO:mildoc_chat.rag.rag_service:向量维度: 768
+INFO:mildoc_chat.rag.rag_service:大语言模型初始化成功: qwen-plus
+INFO:mildoc_chat.rag.rag_service:Milvus向量存储初始化成功: mildoc_collection (uri=http://127.0.0.1:19530 db=mildoc rows=232)
+INFO:mildoc_chat.rag.rerank_service:重排序服务初始化完成: provider=dashscope, model=qwen3-rerank, endpoint=https://dashscope.aliyuncs.com/api/v1/services/rerank/text-rerank/text-rerank
+INFO:mildoc_chat.rag.rag_service:重排序服务初始化成功
+INFO:mildoc_chat.rag.rag_service:RAG服务初始化完成
+INFO:mildoc_chat.rag.rag_service:RAG服务实例创建成功
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:10:52] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:06] "POST /api/sessions/fb3d2417-3296-4cfd-a710-a41537c5b02d/messages HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:34] "POST /api/sessions HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:34] "GET /api/sessions HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:34] "PATCH /api/sessions/db4c9d28-103d-4369-807d-77cdfce5063e HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:35] "GET /api/sessions HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:35] "GET /api/sessions/db4c9d28-103d-4369-807d-77cdfce5063e/messages HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:43] "PATCH /api/sessions/db4c9d28-103d-4369-807d-77cdfce5063e HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:43] "POST /api/ask_stream HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:43] "POST /api/sessions/db4c9d28-103d-4369-807d-77cdfce5063e/messages HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:44] "GET /api/sessions HTTP/1.1" 200 -
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: POST https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:werkzeug:127.0.0.1 - - [06/Mar/2026 23:11:54] "POST /api/sessions/db4c9d28-103d-4369-807d-77cdfce5063e/messages HTTP/1.1" 200 -
+ERROR:werkzeug:167.94.138.126 - - [06/Mar/2026 23:20:13] code 400, message Bad request version ('À\x14À')
+INFO:werkzeug:167.94.138.126 - - [06/Mar/2026 23:20:13] "[31m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03ÙÑ¶êb\x89!C7)\x83\x9c)ÓnÇQ\x96\x85½Å\x88·{ôÍ\x1fpþ\x8fzµ ZìXÀ\\ViB\x8cì\x1b¨³ø\x98ÐÉíó+\x0f\x1dßóEV\x1a\x86c}ÑF\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" 400 -
+INFO:werkzeug:167.94.138.126 - - [06/Mar/2026 23:20:16] "[32mGET / HTTP/1.1[0m" 302 -
+ERROR:werkzeug:167.94.138.126 - - [06/Mar/2026 23:20:18] code 505, message Invalid HTTP version (2.0)
+INFO:werkzeug:167.94.138.126 - - [06/Mar/2026 23:20:18] "[35m[1mPRI * HTTP/2.0[0m" 505 -
+INFO:werkzeug:167.94.138.126 - - [06/Mar/2026 23:20:25] "GET /login HTTP/1.1" 200 -
+INFO:werkzeug:167.94.138.126 - - [06/Mar/2026 23:20:29] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+ERROR:werkzeug:167.94.138.126 - - [06/Mar/2026 23:20:39] code 400, message Bad request version ('À\x14À')
+INFO:werkzeug:167.94.138.126 - - [06/Mar/2026 23:20:39] "[31m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x19"wqô¹¬\x9e3Ñð\x80Ã\x0dm\x1bÿ#Ë¼UV\x12³7Þ\x8fê«5Çy ¹GÑô\x9e\x89\x05*\x03\x84¿Çª¯êÆ\x7f6IvâY¡\x86¶\x85MZ8¬÷ \x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" 400 -
+INFO:werkzeug:167.94.138.126 - - [06/Mar/2026 23:20:40] "[33mGET /sitemap.xml HTTP/1.1[0m" 404 -
+INFO:werkzeug:35.203.210.182 - - [06/Mar/2026 23:44:26] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:35.203.210.182 - - [06/Mar/2026 23:44:27] "GET /login HTTP/1.1" 200 -
+INFO:werkzeug:204.76.203.51 - - [07/Mar/2026 01:48:03] "[32mGET http://azenv.net/ HTTP/1.1[0m" 302 -
+INFO:werkzeug:204.76.203.51 - - [07/Mar/2026 01:48:04] "[33mCONNECT dnspod.qcloud.com:443 HTTP/1.1[0m" 404 -
+INFO:werkzeug:204.76.203.51 - - [07/Mar/2026 05:58:19] "[32mGET http://azenv.net/ HTTP/1.1[0m" 302 -
+INFO:werkzeug:204.76.203.51 - - [07/Mar/2026 05:58:20] "[33mCONNECT dnspod.qcloud.com:443 HTTP/1.1[0m" 404 -
+INFO:werkzeug:212.73.148.28 - - [07/Mar/2026 09:12:35] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:180.101.244.13 - - [07/Mar/2026 09:23:26] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:220.196.160.101 - - [07/Mar/2026 09:23:26] "GET /login HTTP/1.1" 200 -
+INFO:werkzeug:159.75.198.6 - - [07/Mar/2026 09:23:26] "GET /static/js/login.js HTTP/1.1" 200 -
+INFO:werkzeug:220.196.160.144 - - [07/Mar/2026 09:23:32] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:59.83.208.103 - - [07/Mar/2026 09:23:32] "GET /login HTTP/1.1" 200 -
+INFO:werkzeug:106.52.123.222 - - [07/Mar/2026 09:23:32] "GET /static/js/login.js HTTP/1.1" 200 -
+INFO:werkzeug:180.101.244.14 - - [07/Mar/2026 09:23:34] "[32mGET / HTTP/1.1[0m" 302 -
+INFO:werkzeug:180.101.244.14 - - [07/Mar/2026 09:23:35] "GET /login HTTP/1.1" 200 -
+INFO:werkzeug:180.101.244.14 - - [07/Mar/2026 09:23:35] "GET /static/css/login.css?v=3 HTTP/1.1" 200 -
+INFO:werkzeug:180.101.244.14 - - [07/Mar/2026 09:23:35] "GET /static/js/login.js HTTP/1.1" 200 -

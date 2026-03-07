@@ -11,6 +11,7 @@ from minio import Minio
 from parser.simple_object_parser import SimpleObjectParser
 from embedding import EmbeddingTool
 from milvus_api import MilvusAPI, MilvusDocument
+from neo4j_graph import create_graph_indexer
 from logger.logging import setup_logging
 
 load_dotenv()
@@ -53,6 +54,10 @@ class MinioEventListener:
         logger.info("测试embedding工具...")
         self.embedding_tool: EmbeddingTool = EmbeddingTool()
 
+
+        # 初始化知识图谱索引器（可选，缺少 Neo4j 配置时自动跳过）
+        logger.info("初始化知识图谱索引器...")
+        self.graph_indexer = create_graph_indexer()
         logger.info("所有组件初始化完成！")
     
     def _extract_event_info(self, event_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -174,6 +179,13 @@ class MinioEventListener:
                 logger.info(f"成功删除文档记录: {doc_path_name}")
             else:
                 logger.error(f"删除文档记录失败: {doc_path_name}")
+
+            # 同步从知识图谱中删除
+            if self.graph_indexer is not None:
+                try:
+                    self.graph_indexer.delete_document(doc_path_name)
+                except Exception as e:
+                    logger.warning(f"知识图谱删除失败（不影响向量删除）: {e}")
             
         except Exception as e:
             logger.error(f"处理对象删除事件失败: {e}")
@@ -299,6 +311,23 @@ class MinioEventListener:
                     continue
             
             logger.info(f"    完成！成功存储 {success_count}/{len(parse_result['contents'])} 个片段")
+
+            # 同步导入知识图谱（如果图谱索引器可用）
+            if self.graph_indexer is not None:
+                try:
+                    graph_result = self.graph_indexer.import_document(
+                        doc_name=parse_result['doc_name'],
+                        doc_path_name=parse_result['doc_path_name'],
+                        text_chunks=parse_result['contents'],
+                    )
+                    logger.info(
+                        "    图谱导入: %d 实体, %d 关系",
+                        graph_result['entities_count'],
+                        graph_result['relations_count'],
+                    )
+                except Exception as e:
+                    logger.warning(f"    知识图谱导入失败（不影响向量索引）: {e}")
+
             return success_count > 0
             
         except Exception as e:

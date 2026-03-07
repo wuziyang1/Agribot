@@ -1,0 +1,734 @@
+"""
+Graph RAG 服务模块
+
+使用 LangChain + Neo4j 实现知识图谱增强的 RAG 服务。
+全流程：
+  1. 文档导入：将文本切分 → LLM 抽取实体/关系 → 写入 Neo4j 知识图谱
+  2. 图谱查询：用户提问 → LLM 生成 Cypher → 查询图谱 → 结合上下文生成回答
+  3. 混合检索：可同时利用向量检索（Milvus）+ 图谱检索（Neo4j）做融合回答
+"""
+
+import logging
+import queue
+import threading
+from typing import Dict, Any, List, Optional
+
+from pydantic import BaseModel
+from langchain_openai import ChatOpenAI
+from langchain_neo4j import Neo4jGraph
+from langchain_community.callbacks.manager import get_openai_callback
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+from mildoc_chat.rag.rag_config import Config
+
+logger = logging.getLogger(__name__)
+
+
+# =========================================================================
+# 数据模型
+# =========================================================================
+
+class GraphEntity(BaseModel):
+    """知识图谱实体"""
+    name: str
+    entity_type: str
+    properties: Dict[str, Any] = {}
+
+
+class GraphRelation(BaseModel):
+    """知识图谱关系"""
+    source: str
+    source_type: str
+    target: str
+    target_type: str
+    relation_type: str
+    properties: Dict[str, Any] = {}
+
+
+class GraphRAGResponse(BaseModel):
+    """Graph RAG 响应模型"""
+    content: str
+    graph_context: str = ""
+    entities: List[GraphEntity] = []
+    relations: List[GraphRelation] = []
+    cypher_query: str = ""
+    success: bool = True
+    error_message: Optional[str] = None
+
+
+class GraphImportResult(BaseModel):
+    """图谱导入结果"""
+    entities_count: int = 0
+    relations_count: int = 0
+    chunks_processed: int = 0
+    success: bool = True
+    error_message: Optional[str] = None
+
+
+# =========================================================================
+# 实体/关系抽取提示词
+# =========================================================================
+
+EXTRACT_PROMPT = """你是一个专业的知识图谱构建专家。请从以下文本中抽取实体和关系。
+
+要求：
+1. 实体类型包括但不限于：Person（人物）、Organization（组织）、Location（地点）、
+   Event（事件）、Product（产品）、Technology（技术）、Concept（概念）、Document（文档）、
+   Date（日期）、Amount（金额）
+2. 关系应描述实体间的语义关联
+3. 输出严格遵循以下 JSON 格式，不要输出多余文字
+
+输出格式：
+```json
+{{
+  "entities": [
+    {{"name": "实体名称", "type": "实体类型", "properties": {{"description": "简要描述"}}}}
+  ],
+  "relations": [
+    {{"source": "源实体名称", "source_type": "源实体类型",
+      "target": "目标实体名称", "target_type": "目标实体类型",
+      "relation": "关系类型", "properties": {{}}}}
+  ]
+}}
+```
+
+文本内容：
+{text}
+
+请抽取上述文本中的实体和关系，以 JSON 格式输出："""
+
+
+# =========================================================================
+# Cypher 生成提示词
+# =========================================================================
+
+CYPHER_GENERATION_PROMPT = """你是一个 Neo4j Cypher 查询专家。请根据用户问题和图谱 Schema 生成 Cypher 查询语句。
+
+图谱 Schema：
+{schema}
+
+注意事项：
+1. 只生成 READ 查询（MATCH），不要生成任何写入/删除操作
+2. 使用 CONTAINS 进行模糊匹配（中文实体名称可能不完全一致）
+3. 限制返回结果数量（LIMIT 20）
+4. 返回节点的名称、类型以及关系信息
+5. 只输出 Cypher 语句，不要输出其他内容
+
+用户问题：{question}
+
+Cypher 查询语句："""
+
+
+# =========================================================================
+# 图谱上下文回答提示词
+# =========================================================================
+
+GRAPH_QA_PROMPT = """你是一个基于知识图谱的问答助手。请根据知识图谱查询结果回答用户问题。
+
+知识图谱查询结果：
+{graph_context}
+
+以下是本对话的近期历史（请结合历史理解并回答当前问题）：
+{chat_history}
+
+用户问题：{question}
+
+回答要求：
+1. 基于知识图谱中的实体和关系进行回答
+2. 如果图谱信息不足以回答，请如实说明并结合通用知识补充
+3. 回答使用自然流畅的中文，语言简洁、逻辑清晰
+4. 可以合理使用 Markdown 语法提升可读性
+5. 若有近期对话历史，请结合上下文保持连贯
+
+请给出回答："""
+
+
+# =========================================================================
+# GraphRAGService 主类
+# =========================================================================
+
+class GraphRAGService:
+    """
+    Graph RAG 服务类
+
+    功能：
+    1. 文档导入知识图谱：文本 -> LLM 抽取实体/关系 -> Neo4j
+    2. 图谱问答：用户提问 -> Cypher 查询 -> LLM 生成回答
+    3. 图谱管理：查看统计、清空图谱等
+    """
+
+    CHAT_HISTORY_MAX_MESSAGES = 10
+
+    def __init__(self):
+        self.graph: Optional[Neo4jGraph] = None
+        self.llm: Optional[ChatOpenAI] = None
+        self._initialize()
+
+    def _initialize(self):
+        """初始化Neo4j连接和LLM"""
+        try:
+            # 初始化 Neo4j 图数据库连接
+            self.graph = Neo4jGraph(
+                url=Config.NEO4J_URI,
+                username=Config.NEO4J_USERNAME,
+                password=Config.NEO4J_PASSWORD,
+                database=Config.NEO4J_DATABASE,
+            )
+            # 刷新 schema
+            self.graph.refresh_schema()
+            logger.info("Neo4j 连接成功: %s", Config.NEO4J_URI)
+
+            # 初始化 LLM
+            self.llm = ChatOpenAI(
+                model=Config.LLM_MODEL_NAME,
+                openai_api_key=Config.LLM_API_KEY,
+                openai_api_base=Config.LLM_BASE_URL,
+                temperature=0.0,
+                max_tokens=2000,
+            )
+            logger.info("Graph RAG 服务初始化完成")
+
+        except Exception as e:
+            logger.error("Graph RAG 服务初始化失败: %s", e)
+            raise
+
+    def _create_llm(self, *, streaming=False, callbacks=None):
+        """创建 LLM 客户端（按需开启 streaming）"""
+        kwargs = {
+            "model": Config.LLM_MODEL_NAME,
+            "openai_api_key": Config.LLM_API_KEY,
+            "openai_api_base": Config.LLM_BASE_URL,
+            "temperature": 0.0,
+            "max_tokens": 2000,
+        }
+        if streaming:
+            kwargs["streaming"] = True
+        if callbacks:
+            kwargs["callbacks"] = callbacks
+        return ChatOpenAI(**kwargs)
+
+    def _format_chat_history(self, chat_history=None):
+        if not chat_history:
+            return "（无近期历史）"
+        lines = []
+        for msg in chat_history[-self.CHAT_HISTORY_MAX_MESSAGES:]:
+            role = (msg.get("role") or "").strip().lower()
+            content = (msg.get("content") or "").strip()
+            if not content:
+                continue
+            if role == "user":
+                lines.append("用户：" + content)
+            else:
+                lines.append("助手：" + content)
+        return "\n".join(lines) if lines else "（无近期历史）"
+
+    # =================================================================
+    # 文档导入知识图谱
+    # =================================================================
+
+    def import_text(self, text, doc_name="", chunk_size=1000, chunk_overlap=200):
+        """将文本导入知识图谱
+
+        流程：文本切分 -> LLM 抽取实体/关系 -> 写入 Neo4j
+        """
+        try:
+            splitter = RecursiveCharacterTextSplitter(
+                chunk_size=chunk_size, chunk_overlap=chunk_overlap,
+                separators=["\n\n", "\n", "。", "；", ".", ";", " "]
+            )
+            chunks = splitter.split_text(text)
+            logger.info("文本切分完成，共 %d 个块", len(chunks))
+
+            total_entities = 0
+            total_relations = 0
+
+            for i, chunk in enumerate(chunks):
+                try:
+                    extracted = self._extract_entities_relations(chunk)
+                    if not extracted:
+                        continue
+
+                    entities = extracted.get("entities", [])
+                    relations = extracted.get("relations", [])
+
+                    chunk_id = f"{doc_name}#chunk_{i}"
+                    self._write_to_neo4j(entities, relations, doc_name, chunk_id)
+                    total_entities += len(entities)
+                    total_relations += len(relations)
+
+                    logger.info(
+                        "块 %d/%d: 抽取 %d 实体, %d 关系",
+                        i + 1, len(chunks), len(entities), len(relations)
+                    )
+                except Exception as e:
+                    logger.warning("块 %d 处理失败: %s", i + 1, e)
+                    continue
+
+            self.graph.refresh_schema()
+
+            logger.info(
+                "图谱导入完成: %d 实体, %d 关系（来自 %d 个文本块）",
+                total_entities, total_relations, len(chunks)
+            )
+            return GraphImportResult(
+                entities_count=total_entities,
+                relations_count=total_relations,
+                chunks_processed=len(chunks),
+                success=True,
+            )
+
+        except Exception as e:
+            logger.error("图谱导入失败: %s", e)
+            return GraphImportResult(success=False, error_message=str(e))
+
+    def _extract_entities_relations(self, text):
+        """使用 LLM 从文本中抽取实体和关系"""
+        import json as _json
+
+        prompt = EXTRACT_PROMPT.format(text=text)
+        try:
+            result = self.llm.invoke(prompt)
+            content = result.content.strip()
+
+            # 尝试从 markdown 代码块中提取 JSON
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+
+            return _json.loads(content)
+
+        except Exception as e:
+            logger.warning("实体关系抽取失败: %s", e)
+            return None
+
+    def _write_to_neo4j(self, entities, relations, doc_name="", chunk_id=""):
+        """将抽取的实体和关系写入 Neo4j，同时绑定 chunk_id"""
+        for ent in entities:
+            name = ent.get("name", "").strip()
+            ent_type = ent.get("type", "Entity").strip()
+            props = ent.get("properties", {})
+            if not name:
+                continue
+
+            ent_type = "".join(c for c in ent_type if c.isalnum() or c == "_") or "Entity"
+
+            cypher = (
+                f"MERGE (n:`{ent_type}` {{name: $name}}) "
+                f"SET n.doc_source = $doc_source, n.description = $description, "
+                f"n.chunk_id = $chunk_id"
+            )
+            try:
+                self.graph.query(
+                    cypher,
+                    params={
+                        "name": name,
+                        "doc_source": doc_name,
+                        "description": props.get("description", ""),
+                        "chunk_id": chunk_id,
+                    },
+                )
+            except Exception as e:
+                logger.warning("写入实体失败 [%s]: %s", name, e)
+
+        for rel in relations:
+            src = rel.get("source", "").strip()
+            tgt = rel.get("target", "").strip()
+            src_type = rel.get("source_type", "Entity").strip()
+            tgt_type = rel.get("target_type", "Entity").strip()
+            rel_type = rel.get("relation", "RELATED_TO").strip()
+            if not src or not tgt:
+                continue
+
+            src_type = "".join(c for c in src_type if c.isalnum() or c == "_") or "Entity"
+            tgt_type = "".join(c for c in tgt_type if c.isalnum() or c == "_") or "Entity"
+            rel_type = "".join(c for c in rel_type if c.isalnum() or c == "_") or "RELATED_TO"
+
+            cypher = (
+                f"MERGE (a:`{src_type}` {{name: $src}}) "
+                f"MERGE (b:`{tgt_type}` {{name: $tgt}}) "
+                f"MERGE (a)-[r:`{rel_type}`]->(b) "
+                f"SET r.doc_source = $doc_source, "
+                f"r.chunk_id = $chunk_id"
+            )
+            try:
+                self.graph.query(
+                    cypher,
+                    params={"src": src, "tgt": tgt, "doc_source": doc_name, "chunk_id": chunk_id},
+                )
+            except Exception as e:
+                logger.warning("写入关系失败 [%s->%s]: %s", src, tgt, e)
+
+    # =================================================================
+    # 图谱问答
+    # =================================================================
+
+    def query(self, question, chat_history=None):
+        """知识图谱问答
+
+        流程：用户提问 -> LLM 生成 Cypher -> 查询图谱 -> LLM 生成回答
+        """
+        try:
+            if not question or not question.strip():
+                return GraphRAGResponse(
+                    content="请输入有效的查询内容",
+                    success=False,
+                    error_message="查询内容为空"
+                )
+
+            logger.info("Graph RAG 查询: %s", question)
+
+            self.graph.refresh_schema()
+            schema = self.graph.schema
+
+            cypher_query = self._generate_cypher(question, schema)
+            logger.info("生成 Cypher: %s", cypher_query)
+
+            graph_results = []
+            if cypher_query:
+                try:
+                    graph_results = self.graph.query(cypher_query)
+                    logger.info("图谱返回 %d 条结果", len(graph_results))
+                except Exception as e:
+                    logger.warning("Cypher 执行失败: %s — 回退到模糊搜索", e)
+                    graph_results = self._fallback_search(question)
+
+            if not graph_results:
+                graph_results = self._fallback_search(question)
+
+            graph_context = self._format_graph_results(graph_results)
+
+            chat_history_str = self._format_chat_history(chat_history)
+            qa_prompt = GRAPH_QA_PROMPT.format(
+                graph_context=graph_context,
+                chat_history=chat_history_str,
+                question=question,
+            )
+
+            with get_openai_callback() as cb:
+                answer = self.llm.invoke(qa_prompt).content
+
+            logger.info("Graph RAG 查询完成")
+
+            entities, relations = self._extract_from_results(graph_results)
+
+            return GraphRAGResponse(
+                content=answer,
+                graph_context=graph_context,
+                entities=entities,
+                relations=relations,
+                cypher_query=cypher_query or "",
+                success=True,
+            )
+
+        except Exception as e:
+            logger.error("Graph RAG 查询失败: %s", e)
+            return GraphRAGResponse(
+                content="",
+                success=False,
+                error_message=f"图谱查询失败：{e}"
+            )
+
+    def stream_query(self, question, chat_history=None):
+        """流式图谱问答，逐 token yield 事件字典（与 RAGService.stream_query 格式一致）"""
+        try:
+            from langchain_core.callbacks.base import BaseCallbackHandler
+        except Exception:
+            from langchain.callbacks.base import BaseCallbackHandler
+
+        yield {"type": "start"}
+
+        if not question or not question.strip():
+            yield {
+                "type": "error",
+                "data": {
+                    "success": False,
+                    "content": "",
+                    "error_message": "查询内容为空",
+                    "source_documents": [],
+                    "token_usage": None,
+                },
+            }
+            return
+
+        # 1-3: 检索图谱（同步部分）
+        try:
+            self.graph.refresh_schema()
+            schema = self.graph.schema
+            cypher_query = self._generate_cypher(question, schema)
+            logger.info("Stream Cypher: %s", cypher_query)
+
+            graph_results = []
+            if cypher_query:
+                try:
+                    graph_results = self.graph.query(cypher_query)
+                except Exception as e:
+                    logger.warning("Cypher 执行失败: %s", e)
+                    graph_results = self._fallback_search(question)
+            if not graph_results:
+                graph_results = self._fallback_search(question)
+
+            graph_context = self._format_graph_results(graph_results)
+            entities, relations = self._extract_from_results(graph_results)
+        except Exception as e:
+            yield {
+                "type": "error",
+                "data": {
+                    "success": False,
+                    "content": "",
+                    "error_message": f"图谱检索失败：{e}",
+                    "source_documents": [],
+                    "token_usage": None,
+                },
+            }
+            return
+
+        # 4: 流式 LLM 生成
+        chat_history_str = self._format_chat_history(chat_history)
+        qa_prompt = GRAPH_QA_PROMPT.format(
+            graph_context=graph_context,
+            chat_history=chat_history_str,
+            question=question,
+        )
+
+        _STOP = object()
+        token_q = queue.Queue()
+        state = {"answer": "", "token_usage": None, "error": None}
+
+        class _TokenQueueCB(BaseCallbackHandler):
+            def on_llm_new_token(self, token, **kwargs):
+                if token:
+                    token_q.put(token)
+
+        def _worker():
+            try:
+                cb_handler = _TokenQueueCB()
+                llm_s = self._create_llm(streaming=True, callbacks=[cb_handler])
+                with get_openai_callback() as cb:
+                    result = llm_s.invoke(qa_prompt)
+                state["answer"] = getattr(result, "content", "") or ""
+                state["token_usage"] = {
+                    "prompt_tokens": cb.prompt_tokens,
+                    "completion_tokens": cb.completion_tokens,
+                    "total_tokens": cb.total_tokens,
+                }
+            except Exception as e:
+                state["error"] = e
+            finally:
+                token_q.put(_STOP)
+
+        t = threading.Thread(target=_worker, daemon=True)
+        t.start()
+
+        while True:
+            item = token_q.get()
+            if item is _STOP:
+                break
+            yield {"type": "chunk", "data": {"content": str(item)}}
+
+        if state["error"] is not None:
+            yield {
+                "type": "error",
+                "data": {
+                    "success": False,
+                    "content": "",
+                    "error_message": f"图谱问答生成失败：{state['error']}",
+                    "source_documents": [],
+                    "token_usage": None,
+                },
+            }
+            return
+
+        # 将图谱实体/关系以 source_documents 格式返回
+        source_docs = []
+        for ent in entities:
+            source_docs.append({
+                "doc_name": f"[{ent.entity_type}] {ent.name}",
+                "doc_path_name": "",
+                "doc_type": "graph_entity",
+                "content_preview": ent.properties.get("description", ent.name),
+                "similarity_score": None,
+            })
+
+        yield {
+            "type": "end",
+            "data": {
+                "success": True,
+                "content": state.get("answer") or "",
+                "error_message": None,
+                "source_documents": source_docs[:10],
+                "token_usage": state.get("token_usage"),
+                "graph_info": {
+                    "cypher_query": cypher_query or "",
+                    "entities_count": len(entities),
+                    "relations_count": len(relations),
+                },
+            },
+        }
+
+    # =================================================================
+    # 图谱管理
+    # =================================================================
+
+    def get_stats(self):
+        """获取知识图谱统计信息"""
+        try:
+            node_count = self.graph.query("MATCH (n) RETURN count(n) AS cnt")
+            rel_count = self.graph.query("MATCH ()-[r]->() RETURN count(r) AS cnt")
+            labels = self.graph.query("CALL db.labels() YIELD label RETURN collect(label) AS labels")
+            rel_types = self.graph.query(
+                "CALL db.relationshipTypes() YIELD relationshipType RETURN collect(relationshipType) AS types"
+            )
+
+            return {
+                "node_count": node_count[0]["cnt"] if node_count else 0,
+                "relation_count": rel_count[0]["cnt"] if rel_count else 0,
+                "labels": labels[0]["labels"] if labels else [],
+                "relationship_types": rel_types[0]["types"] if rel_types else [],
+                "schema": self.graph.schema,
+            }
+        except Exception as e:
+            logger.error("获取图谱统计失败: %s", e)
+            return {"error": str(e)}
+
+    def clear_graph(self):
+        """清空知识图谱（谨慎操作）"""
+        try:
+            self.graph.query("MATCH (n) DETACH DELETE n")
+            self.graph.refresh_schema()
+            logger.info("知识图谱已清空")
+            return True
+        except Exception as e:
+            logger.error("清空图谱失败: %s", e)
+            return False
+
+    def health_check(self):
+        """健康检查"""
+        try:
+            result = self.graph.query("RETURN 1 AS ok")
+            ok = bool(result and result[0].get("ok") == 1)
+            return {
+                "service": "GraphRAGService",
+                "status": "healthy" if ok else "error",
+                "neo4j_uri": Config.NEO4J_URI,
+            }
+        except Exception as e:
+            return {
+                "service": "GraphRAGService",
+                "status": "error",
+                "error": str(e),
+            }
+
+    # =================================================================
+    # 私有辅助方法
+    # =================================================================
+
+    def _generate_cypher(self, question, schema):
+        """LLM 生成 Cypher 查询"""
+        prompt = CYPHER_GENERATION_PROMPT.format(schema=schema, question=question)
+        try:
+            result = self.llm.invoke(prompt)
+            cypher = result.content.strip()
+            # 去掉可能的 markdown 代码块标记
+            if cypher.startswith("```"):
+                lines = cypher.split("\n")
+                cypher = "\n".join(lines[1:-1] if lines[-1].strip() == "```" else lines[1:])
+                cypher = cypher.strip()
+
+            # 安全检查：只允许读操作
+            upper = cypher.upper()
+            forbidden = ["DELETE", "REMOVE", "SET ", "CREATE", "MERGE", "DROP"]
+            for kw in forbidden:
+                if kw in upper:
+                    logger.warning("Cypher 包含危险关键字 '%s'，已拒绝执行", kw)
+                    return None
+            return cypher
+        except Exception as e:
+            logger.warning("Cypher 生成失败: %s", e)
+            return None
+
+    def _fallback_search(self, question):
+        """回退搜索：用关键词在图谱中模糊匹配"""
+        try:
+            results = self.graph.query(
+                "MATCH (n) WHERE n.name CONTAINS $keyword "
+                "OPTIONAL MATCH (n)-[r]-(m) "
+                "RETURN n.name AS source_name, labels(n) AS source_labels, "
+                "type(r) AS relation, m.name AS target_name, labels(m) AS target_labels "
+                "LIMIT 20",
+                params={"keyword": question[:20]},
+            )
+            return results
+        except Exception as e:
+            logger.warning("回退搜索失败: %s", e)
+            return []
+
+    def _format_graph_results(self, results):
+        """将图谱查询结果格式化为可读文本"""
+        if not results:
+            return "（知识图谱中未找到相关信息）"
+
+        lines = []
+        for i, record in enumerate(results[:20]):
+            parts = []
+            for k, v in record.items():
+                if v is not None:
+                    parts.append(f"{k}: {v}")
+            if parts:
+                lines.append(f"  {i + 1}. " + " | ".join(parts))
+
+        return "知识图谱查询结果：\n" + "\n".join(lines) if lines else "（无结果）"
+
+    def _extract_from_results(self, results):
+        """从查询结果中提取实体和关系"""
+        entities_set = set()
+        entities = []
+        relations = []
+
+        for record in results:
+            for key in ("source_name", "name", "target_name"):
+                name = record.get(key)
+                if name and name not in entities_set:
+                    entities_set.add(name)
+                    label_key = key.replace("name", "labels")
+                    labels_val = record.get(label_key, [])
+                    etype = labels_val[0] if isinstance(labels_val, list) and labels_val else "Entity"
+                    entities.append(GraphEntity(name=name, entity_type=etype))
+
+            src = record.get("source_name")
+            tgt = record.get("target_name")
+            rel = record.get("relation") or record.get("type(r)")
+            if src and tgt and rel:
+                relations.append(GraphRelation(
+                    source=src, source_type="Entity",
+                    target=tgt, target_type="Entity",
+                    relation_type=rel,
+                ))
+
+        return entities, relations
+
+
+# =========================================================================
+# 单例管理
+# =========================================================================
+
+_graph_rag_instance = None
+
+
+def get_graph_rag_service():
+    """获取 GraphRAGService 单例（仅在配置了 Neo4j 时创建）"""
+    global _graph_rag_instance
+    if _graph_rag_instance is not None:
+        return _graph_rag_instance
+
+    if not Config.NEO4J_URI:
+        logger.info("未配置 NEO4J_URI，Graph RAG 服务不可用")
+        return None
+
+    try:
+        _graph_rag_instance = GraphRAGService()
+        logger.info("Graph RAG 服务实例创建成功")
+        return _graph_rag_instance
+    except Exception as e:
+        logger.error("Graph RAG 服务实例创建失败: %s", e)
+        return None

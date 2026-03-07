@@ -18,6 +18,7 @@ from flask import (
 from mildoc_chat.routers.logging_utils import setup_logging
 from mildoc_chat.rag.rag_config import Config
 from mildoc_chat.rag.rag_service import get_rag_service, RAGResponse
+from mildoc_chat.rag.graph_rag_service import get_graph_rag_service
 from mildoc_chat.routers.login_flask import login_bp
 from mildoc_chat.routers.register_flask import register_bp
 from mildoc_chat.routers.database import (
@@ -100,7 +101,6 @@ def _require_login():
                     "error_message": "请先登录后再使用聊天功能",
                     "source_documents": [],
                     "token_usage": None,
-                    "scene_info": None,
                 }
             ),
             401,
@@ -158,7 +158,6 @@ def _response_to_dict(resp: RAGResponse) -> Dict[str, Any]:
         }
         if resp.token_usage
         else None,
-        "scene_info": resp.scene_info,
     }
 
 
@@ -316,7 +315,6 @@ def api_ask():
                 "error_message": "问题内容不能为空",
                 "source_documents": [],
                 "token_usage": None,
-                "scene_info": None,
             }
         )
 
@@ -329,7 +327,6 @@ def api_ask():
                 "error_message": "RAG 服务初始化失败，请检查 mildoc_chat 的 .env 配置。",
                 "source_documents": [],
                 "token_usage": None,
-                "scene_info": None,
             }
         )
 
@@ -344,7 +341,6 @@ def api_ask():
                 "error_message": f"查询过程中发生错误：{e}",
                 "source_documents": [],
                 "token_usage": None,
-                "scene_info": None,
             }
         )
 
@@ -390,7 +386,6 @@ def api_ask_stream():
                 "error_message": "问题内容不能为空",
                 "source_documents": [],
                 "token_usage": None,
-                "scene_info": None,
             },
         }
         return Response(json.dumps(error_obj) + "\n", mimetype="application/json")
@@ -406,7 +401,6 @@ def api_ask_stream():
                     "error_message": "RAG 服务初始化失败，请检查 mildoc_chat 的 .env 配置。",
                     "source_documents": [],
                     "token_usage": None,
-                    "scene_info": None,
                 },
             }
             yield json.dumps(err_obj, ensure_ascii=False) + "\n"
@@ -423,12 +417,142 @@ def api_ask_stream():
                 source_documents=[],
                 success=False,
                 error_message=f"查询过程中发生错误：{e}",
-                scene_info=None,
             )
             err_obj = {"type": "error", "data": _response_to_dict(err_resp)}
             yield json.dumps(err_obj, ensure_ascii=False) + "\n"
 
     return Response(stream_with_context(generate()), mimetype="application/json")
+
+
+
+# =========================================================================
+# Graph RAG API 路由
+# =========================================================================
+
+@app.post("/api/graph/ask_stream")
+def api_graph_ask_stream():
+    """Graph RAG 流式问答（知识图谱检索）
+
+    前端格式与 /api/ask_stream 完全一致（JSON Lines）。
+    """
+    payload = request.get_json(silent=True) or {}
+    question = (payload.get("question") or "").strip()
+    session_id = (payload.get("session_id") or "").strip() or None
+
+    chat_history: list = []
+    if session_id:
+        _, user = _current_user()
+        if user:
+            try:
+                rows = list_messages(user_id=int(user["id"]), session_id=session_id)
+                for m in rows:
+                    role = (m.get("role") or "").strip().lower()
+                    content = (m.get("content") or "").strip()
+                    if role in ("user", "assistant", "system") and content:
+                        chat_history.append({"role": role if role != "system" else "assistant", "content": content})
+            except Exception:
+                pass
+
+    if not question:
+        error_obj = {
+            "type": "error",
+            "data": {
+                "success": False,
+                "content": "",
+                "error_message": "问题内容不能为空",
+                "source_documents": [],
+                "token_usage": None,
+            },
+        }
+        return Response(json.dumps(error_obj) + "\n", mimetype="application/json")
+
+    def generate():
+        graph_rag = get_graph_rag_service()
+        if graph_rag is None:
+            err_obj = {
+                "type": "error",
+                "data": {
+                    "success": False,
+                    "content": "",
+                    "error_message": "Graph RAG 服务不可用，请检查 Neo4j 配置。",
+                    "source_documents": [],
+                    "token_usage": None,
+                },
+            }
+            yield json.dumps(err_obj, ensure_ascii=False) + "\n"
+            return
+
+        try:
+            for event in graph_rag.stream_query(question, chat_history=chat_history):
+                yield json.dumps(event, ensure_ascii=False) + "\n"
+        except Exception as e:
+            logger.exception("graph stream_query failed")
+            err_obj = {
+                "type": "error",
+                "data": {
+                    "success": False,
+                    "content": "",
+                    "error_message": f"图谱查询失败：{e}",
+                    "source_documents": [],
+                    "token_usage": None,
+                },
+            }
+            yield json.dumps(err_obj, ensure_ascii=False) + "\n"
+
+    return Response(stream_with_context(generate()), mimetype="application/json")
+
+
+@app.post("/api/graph/import")
+def api_graph_import():
+    """导入文本到知识图谱"""
+    payload = request.get_json(silent=True) or {}
+    text = (payload.get("text") or "").strip()
+    doc_name = (payload.get("doc_name") or "").strip() or "手动导入"
+
+    if not text:
+        return jsonify({"success": False, "error_message": "文本内容不能为空"}), 400
+
+    graph_rag = get_graph_rag_service()
+    if graph_rag is None:
+        return jsonify({"success": False, "error_message": "Graph RAG 服务不可用"}), 503
+
+    result = graph_rag.import_text(text, doc_name=doc_name)
+    return jsonify({
+        "success": result.success,
+        "entities_count": result.entities_count,
+        "relations_count": result.relations_count,
+        "chunks_processed": result.chunks_processed,
+        "error_message": result.error_message,
+    })
+
+
+@app.get("/api/graph/stats")
+def api_graph_stats():
+    """获取知识图谱统计信息"""
+    graph_rag = get_graph_rag_service()
+    if graph_rag is None:
+        return jsonify({"success": False, "error_message": "Graph RAG 服务不可用"}), 503
+    stats = graph_rag.get_stats()
+    return jsonify({"success": True, **stats})
+
+
+@app.post("/api/graph/clear")
+def api_graph_clear():
+    """清空知识图谱"""
+    graph_rag = get_graph_rag_service()
+    if graph_rag is None:
+        return jsonify({"success": False, "error_message": "Graph RAG 服务不可用"}), 503
+    ok = graph_rag.clear_graph()
+    return jsonify({"success": ok})
+
+
+@app.get("/api/graph/health")
+def api_graph_health():
+    """Graph RAG 健康检查"""
+    graph_rag = get_graph_rag_service()
+    if graph_rag is None:
+        return jsonify({"status": "unavailable", "service": "GraphRAGService"})
+    return jsonify(graph_rag.health_check())
 
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ from langchain_community.callbacks.manager import get_openai_callback
 
 from mildoc_chat.rag.rag_config import Config
 from mildoc_chat.rag.rerank_service import get_rerank_service
+from mildoc_chat.rag.graph_rag_service import get_graph_rag_service
 
 # 配置日志
 logger = logging.getLogger(__name__)
@@ -49,7 +50,14 @@ class RAGResponse(BaseModel):
     token_usage: Optional[TokenUsage] = None  # token使用情况
     success: bool = True  # 查询是否成功
     error_message: Optional[str] = None  # 错误信息
-    scene_info: Optional[Dict[str, Any]] = None  # 场景检测信息
+
+
+
+class _Doc:
+    """简单的文档对象，拥有 .page_content / .metadata 属性"""
+    def __init__(self, content, meta):
+        self.page_content = content
+        self.metadata = meta
 
 
 class RAGService:
@@ -58,42 +66,30 @@ class RAGService:
         使用Milvus向量数据库实现检索增强生成服务，通过大模型生成回答
     """
     
-    # 场景检测提示词模板
-    SCENE_DETECTION_TEMPLATE = """
-    请分析用户问题属于以下哪种客服场景类型，只返回对应的数字：
-
-        1. 产品咨询类 - 询问产品功能、规格、价格等基本信息
-        2. 售后服务类 - 退换货、维修、质量问题等售后相关
-        3. 账户相关类 - 登录、注册、密码、个人信息等账户问题  
-        4. 投诉建议类 - 对服务或产品的投诉、意见、建议
-        5. 技术支持类 - 使用方法、故障排除、技术配置等
-        6. 其他咨询类 - 不属于以上分类的一般性咨询
-
-    用户问题: {question}    
-
-    请只返回场景类型对应的数字（1-6）：
-    """
-    
-    # 统一的提示词模板 - 通用知识库问答版本（支持对话历史）
+    # 提示词模板（融合向量检索 + 知识图谱双路上下文）
     PROMPT_TEMPLATE = """
-    你是一个基于企业文档知识库的问答助手，优先利用检索到的文档内容来回答用户问题，但在知识库没有覆盖时可以结合通用常识进行补充说明。
+        你是一个基于企业文档知识库的问答助手，优先利用检索到的文档内容来回答用户问题，但在知识库没有覆盖时可以结合通用常识进行补充说明。
 
-    知识库内容（可能来自多个文档片段，可能为空或不相关）:
-    {context}
+        知识库内容（来自向量相似度检索，可能来自多个文档片段，可能为空或不相关）:
+        {context}
 
-    以下是本对话的近期历史（请结合历史理解并回答当前问题）:
-    {chat_history}
+        知识图谱关系（来自图数据库的精准检索，展示实体间的上下级/因果/所属等结构化关系，可能为空）:
+        {graph_context}
 
-    当前用户问题: {question}
+        以下是本对话的近期历史（请结合历史理解并回答当前问题）:
+        {chat_history}
 
-    回答要求：
-        1. 当上方“知识库内容”中存在与问题明显相关的信息时，应以这些内容为主进行回答，对关键信息做整理、概括和重组。
-        2. 当知识库中的信息只覆盖了问题的一部分时，先基于已有内容回答“已知部分”，然后可以适度结合通用经验补充，但不要与知识库中已有结论相矛盾。
-        3. 当知识库内容与问题几乎无关或基本为空时，可以直接基于通用知识/常识完整回答用户问题，此时不必刻意强调“知识库里查不到”，但也不要虚构具体文档中才会出现的细节（如具体公司名称、条款编号等）。
-        4. 若有近期对话历史，请结合历史上下文理解当前问题，保持回答连贯、不重复已说明过的内容。
-        5. 回答使用自然流畅的中文，语言简洁、逻辑清晰，可以合理使用 Markdown 语法（如标题、列表、加粗、代码块等）提升可读性。
+        当前用户问题: {question}
 
-    请基于以上要求，使用 Markdown 格式给出对用户问题的最终回答：
+        回答要求：
+            1. 综合利用上方"知识库内容"和"知识图谱关系"来回答问题。向量检索提供语义相似的段落，图谱提供精准的实体关联与层级结构，两者互补。
+            2. 当知识库和图谱都包含相关信息时，以文档原文为主、图谱关系为辅进行融合回答。
+            3. 当知识库中的信息只覆盖了问题的一部分时，先基于已有内容回答"已知部分"，然后可以适度结合通用经验补充，但不要与知识库中已有结论相矛盾。
+            4. 当知识库和图谱内容都与问题几乎无关或基本为空时，可以直接基于通用知识/常识完整回答用户问题，此时不必刻意强调"知识库里查不到"，但也不要虚构具体文档中才会出现的细节（如具体公司名称、条款编号等）。
+            5. 若有近期对话历史，请结合历史上下文理解当前问题，保持回答连贯、不重复已说明过的内容。
+            6. 回答使用自然流畅的中文，语言简洁、逻辑清晰，可以合理使用 Markdown 语法（如标题、列表、加粗、代码块等）提升可读性。
+
+        请基于以上要求，使用 Markdown 格式给出对用户问题的最终回答：
     """
 
     # 对话历史最多保留条数（避免 prompt 过长）
@@ -122,8 +118,11 @@ class RAGService:
         self.embeddings = None
         self.llm = None
         self.rerank_service = None  # 重排序服务
+        self.graph_rag = None  # 知识图谱服务（双读融合）
         self._initialize_components()
-    
+    #=======================================================
+    #初始化组件
+    #=======================================================
     def _initialize_components(self):
         """初始化所有组件"""
         try:
@@ -138,6 +137,9 @@ class RAGService:
             
             # 初始化重排序服务
             self._initialize_rerank_service()
+
+            # 初始化知识图谱服务（可选，用于双读融合检索）
+            self._initialize_graph_service()
             
             logger.info("RAG服务初始化完成")
             
@@ -229,16 +231,14 @@ class RAGService:
         return ChatOpenAI(**kwargs)
     
     def _initialize_vector_store(self):
-        """初始化向量存储（pymilvus 客户端）
-
-        说明：
-          - 这里直接使用 pymilvus.MilvusClient，而不再依赖 langchain-milvus 的封装，
-            避免因为连接别名 / 默认配置等问题导致“集合里明明有数据但始终检索到 0 条”的情况。
-          - mildoc_index 构建集合时的字段是：
-              id, doc_name, doc_path_name, doc_type, doc_md5, doc_length, content, content_vector, embedding_model
+        """
+            初始化向量存储（pymilvus 客户端）
+            说明：
+            - mildoc_index 构建集合时的字段是：
+            id, doc_name, doc_path_name, doc_type, doc_md5, doc_length, content, content_vector, embedding_model
         """
         try:
-            # 显式使用 uri + db_name，直连 mildoc_index 使用的 Milvus 实例
+            # 连接数据库
             uri = f"http://{Config.MILVUS_HOST}:{Config.MILVUS_PORT}"
             self.milvus_client = MilvusClient(
                 uri=uri,
@@ -269,8 +269,6 @@ class RAGService:
             logger.error(f"Milvus向量存储初始化失败: {e}")
             raise
     
-
-
     def _initialize_rerank_service(self):
         """初始化重排序服务"""
         try:
@@ -283,7 +281,233 @@ class RAGService:
             logger.warning(f"重排序服务初始化失败: {e}")
             self.rerank_service = None
 
-    def query_service(self, query: str, use_rerank: bool = True, use_rag: bool = True, chat_history: Optional[List[Dict[str, str]]] = None) -> RAGResponse:
+    # =====================================================================
+    def _initialize_graph_service(self):
+        """初始化知识图谱服务（用于双读融合检索）"""
+        try:
+            self.graph_rag = get_graph_rag_service()
+            if self.graph_rag:
+                logger.info("知识图谱服务已集成到 RAGService（双读模式）")
+            else:
+                logger.info("知识图谱服务未配置，将跳过图谱检索")
+        except Exception as e:
+            logger.warning(f"知识图谱服务初始化失败（不影响向量检索）: {e}")
+            self.graph_rag = None
+
+    # 公共私有方法：向量检索、重排序、文档处理、构建 prompt
+    # =====================================================================
+
+    def _retrieve_candidates(self, query, use_rerank, use_rag):
+        """第一步：向量检索获取候选文档（use_rag=False 时跳过，不查库）"""
+        initial_k = 10 if use_rerank and self.rerank_service else 3  # 如果启用重排就检索10个，不启用就检索3个
+        candidate_docs = []
+
+        if use_rag and self.milvus_client is not None:
+            try:
+                # 1. 先对查询做向量化
+                query_vector = self.embeddings.embed_query(query)
+
+                # 2. 调用 Milvus 相似度搜索
+                search_params = {
+                    "metric_type": "COSINE",
+                    "params": {"nprobe": 64},
+                }
+                results = self.milvus_client.search(
+                    collection_name=Config.MILVUS_COLLECTION_NAME,
+                    data=[query_vector],
+                    anns_field="content_vector",
+                    search_params=search_params,
+                    limit=initial_k,
+                    output_fields=[
+                        "doc_name",
+                        "doc_path_name",
+                        "doc_type",
+                        "content",
+                    ],
+                )
+
+                hits = results[0] if results else []
+                for hit in hits:
+                    # hit 结构: {'id': ..., 'distance': ..., 'entity': {...}} entity就是上一步results的数据
+                    entity = hit.get("entity", {})
+                    page_content = entity.get("content", "")
+                    metadata = {
+                        "doc_name": entity.get("doc_name", ""),
+                        "doc_path_name": entity.get("doc_path_name", ""),
+                        "doc_type": entity.get("doc_type", ""),
+                        "score": float(hit.get("distance", 0.0)),
+                    }
+                    candidate_docs.append(_Doc(page_content, metadata))
+
+            except Exception as se:  # noqa: BLE001
+                logger.error(f"向量检索失败: {se}")
+        elif use_rag and self.milvus_client is None:
+            logger.error("Milvus 客户端尚未初始化")
+
+        logger.info(f"📄 初始检索到 {len(candidate_docs)} 个候选文档")
+        return candidate_docs
+
+    def _rerank_docs(self, query, candidate_docs, use_rerank):
+        """第二步：重排序（如果启用）
+
+        对候选文档进行重排序，并做安全检查确保原始最高相似度文档不会被过滤掉。
+        最终返回前3个文档。
+        """
+        final_docs = candidate_docs
+        if use_rerank and self.rerank_service and len(candidate_docs) > 1:  # 候选文档数量大于1
+            # 提取文档内容用于重排序
+            doc_contents = [doc.page_content for doc in candidate_docs]
+
+            # 增加重排序的top_n数量，确保不会过滤掉高相关度文档
+            rerank_top_n = min(5, len(candidate_docs))  # 注意rerank_top_n只是个数字
+            # 如果候选文档是10个，那么就从这10个里面里面挑出来5个。 重排序服务计算成本较高，不需要对所有10个文档都重排序，选择前5个即可
+            # 如果是3个，就直接返回3个
+
+            # 执行重排序
+            # rerank_service是rerank_service.py中的RerankService类的对象，rerank_documents是RerankService类中的方法
+            rerank_response = self.rerank_service.rerank_documents(
+                query=query,
+                documents=doc_contents,
+                top_n=rerank_top_n
+            )
+            '''
+            rerank_response的结构是：
+            class RerankDocument(BaseModel):
+                """重排序文档模型"""
+                index: int  # 原始文档索引。 原始文档在输入列表中的位置
+                content: str  # 文档内容
+                relevance_score: float  # 相关性分数 重排序后的相关性分数
+                metadata: Optional[Dict[str, Any]] = None  # 元数据
+            '''
+
+            if rerank_response.success:
+                # 重排序服务返回的结果与原始文档对象进行映射和整合。
+                # 重排服务返回的数据类型是RerankDocument，但我们需要的是 原始的 Document 对象， 因为它包含完整的元数据。
+                reranked_docs = []
+                for rerank_doc in rerank_response.documents:
+                    if 0 <= rerank_doc.index < len(candidate_docs):
+                        original_doc = candidate_docs[rerank_doc.index]
+                        # 将相关性分数添加到元数据中
+                        if hasattr(original_doc, 'metadata'):
+                            original_doc.metadata['rerank_score'] = rerank_doc.relevance_score
+                        reranked_docs.append(original_doc)
+
+                # 安全检查：确保原始最高相似度文档不会被完全过滤掉
+                    # 向量检索的第1个文档（最高相似度）在重排序后可能被排到后面，甚至被过滤掉
+                    # 如果重排序服务只返回 top 5，而原始第1个文档排到了第6位或更后，它就不会出现在结果中，下面的代码就是 将其添加到结果中
+                if candidate_docs and len(reranked_docs) > 0:
+                    first_doc = candidate_docs[0]  # 取出重排前检索到的第一个文档
+                    first_doc_in_rerank = any(  # 通过文档名称和内容判断原始第1个文档是否已在重排序结果中。
+                        hasattr(doc, 'metadata') and  # hasattr 检查对象是否有指定的属性或方法
+                        doc.metadata.get('doc_name') == first_doc.metadata.get('doc_name') and
+                        doc.page_content == first_doc.page_content
+                        for doc in reranked_docs
+                    )
+
+                    if not first_doc_in_rerank:  # 如果不在，强制添加
+                        # 将原始最高相似度文档添加到重排序结果的开头
+                        if hasattr(first_doc, 'metadata'):
+                            first_doc.metadata['rerank_score'] = 1.0  # 给予最高分数
+                        reranked_docs.insert(0, first_doc)
+                        logger.info(f"🔒 安全检查：将原始最高相似度文档添加到重排序结果中")
+
+                final_docs = reranked_docs[:3]  # 最终仍然只取前3个
+                logger.info(f"🔄 重排序完成，选择了 {len(final_docs)} 个文档")
+            else:
+                logger.warning(f"重排序失败，使用原始检索结果: {rerank_response.error_message}")
+
+        return final_docs
+
+    def _process_source_docs(self, final_docs):
+        """将检索/重排后的文档对象转换为 SourceDocument 列表，并打印日志。"""
+        processed_source_docs = []
+        for i, doc in enumerate(final_docs):
+            try:
+                # 提取文档元数据
+                metadata = doc.metadata if hasattr(doc, 'metadata') else {}
+                doc_name = metadata.get("doc_name", f"文档{i+1}")
+                doc_path_name = metadata.get("doc_path_name", "")
+                doc_type = metadata.get("doc_type", "unknown")
+                rerank_score = metadata.get("rerank_score")
+
+                # 获取内容预览
+                content_preview = doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content
+
+                processed_source_docs.append(SourceDocument(
+                    doc_name=doc_name,
+                    doc_path_name=doc_path_name,
+                    doc_type=doc_type,
+                    content_preview=content_preview,
+                    similarity_score=rerank_score  # 使用rerank分数
+                ))
+
+                score_info = f" (rerank: {rerank_score:.3f})" if rerank_score else ""
+                logger.info(f"📖 文档{i+1}: {doc_name}{score_info} - {content_preview[:50]}...")
+
+            except Exception as e:
+                logger.warning(f"处理源文档{i+1}时出错: {e}")
+                # 添加默认文档信息
+                processed_source_docs.append(SourceDocument(
+                    doc_name=f"文档{i+1}",
+                    doc_path_name="",
+                    doc_type="unknown",
+                    content_preview="无法获取文档信息"
+                ))
+        return processed_source_docs
+
+    def _retrieve_graph_context(self, query):
+        """从知识图谱获取结构化关系上下文（双读的图谱检索部分）
+
+        通过 Cypher 查询或关键词模糊匹配，获取与用户问题相关的
+        实体关系信息，作为向量检索的补充上下文。
+        """
+        if not self.graph_rag:
+            return ""
+        try:
+            graph_rag = self.graph_rag
+            graph_rag.graph.refresh_schema()
+            schema = graph_rag.graph.schema
+
+            # 尝试 LLM 生成 Cypher 精准查询
+            cypher = graph_rag._generate_cypher(query, schema)
+            results = []
+            if cypher:
+                try:
+                    results = graph_rag.graph.query(cypher)
+                    logger.info("图谱 Cypher 查询返回 %d 条结果", len(results))
+                except Exception:
+                    pass
+
+            # Cypher 无结果时回退到关键词模糊匹配
+            if not results:
+                results = graph_rag._fallback_search(query)
+                if results:
+                    logger.info("图谱关键词回退查询返回 %d 条结果", len(results))
+
+            if not results:
+                return ""
+
+            return graph_rag._format_graph_results(results)
+        except Exception as e:
+            logger.warning(f"图谱检索失败（不影响向量检索）: {e}")
+            return ""
+
+    def _build_prompt(self, final_docs, query, chat_history=None, graph_context=""):
+        """根据最终文档列表和查询构建 LLM prompt（融合向量上下文 + 图谱上下文）。"""
+        context = "\n\n".join([doc.page_content for doc in final_docs])
+        chat_history_str = self._format_chat_history(chat_history)
+        return self.PROMPT_TEMPLATE.format(
+            context=context,
+            graph_context=graph_context or "（无图谱信息）",
+            chat_history=chat_history_str,
+            question=query,
+        )
+
+    # =====================================================================
+    # 对外查询方法
+    # =====================================================================
+
+    def query_service(self, query, use_rerank=True, use_rag=True, chat_history=None):
         """核心查询服务方法
 
         Args:
@@ -294,7 +518,7 @@ class RAGService:
         """
         try:
             logger.info(f"🔍 开始处理查询（use_rag={use_rag}, rerank={use_rerank}): {query}")
-            
+
             if not query or not query.strip():
                 return RAGResponse(
                     content="请输入有效的查询内容",
@@ -302,195 +526,44 @@ class RAGService:
                     success=False,
                     error_message="查询内容为空"
                 )
-            
-            # 第0步：场景检测（可选）
-            # scene_info = self.detect_user_scene(query)
-            scene_info = None # 暂时不使用场景检测
-            
-            # 第一步：向量检索获取候选文档（use_rag=False 时跳过，不查库）
-            initial_k = 10 if use_rerank and self.rerank_service else 3  # 如果启用重排就检索10个，不启用就检索3个
-            candidate_docs: List[Any] = []
-            if use_rag and self.milvus_client is not None:
-                try:
-                    # 1. 先对查询做向量化
-                    query_vector = self.embeddings.embed_query(query)
 
-                    # 2. 调用 Milvus 相似度搜索
-                    search_params = {
-                        "metric_type": "COSINE",
-                        "params": {"nprobe": 64},
-                    }
-                    results = self.milvus_client.search(
-                        collection_name=Config.MILVUS_COLLECTION_NAME,
-                        data=[query_vector],
-                        anns_field="content_vector",
-                        search_params=search_params,
-                        limit=initial_k,
-                        output_fields=[
-                            "doc_name",
-                            "doc_path_name",
-                            "doc_type",
-                            "content",
-                        ],
-                    )
+            # 第一步：向量检索获取候选文档
+            candidate_docs = self._retrieve_candidates(query, use_rerank, use_rag)
 
-                    hits = results[0] if results else []
-                    for hit in hits:
-                        # hit 结构: {'id': ..., 'distance': ..., 'entity': {...}}
-                        entity = hit.get("entity", {})
-                        page_content = entity.get("content", "")
-                        metadata = {
-                            "doc_name": entity.get("doc_name", ""),
-                            "doc_path_name": entity.get("doc_path_name", ""),
-                            "doc_type": entity.get("doc_type", ""),
-                            "score": float(hit.get("distance", 0.0)),
-                        }
+            # 第二步：重排序
+            final_docs = self._rerank_docs(query, candidate_docs, use_rerank)
 
-                        # 简单的对象，后面当成有 .page_content / .metadata 属性的对象使用
-                        class _Doc:
-                            def __init__(self, content, meta):
-                                self.page_content = content
-                                self.metadata = meta
+            # 第三步（新增）：从知识图谱获取结构化关系上下文
+            graph_context = self._retrieve_graph_context(query) if use_rag else ""
+            if graph_context:
+                logger.info("🔗 图谱检索到关系上下文（%d 字符）", len(graph_context))
 
-                        candidate_docs.append(_Doc(page_content, metadata))
-
-                except Exception as se:  # noqa: BLE001
-                    logger.error(f"向量检索失败: {se}")
-            elif use_rag and self.milvus_client is None:
-                logger.error("Milvus 客户端尚未初始化")
-
-            logger.info(f"📄 初始检索到 {len(candidate_docs)} 个候选文档")
-
-            # 第二步：重排序（如果启用）
-            final_docs = candidate_docs
-            if use_rerank and self.rerank_service and len(candidate_docs) > 1: #候选文档数量大于1
-                # 提取文档内容用于重排序
-                doc_contents = [doc.page_content for doc in candidate_docs]
-                
-                # 增加重排序的top_n数量，确保不会过滤掉高相关度文档
-                rerank_top_n = min(5, len(candidate_docs))  #注意rerank_top_n只是个数字
-                #如果候选文档是10个，那么就从这10个里面里面挑出来5个。 重排序服务计算成本较高，不需要对所有10个文档都重排序，选择前5个即可
-                #如果是3个，就直接返回3个
-                
-                # 执行重排序
-                #rerank_service是rerank_service.py中的RerankService类的对象，rerank_documents是RerankService类中的方法
-                rerank_response = self.rerank_service.rerank_documents(
-                    query=query,
-                    documents=doc_contents,
-                    top_n=rerank_top_n
-                )
-                '''
-                rerank_response的结构是：
-                class RerankDocument(BaseModel):
-                    """重排序文档模型"""
-                    index: int  # 原始文档索引。 原始文档在输入列表中的位置
-                    content: str  # 文档内容
-                    relevance_score: float  # 相关性分数 重排序后的相关性分数
-                    metadata: Optional[Dict[str, Any]] = None  # 元数据
-                '''
-                
-                if rerank_response.success:
-                    # 重排序服务返回的结果与原始文档对象进行映射和整合。
-                    #重排服务返回的数据类型是RerankDocument，但我们需要的是 原始的 Document 对象， 因为它包含完整的元数据。
-                    reranked_docs = []
-                    for rerank_doc in rerank_response.documents:
-                        if 0 <= rerank_doc.index < len(candidate_docs):
-                            original_doc = candidate_docs[rerank_doc.index]
-                            # 将相关性分数添加到元数据中
-                            if hasattr(original_doc, 'metadata'):
-                                original_doc.metadata['rerank_score'] = rerank_doc.relevance_score
-                            reranked_docs.append(original_doc)
-                    
-                    # 安全检查：确保原始最高相似度文档不会被完全过滤掉
-                        # 向量检索的第1个文档（最高相似度）在重排序后可能被排到后面，甚至被过滤掉
-                        # 如果重排序服务只返回 top 5，而原始第1个文档排到了第6位或更后，它就不会出现在结果中，下面的代码就是 将其添加到结果中
-                    if candidate_docs and len(reranked_docs) > 0:
-                        first_doc = candidate_docs[0] #去处重拍前检索到的第一个文档
-                        first_doc_in_rerank = any( #通过文档名称和内容判断原始第1个文档是否已在重排序结果中。
-                            hasattr(doc, 'metadata') and  #hasattr 检查对象是否有指定的属性或方法
-                            doc.metadata.get('doc_name') == first_doc.metadata.get('doc_name') and
-                            doc.page_content == first_doc.page_content
-                            for doc in reranked_docs
-                        )
-                        
-                        if not first_doc_in_rerank: #如果不在，强制添加
-                            # 将原始最高相似度文档添加到重排序结果的开头
-                            if hasattr(first_doc, 'metadata'):
-                                first_doc.metadata['rerank_score'] = 1.0  # 给予最高分数
-                            reranked_docs.insert(0, first_doc)
-                            logger.info(f"🔒 安全检查：将原始最高相似度文档添加到重排序结果中")
-                    
-                    final_docs = reranked_docs[:3]  # 最终仍然只取前3个
-                    logger.info(f"🔄 重排序完成，选择了 {len(final_docs)} 个文档")
-                else:
-                    logger.warning(f"重排序失败，使用原始检索结果: {rerank_response.error_message}")
-            
-            # 第三步：使用选定的文档生成回答
-            with get_openai_callback() as cb:  ## 在上下文中获取 OpenAI 回调处理器，方便地公开令牌和成本信息
-                # 构建上下文
-                context = "\n\n".join([doc.page_content for doc in final_docs])
-                chat_history_str = self._format_chat_history(chat_history)
-                prompt = self.PROMPT_TEMPLATE.format(context=context, chat_history=chat_history_str, question=query)
+            # 第四步：融合向量上下文 + 图谱上下文，生成回答
+            prompt = self._build_prompt(final_docs, query, chat_history, graph_context=graph_context)
+            with get_openai_callback() as cb:  # 在上下文中获取 OpenAI 回调处理器，方便地公开令牌和成本信息
                 answer = self.llm.invoke(prompt).content
-            
-            # 更新文档引用为最终选择的文档
-            source_documents = final_docs #final_docs是第二步最终返回的结果
-            
-            logger.info(f"✅ 查询完成，检索到 {len(source_documents)} 个相关文档")#这个可以在第二步就打印出来
+
+            logger.info(f"✅ 查询完成，检索到 {len(final_docs)} 个相关文档")
             logger.info(f"📄 答案长度: {len(answer)} 字符")
             logger.info(f"💰 Token使用: 输入{cb.prompt_tokens}, 输出{cb.completion_tokens}, 总计{cb.total_tokens}")
-            
+
             # 处理源文档信息
-            processed_source_docs = []
-            for i, doc in enumerate(source_documents):
-                try:
-                    # 提取文档元数据
-                    metadata = doc.metadata if hasattr(doc, 'metadata') else {}
-                    doc_name = metadata.get("doc_name", f"文档{i+1}")
-                    doc_path_name = metadata.get("doc_path_name", "")
-                    doc_type = metadata.get("doc_type", "unknown")
-                    rerank_score = metadata.get("rerank_score")
-                    
-                    # 获取内容预览
-                    content_preview = doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content
-                    
-                    source_doc = SourceDocument(
-                        doc_name=doc_name,
-                        doc_path_name=doc_path_name,
-                        doc_type=doc_type,
-                        content_preview=content_preview,
-                        similarity_score=rerank_score  # 使用rerank分数
-                    )
-                    processed_source_docs.append(source_doc)
-                    
-                    score_info = f" (rerank: {rerank_score:.3f})" if rerank_score else ""
-                    logger.info(f"📖 文档{i+1}: {doc_name}{score_info} - {content_preview[:50]}...")
-                    
-                except Exception as e:
-                    logger.warning(f"处理源文档{i+1}时出错: {e}")
-                    # 添加默认文档信息
-                    processed_source_docs.append(SourceDocument(
-                        doc_name=f"文档{i+1}",
-                        doc_path_name="",
-                        doc_type="unknown",
-                        content_preview="无法获取文档信息"
-                    ))
-            
+            processed_source_docs = self._process_source_docs(final_docs)
+
             # 构建token使用情况
             token_usage = TokenUsage(
                 prompt_tokens=cb.prompt_tokens,
                 completion_tokens=cb.completion_tokens,
                 total_tokens=cb.total_tokens
             )
-            
+
             return RAGResponse(
                 content=answer if answer else "抱歉，我无法根据现有信息回答您的问题。",
                 source_documents=processed_source_docs,
                 token_usage=token_usage,
                 success=True,
-                scene_info=scene_info
             )
-            
+
         except Exception as e:
             logger.error(f"❌ 查询服务失败: {e}")
             return RAGResponse(
@@ -498,12 +571,12 @@ class RAGService:
                 source_documents=[],
                 success=False,
                 error_message=f"查询过程中发生错误：{str(e)}",
-                scene_info=None
             )
 
-    def stream_query(self, query: str, use_rerank: bool = True, use_rag: bool = True, chat_history: Optional[List[Dict[str, str]]] = None) -> Iterable[Dict[str, Any]]:
-        """真正的流式输出（token 级别），逐条 yield 事件字典。
+    def stream_query(self, query, use_rerank=True, use_rag=True, chat_history=None):
+        """流式输出（token 级别），逐条 yield 事件字典。
 
+        与 query_service 共用检索 / 重排 / 文档处理逻辑，仅 LLM 生成阶段改为流式。
         支持传入 chat_history 使模型结合同一会话的历史对话回答。
         """
         # 兼容不同 LangChain 版本的回调基类路径
@@ -512,7 +585,7 @@ class RAGService:
         except Exception:  # noqa: BLE001
             from langchain.callbacks.base import BaseCallbackHandler  # type: ignore
 
-        def _resp_to_dict(resp: RAGResponse) -> Dict[str, Any]:
+        def _resp_to_dict(resp):
             return {
                 "success": resp.success,
                 "content": resp.content,
@@ -534,7 +607,6 @@ class RAGService:
                 }
                 if resp.token_usage
                 else None,
-                "scene_info": resp.scene_info,
             }
 
         yield {"type": "start"}
@@ -545,143 +617,35 @@ class RAGService:
                 source_documents=[],
                 success=False,
                 error_message="查询内容为空",
-                scene_info=None,
             )
             yield {"type": "error", "data": _resp_to_dict(resp)}
             return
 
-        # 第0步：场景检测（当前不启用，保持与 query_service 一致）
-        scene_info = None
+        # 第一步 & 第二步：向量检索 + 重排序（复用公共方法）
+        candidate_docs = self._retrieve_candidates(query, use_rerank, use_rag)
+        final_docs = self._rerank_docs(query, candidate_docs, use_rerank)
 
-        # 第一步：向量检索获取候选文档（use_rag=False 时跳过，不查库）
-        initial_k = 10 if use_rerank and self.rerank_service else 3
-        candidate_docs: List[Any] = []
+        # 处理源文档信息（提前算好，end 事件里带上）
+        processed_source_docs = self._process_source_docs(final_docs)
 
-        if use_rag and self.milvus_client is not None:
-            try:
-                query_vector = self.embeddings.embed_query(query)
-                search_params = {
-                    "metric_type": "COSINE",
-                    "params": {"nprobe": 64},
-                }
-                results = self.milvus_client.search(
-                    collection_name=Config.MILVUS_COLLECTION_NAME,
-                    data=[query_vector],
-                    anns_field="content_vector",
-                    search_params=search_params,
-                    limit=initial_k,
-                    output_fields=[
-                        "doc_name",
-                        "doc_path_name",
-                        "doc_type",
-                        "content",
-                    ],
-                )
+        # 第三步（新增）：从知识图谱获取结构化关系上下文
+        graph_context = self._retrieve_graph_context(query) if use_rag else ""
+        if graph_context:
+            logger.info("🔗 图谱检索到关系上下文（%d 字符）", len(graph_context))
 
-                hits = results[0] if results else []
-                for hit in hits:
-                    entity = hit.get("entity", {})
-                    page_content = entity.get("content", "")
-                    metadata = {
-                        "doc_name": entity.get("doc_name", ""),
-                        "doc_path_name": entity.get("doc_path_name", ""),
-                        "doc_type": entity.get("doc_type", ""),
-                        "score": float(hit.get("distance", 0.0)),
-                    }
-
-                    class _Doc:
-                        def __init__(self, content, meta):
-                            self.page_content = content
-                            self.metadata = meta
-
-                    candidate_docs.append(_Doc(page_content, metadata))
-
-            except Exception as se:  # noqa: BLE001
-                logger.error(f"向量检索失败: {se}")
-        elif use_rag and self.milvus_client is None:
-            logger.error("Milvus 客户端尚未初始化")
-
-        # 第二步：重排序（如果启用）
-        final_docs = candidate_docs
-        if use_rerank and self.rerank_service and len(candidate_docs) > 1:
-            doc_contents = [doc.page_content for doc in candidate_docs]
-            rerank_top_n = min(5, len(candidate_docs))
-            rerank_response = self.rerank_service.rerank_documents(
-                query=query,
-                documents=doc_contents,
-                top_n=rerank_top_n,
-            )
-            if rerank_response.success:
-                reranked_docs = []
-                for rerank_doc in rerank_response.documents:
-                    if 0 <= rerank_doc.index < len(candidate_docs):
-                        original_doc = candidate_docs[rerank_doc.index]
-                        if hasattr(original_doc, "metadata"):
-                            original_doc.metadata["rerank_score"] = rerank_doc.relevance_score
-                        reranked_docs.append(original_doc)
-
-                if candidate_docs and len(reranked_docs) > 0:
-                    first_doc = candidate_docs[0]
-                    first_doc_in_rerank = any(
-                        hasattr(doc, "metadata")
-                        and doc.metadata.get("doc_name") == first_doc.metadata.get("doc_name")
-                        and doc.page_content == first_doc.page_content
-                        for doc in reranked_docs
-                    )
-                    if not first_doc_in_rerank:
-                        if hasattr(first_doc, "metadata"):
-                            first_doc.metadata["rerank_score"] = 1.0
-                        reranked_docs.insert(0, first_doc)
-
-                final_docs = reranked_docs[:3]
-            else:
-                logger.warning(f"重排序失败，使用原始检索结果: {rerank_response.error_message}")
-
-        # 处理源文档信息（可提前算好，end 事件里带上）
-        processed_source_docs: List[SourceDocument] = []
-        for i, doc in enumerate(final_docs):
-            try:
-                metadata = doc.metadata if hasattr(doc, "metadata") else {}
-                doc_name = metadata.get("doc_name", f"文档{i+1}")
-                doc_path_name = metadata.get("doc_path_name", "")
-                doc_type = metadata.get("doc_type", "unknown")
-                rerank_score = metadata.get("rerank_score")
-                content_preview = doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content
-                processed_source_docs.append(
-                    SourceDocument(
-                        doc_name=doc_name,
-                        doc_path_name=doc_path_name,
-                        doc_type=doc_type,
-                        content_preview=content_preview,
-                        similarity_score=rerank_score,
-                    )
-                )
-            except Exception as e:
-                logger.warning(f"处理源文档{i+1}时出错: {e}")
-                processed_source_docs.append(
-                    SourceDocument(
-                        doc_name=f"文档{i+1}",
-                        doc_path_name="",
-                        doc_type="unknown",
-                        content_preview="无法获取文档信息",
-                    )
-                )
-
-        # 第三步：流式生成回答
-        context = "\n\n".join([doc.page_content for doc in final_docs])
-        chat_history_str = self._format_chat_history(chat_history)
-        prompt = self.PROMPT_TEMPLATE.format(context=context, chat_history=chat_history_str, question=query)
+        # 第四步：融合向量上下文 + 图谱上下文，流式生成回答
+        prompt = self._build_prompt(final_docs, query, chat_history, graph_context=graph_context)
 
         _STOP = object()
-        token_q: "queue.Queue[object]" = queue.Queue()
-        state: Dict[str, Any] = {"answer": "", "token_usage": None, "error": None}
+        token_q = queue.Queue()
+        state = {"answer": "", "token_usage": None, "error": None}
 
         class _TokenQueueCallbackHandler(BaseCallbackHandler):
-            def on_llm_new_token(self, token: str, **kwargs: Any) -> None:  # noqa: ANN401
+            def on_llm_new_token(self, token, **kwargs):
                 if token:
                     token_q.put(token)
 
-        def _worker() -> None:
+        def _worker():
             try:
                 cb_handler = _TokenQueueCallbackHandler()
                 llm_stream = self._create_llm(streaming=True, callbacks=[cb_handler])
@@ -715,7 +679,6 @@ class RAGService:
                 source_documents=[],
                 success=False,
                 error_message=f"查询过程中发生错误：{err}",
-                scene_info=None,
             )
             yield {"type": "error", "data": _resp_to_dict(resp)}
             return
@@ -726,10 +689,9 @@ class RAGService:
             token_usage=state.get("token_usage"),
             success=True,
             error_message=None,
-            scene_info=scene_info,
         )
         yield {"type": "end", "data": _resp_to_dict(resp)}
-    
+
     def get_similar_documents(self, query: str, top_k: int = 3) -> List[Dict[str, Any]]:
         """获取相似文档（用于调试和分析）
         用于直接查看向量检索的结果，不进行重排序和 LLM 生成。
@@ -879,42 +841,6 @@ class RAGService:
         
         return status
 
-    def detect_user_scene(self, query: str) -> Dict[str, Any]:
-        """检测用户问题的场景类型
-        
-        Args:
-            query: 用户问题
-            
-        Returns:
-            Dict: 包含场景类型和建议的字典
-        """
-        try:
-            # 使用LLM进行场景检测
-            prompt = self.SCENE_DETECTION_TEMPLATE.format(question=query)
-            response = self.llm.invoke(prompt).content.strip()
-            
-            # 解析场景类型
-            scene_mapping = {
-                "1": {"type": "产品咨询类", "priority": "normal", "suggest_human": False},
-                "2": {"type": "售后服务类", "priority": "high", "suggest_human": True},
-                "3": {"type": "账户相关类", "priority": "high", "suggest_human": True},
-                "4": {"type": "投诉建议类", "priority": "urgent", "suggest_human": True},
-                "5": {"type": "技术支持类", "priority": "normal", "suggest_human": False},
-                "6": {"type": "其他咨询类", "priority": "normal", "suggest_human": False}
-            }
-            
-            scene_info = scene_mapping.get(response, scene_mapping["6"])
-            scene_info["detected_number"] = response
-            
-            logger.info(f"🎯 场景检测结果: {query} -> {scene_info['type']} (优先级: {scene_info['priority']})")
-            
-            return scene_info
-            
-        except Exception as e:
-            logger.warning(f"场景检测失败: {e}")
-            return {"type": "其他咨询类", "priority": "normal", "suggest_human": False, "detected_number": "6"}
-
-
 # 全局RAG服务实例
 _rag_service_instance = None
 
@@ -956,59 +882,7 @@ def query_question(question: str) -> RAGResponse:
 
 
 if __name__ == "__main__":
-    # 测试代码 - 专业客服RAG系统
+    # 简单测试：健康检查
     rag = get_rag_service()
-
-
-    # 检测健康状态
     health = rag.health_check()
     print(f"健康状态: {health}")
-
-
-    # 测试不同场景的客服问题
-    test_cases = [
-        "帮我介绍一下盗窃罪",  # 其他咨询类
-        "我要退货，怎么办理？",    # 售后服务类
-        "忘记密码了，如何重置？",  # 账户相关类
-        "你们的服务太差了！",      # 投诉建议类
-        "产品无法连接WiFi",       # 技术支持类
-    ]
-
-    print(100 * "=")
-    
-    for i, question in enumerate(test_cases, 1):
-        print(100 * "*")
-        print(f"\n=== 测试案例 {i}: {question} ===")
-        
-        # 测试场景检测
-        scene_info = rag.detect_user_scene(question)
-        print(f"🎯 场景类型: {scene_info['type']}")
-        print(f"🚨 优先级: {scene_info['priority']}")
-        print(f"👤 建议转人工: {'是' if scene_info['suggest_human'] else '否'}")
-        
-        # 测试完整查询
-        response = rag.query_service(question, use_rerank=True)
-        print(f"💬 客服回答: {response.content}")
-        if response.scene_info:
-            print(f"📊 场景信息: {response.scene_info['type']}")
-        if response.token_usage:
-            print(f"💰 Token使用: {response.token_usage.total_tokens}")
-        print(f"📚 参考文档数: {len(response.source_documents)}")
-        
-    print(100 * "=")
-    
-    print("\n=== 测试经典产品咨询 ===")
-    response = rag.query_service("介绍一下老人与海这本书", use_rerank=True)
-    print(f"回答: {response.content}")
-    print(f"场景信息: {response.scene_info}")
-    print(f"源文档数量: {len(response.source_documents)}")
-    if response.token_usage:
-        print(f"Token使用: {response.token_usage.total_tokens}")
-
-    for doc in response.source_documents:
-        print("--------------------------------")
-        print(f"源文档: {doc.doc_name}")
-        print(f"相似度分数: {doc.similarity_score}")
-        print(f"内容预览: {doc.content_preview[:50]}...")
-        
-        
