@@ -8,6 +8,7 @@
 """
 
 import json
+import json_repair
 import os
 import logging
 from typing import Dict, List, Optional
@@ -190,7 +191,7 @@ class GraphIndexer:
                 model=self._llm_model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.0,
-                max_tokens=2000,
+                max_tokens=4096,
             )
             content = response.choices[0].message.content.strip()
 
@@ -200,7 +201,11 @@ class GraphIndexer:
             elif "```" in content:
                 content = content.split("```")[1].split("```")[0].strip()
 
-            return json.loads(content)
+            # 使用 json_repair 健壮解析 LLM 返回的 JSON
+            result = json_repair.loads(content)
+            if isinstance(result, dict):
+                return result
+            return {"entities": [], "relations": []}
         except Exception as e:
             logger.warning("实体关系抽取失败: %s", e)
             return None
