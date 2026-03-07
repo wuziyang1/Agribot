@@ -291,6 +291,7 @@ def api_ask():
     question = (payload.get("question") or "").strip()
     use_rerank = bool(payload.get("use_rerank", True))
     use_rag = bool(payload.get("use_rag", True))
+    use_graph = bool(payload.get("use_graph", True))
     session_id = (payload.get("session_id") or "").strip() or None
 
     chat_history = []
@@ -331,7 +332,7 @@ def api_ask():
         )
 
     try:
-        resp = rag.query_service(question, use_rerank=use_rerank, use_rag=use_rag, chat_history=chat_history)
+        resp = rag.query_service(question, use_rerank=use_rerank, use_rag=use_rag, use_graph=use_graph, chat_history=chat_history)
     except Exception as e:
         logger.exception("query_service failed")
         return jsonify(
@@ -360,6 +361,7 @@ def api_ask_stream():
     question = (payload.get("question") or "").strip()
     use_rerank = bool(payload.get("use_rerank", True))
     use_rag = bool(payload.get("use_rag", True))
+    use_graph = bool(payload.get("use_graph", True))
     session_id = (payload.get("session_id") or "").strip() or None
 
     # 若提供 session_id 且已登录，则加载该会话的历史消息供模型参考
@@ -408,7 +410,7 @@ def api_ask_stream():
 
         try:
             # 直接使用 RAGService 自带的 token 级流式接口（传入会话历史）
-            for event in rag.stream_query(question, use_rerank=use_rerank, use_rag=use_rag, chat_history=chat_history):
+            for event in rag.stream_query(question, use_rerank=use_rerank, use_rag=use_rag, use_graph=use_graph, chat_history=chat_history):
                 yield json.dumps(event, ensure_ascii=False) + "\n"
         except Exception as e:  # noqa: BLE001
             logger.exception("stream_query failed")

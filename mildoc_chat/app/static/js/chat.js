@@ -337,7 +337,7 @@ async function sendQuestion() {
   let accumulated = '';
 
   try {
-    const apiUrl = '/api/graph/ask_stream';
+    const apiUrl = '/api/ask_stream';
     const resp = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -345,6 +345,7 @@ async function sendQuestion() {
         question: text,
         use_rerank: true,
         use_rag: useRag,
+        use_graph: useGraph,
         session_id: activeSessionId || undefined
       })
     });

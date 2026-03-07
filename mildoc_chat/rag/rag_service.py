@@ -507,17 +507,18 @@ class RAGService:
     # 对外查询方法
     # =====================================================================
 
-    def query_service(self, query, use_rerank=True, use_rag=True, chat_history=None):
+    def query_service(self, query, use_rerank=True, use_rag=True, use_graph=True, chat_history=None):
         """核心查询服务方法
 
         Args:
             query: 用户输入的查询内容
             use_rerank: 是否使用重排序功能
             use_rag: 是否使用知识库检索（为 False 时不查库，仅用 LLM 回答）
+            use_graph: 是否使用知识图谱检索（为 False 时不查图谱）
             chat_history: 本会话的近期对话历史 [{"role":"user"|"assistant","content":"..."}, ...]，可选
         """
         try:
-            logger.info(f"🔍 开始处理查询（use_rag={use_rag}, rerank={use_rerank}): {query}")
+            logger.info(f"🔍 开始处理查询（use_rag={use_rag}, use_graph={use_graph}, rerank={use_rerank}): {query}")
 
             if not query or not query.strip():
                 return RAGResponse(
@@ -533,8 +534,8 @@ class RAGService:
             # 第二步：重排序
             final_docs = self._rerank_docs(query, candidate_docs, use_rerank)
 
-            # 第三步（新增）：从知识图谱获取结构化关系上下文
-            graph_context = self._retrieve_graph_context(query) if use_rag else ""
+            # 第三步：从知识图谱获取结构化关系上下文
+            graph_context = self._retrieve_graph_context(query) if use_graph else ""
             if graph_context:
                 logger.info("🔗 图谱检索到关系上下文（%d 字符）", len(graph_context))
 
@@ -573,7 +574,7 @@ class RAGService:
                 error_message=f"查询过程中发生错误：{str(e)}",
             )
 
-    def stream_query(self, query, use_rerank=True, use_rag=True, chat_history=None):
+    def stream_query(self, query, use_rerank=True, use_rag=True, use_graph=True, chat_history=None):
         """流式输出（token 级别），逐条 yield 事件字典。
 
         与 query_service 共用检索 / 重排 / 文档处理逻辑，仅 LLM 生成阶段改为流式。
@@ -628,8 +629,8 @@ class RAGService:
         # 处理源文档信息（提前算好，end 事件里带上）
         processed_source_docs = self._process_source_docs(final_docs)
 
-        # 第三步（新增）：从知识图谱获取结构化关系上下文
-        graph_context = self._retrieve_graph_context(query) if use_rag else ""
+        # 第三步：从知识图谱获取结构化关系上下文
+        graph_context = self._retrieve_graph_context(query) if use_graph else ""
         if graph_context:
             logger.info("🔗 图谱检索到关系上下文（%d 字符）", len(graph_context))
 
