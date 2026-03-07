@@ -1,0 +1,4 @@
+__pycache__/
+*.py[cod]
+*.log
+mildoc_chat/mildoc_chat.log
