@@ -471,16 +471,6 @@ if (ragToggleBtn) {
 
 
 
-var uploadDocBtn = document.getElementById('upload-doc-btn');
-var uploadDocInput = document.getElementById('upload-doc-input');
-if (uploadDocBtn && uploadDocInput) {
-  uploadDocBtn.addEventListener('click', function () {
-    uploadDocInput.click();
-  });
-  uploadDocInput.addEventListener('change', function () {
-    this.value = '';
-  });
-}
 
 sendBtn.addEventListener('click', sendQuestion);
 

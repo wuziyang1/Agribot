@@ -73,6 +73,42 @@ EXTRACT_PROMPT = """你是一个中药材种植领域的知识图谱构建专家
 - 品种相关：属于品种、变种为、别名为、同科属
 - 病害相关：易感染、防治方法为、症状为、用药为
 
+## 关键要求：数值/定量信息的处理（必须严格遵守）
+
+**绝对禁止**将纯数值、百分比、范围值（如 "60%~65%"、"20~25℃"、"6.5~7.5"、"3000kg/亩"）
+作为实体的 name。数值信息必须作为**关系的 properties** 存储。
+
+正确做法示例：
+
+文本："灵芝栽培料含水量60%~65%"
+✅ 正确：
+  实体: [{{"name":"灵芝","type":"Herb"}}, {{"name":"含水量","type":"GrowingCondition"}}]
+  关系: [{{"source":"灵芝","target":"含水量","relation":"需要条件","properties":{{"value":"60%~65%","description":"栽培料含水量范围"}}}}]
+
+❌ 错误（绝对禁止）：
+  实体: [{{"name":"60%~65%","type":"GrowingCondition"}}]  ← 数值不能作为实体名
+
+文本："灵芝生长温度25~28℃，空气湿度85%~95%"
+✅ 正确：
+  实体: [{{"name":"灵芝","type":"Herb"}}, {{"name":"生长温度","type":"GrowingCondition"}}, {{"name":"空气湿度","type":"GrowingCondition"}}]
+  关系: [
+    {{"source":"灵芝","target":"生长温度","relation":"需要条件","properties":{{"value":"25~28℃"}}}},
+    {{"source":"灵芝","target":"空气湿度","relation":"需要条件","properties":{{"value":"85%~95%"}}}}
+  ]
+
+❌ 错误（绝对禁止）：
+  实体: [{{"name":"25~28℃","type":"GrowingCondition"}}]  ← 数值不能作为实体名
+
+文本："培养基pH值6.5~7.5"
+✅ 正确：
+  实体: [{{"name":"培养基","type":"CultivationMethod"}}, {{"name":"pH值","type":"GrowingCondition"}}]
+  关系: [{{"source":"培养基","target":"pH值","relation":"需要条件","properties":{{"value":"6.5~7.5"}}}}]
+
+**规则总结**：
+1. 实体 name 只能是中文名词/概念名称，绝不能是纯数字或带单位的数值
+2. 所有定量数值（温度、湿度、百分比、pH、产量等）必须放入关系的 properties.value
+3. 每个实体必须至少有一条关系连接到其他实体，**禁止创建孤立实体**
+
 ## 输出格式
 严格遵循以下 JSON 格式，不要输出多余文字：
 ```json
@@ -83,10 +119,12 @@ EXTRACT_PROMPT = """你是一个中药材种植领域的知识图谱构建专家
   "relations": [
     {{"source": "源实体名称", "source_type": "源实体类型",
       "target": "目标实体名称", "target_type": "目标实体类型",
-      "relation": "关系类型", "properties": {{}}}}
+      "relation": "关系类型", "properties": {{"value": "具体数值（如有）", "description": "补充说明"}}}}
   ]
 }}
 ```
+
+**再次强调**：数值/百分比/范围值 → 放入 relation.properties.value；不要作为实体 name。禁止创建孤立节点。
 
 文本内容：
 {text}
@@ -266,20 +304,32 @@ class GraphIndexer:
                     continue
                 # 清理类型名称，确保是合法的 Neo4j 标签
                 ent_type = "".join(c for c in ent_type if c.isalnum() or c == "_") or "Entity"
-                description = props.get("description", "")
+
+                # 构建参数：固定字段 + LLM 提取的所有 properties
+                params = {
+                    "name": name,
+                    "doc_source": doc_path_name,
+                    "doc_name": doc_name,
+                    "chunk_id": chunk_id,
+                }
+                set_clauses = [
+                    "n.doc_source = $doc_source",
+                    "n.doc_name = $doc_name",
+                    "n.chunk_id = $chunk_id",
+                ]
+                if isinstance(props, dict):
+                    for k, v in props.items():
+                        safe_key = "".join(c for c in k if c.isalnum() or c == "_")
+                        if safe_key and isinstance(v, (str, int, float, bool)):
+                            params[f"prop_{safe_key}"] = v
+                            set_clauses.append(f"n.{safe_key} = $prop_{safe_key}")
 
                 try:
+                    set_str = ", ".join(set_clauses)
                     session.run(
                         f"MERGE (n:`{ent_type}` {{name: $name}}) "
-                        f"SET n.doc_source = $doc_source, "
-                        f"n.doc_name = $doc_name, "
-                        f"n.description = $description, "
-                        f"n.chunk_id = $chunk_id",
-                        name=name,
-                        doc_source=doc_path_name,
-                        doc_name=doc_name,
-                        description=description,
-                        chunk_id=chunk_id,
+                    f"SET {set_str}",
+                        **params,
                     )
                 except Exception as e:
                     logger.warning("写入实体失败 [%s]: %s", name, e)
@@ -298,17 +348,33 @@ class GraphIndexer:
                 tgt_type = "".join(c for c in tgt_type if c.isalnum() or c == "_") or "Entity"
                 rel_type = "".join(c for c in rel_type if c.isalnum() or c == "_") or "RELATED_TO"
 
+                # 构建参数：固定字段 + LLM 提取的所有 properties
+                rel_params = {
+                    "src": src,
+                    "tgt": tgt,
+                    "doc_source": doc_path_name,
+                    "chunk_id": chunk_id,
+                }
+                rel_set_clauses = [
+                    "r.doc_source = $doc_source",
+                    "r.chunk_id = $chunk_id",
+                ]
+                rel_props = rel.get("properties", {})
+                if isinstance(rel_props, dict):
+                    for k, v in rel_props.items():
+                        safe_key = "".join(c for c in k if c.isalnum() or c == "_")
+                        if safe_key and isinstance(v, (str, int, float, bool)):
+                            rel_params[f"prop_{safe_key}"] = v
+                            rel_set_clauses.append(f"r.{safe_key} = $prop_{safe_key}")
+
                 try:
+                    rel_set_str = ", ".join(rel_set_clauses)
                     session.run(
                         f"MERGE (a:`{src_type}` {{name: $src}}) "
                         f"MERGE (b:`{tgt_type}` {{name: $tgt}}) "
                         f"MERGE (a)-[r:`{rel_type}`]->(b) "
-                        f"SET r.doc_source = $doc_source, "
-                        f"r.chunk_id = $chunk_id",
-                        src=src,
-                        tgt=tgt,
-                        doc_source=doc_path_name,
-                        chunk_id=chunk_id,
+                        f"SET {rel_set_str}",
+                        **rel_params,
                     )
                 except Exception as e:
                     logger.warning("写入关系失败 [%s->%s]: %s", src, tgt, e)

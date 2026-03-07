@@ -971,7 +971,6 @@ body {
   align-items: center;
 }
 
-.input-row-buttons #upload-doc-btn,
 .input-row-buttons #rag-toggle-btn,
 .input-row-buttons #send-btn {
   margin-top: 0;
@@ -1059,27 +1058,6 @@ button:not(:disabled):active {
 #rag-toggle-btn.rag-toggle.off:hover {
   background: #e5e7eb;
   color: #374151;
-}
-
-/* 上传文档按钮：样式与知识库按钮一致 */
-#upload-doc-btn.upload-doc-btn {
-  min-width: 72px;
-  height: 32px;
-  padding: 0 12px;
-  margin-top: 4px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 500;
-  flex-shrink: 0;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-  background: #2563eb;
-  color: #f9fafb;
-  border: 1px solid #2563eb;
-}
-
-#upload-doc-btn.upload-doc-btn:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
 }
 
 #send-btn {
