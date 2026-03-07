@@ -334,6 +334,25 @@ async function sendQuestion() {
   messagesEl.appendChild(botRow);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 
+  // 知识库查询中提示
+  let ragSearchingEl = null;
+  if (useRag) {
+    ragSearchingEl = document.createElement('div');
+    ragSearchingEl.className = 'rag-searching';
+    ragSearchingEl.innerHTML =
+      '<div class="rag-searching-icon"><span></span><span></span><span></span></div>' +
+      '<span class="rag-searching-text">正在查询知识库，请稍候…</span>';
+    botBubble.appendChild(ragSearchingEl);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function removeRagSearching() {
+    if (ragSearchingEl && ragSearchingEl.parentNode) {
+      ragSearchingEl.parentNode.removeChild(ragSearchingEl);
+      ragSearchingEl = null;
+    }
+  }
+
   let accumulated = '';
 
   try {
@@ -380,10 +399,12 @@ async function sendQuestion() {
         }
 
         if (msg.type === 'chunk' && msg.data && typeof msg.data.content === 'string') {
+          removeRagSearching();
           accumulated += msg.data.content;
           botBubble.textContent = accumulated;
           messagesEl.scrollTop = messagesEl.scrollHeight;
         } else if (msg.type === 'end' && msg.data) {
+          removeRagSearching();
           botBubble.classList.remove('streaming');
           renderBotMarkdown(botBubble, accumulated, { typesetMath: true });
           renderInsightsInto(botRow.querySelector('.msg-insights'), msg.data);
@@ -397,6 +418,7 @@ async function sendQuestion() {
             body: JSON.stringify({ role: 'assistant', content: accumulated })
           }).catch(() => {});
         } else if (msg.type === 'error' && msg.data) {
+          removeRagSearching();
           const errMsg = msg.data.error_message || '查询失败，请查看后端日志。';
           const errContent = '错误：' + errMsg;
           botBubble.textContent = errContent;
@@ -411,6 +433,7 @@ async function sendQuestion() {
     }
 
     if (!accumulated) {
+      removeRagSearching();
       botBubble.classList.remove('streaming');
       const emptyContent = '（后端未返回内容）';
       renderBotMarkdown(botBubble, emptyContent, { typesetMath: false });
@@ -420,6 +443,7 @@ async function sendQuestion() {
     }
   } catch (err) {
     console.error(err);
+    removeRagSearching();
     botBubble.classList.remove('streaming');
     const errContent = '请求异常，请检查服务是否正常运行。';
     renderBotMarkdown(botBubble, errContent, { typesetMath: false });

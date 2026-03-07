@@ -25,6 +25,104 @@ logger = logging.getLogger(__name__)
 
 
 # =========================================================================
+# 辅助函数
+# =========================================================================
+
+def _infer_relation_type(entity_type: str) -> str:
+    """根据实体类型推断与主体药材之间最合理的关系类型"""
+    mapping = {
+        "GrowingCondition": "需要条件",
+        "CultivationMethod": "种植方式",
+        "Disease": "易感染",
+        "HumanDisease": "可治疗",
+        "Region": "适宜种植于",
+        "Season": "种植时间",
+        "Soil": "适宜土壤",
+        "Fertilizer": "施用",
+        "Pesticide": "防治用药为",
+        "MedicinalPart": "药用部位为",
+        "MedicinalProperty": "药性为",
+        "Efficacy": "功效为",
+        "ChemicalCompound": "含有成分",
+        "HarvestProcess": "采收方式为",
+        "ProcessingMethod": "炮制方法为",
+        "StorageMethod": "贮藏方式为",
+        "Variety": "属于品种",
+        "Standard": "质量标准为",
+        "Formula": "属于方剂",
+        "PlantMorphology": "形态特征为",
+        "PlantingPattern": "种植模式为",
+        "Concept": "相关",
+    }
+    return mapping.get(entity_type, "相关")
+
+
+def _build_doc_context(doc_name: str, main_herbs: list, key_entities: list) -> str:
+    """构建文档上下文描述，供 LLM 在抽取时参考"""
+    parts = []
+    parts.append(f"当前文档名称：{doc_name}")
+    if main_herbs:
+        parts.append(f"本文档的主体药材：{', '.join(main_herbs[:5])}")
+        parts.append(
+            "请确保当前文本块中提取的所有实体（尤其是 GrowingCondition、"
+            "CultivationMethod、Disease、Region、Season 等）都与上述主体药材建立关系。"
+        )
+    else:
+        parts.append(
+            "尚未识别到主体药材。请从当前文本中优先识别出 Herb 类型的主体药材，"
+            "并确保其他所有实体都与该主体药材建立关系。"
+        )
+    if key_entities:
+        parts.append(f"前文已识别的关键实体：{', '.join(key_entities[-15:])}")
+        parts.append("如果当前文本中的实体与上述已有实体存在关联，请建立相应关系。")
+    return "\n".join(parts)
+
+
+def _filter_orphan_entities(entities: list, relations: list,
+                            main_herbs: list) -> tuple:
+    """
+    过滤孤立实体：只保留在关系中被引用的实体。
+    对于未被引用但存在主体药材的情况，自动补充关系。
+    """
+    referenced = set()
+    for rel in relations:
+        src = (rel.get("source") or "").strip()
+        tgt = (rel.get("target") or "").strip()
+        if src:
+            referenced.add(src)
+        if tgt:
+            referenced.add(tgt)
+
+    filtered_entities = []
+    new_relations = list(relations)
+    for ent in entities:
+        ent_name = (ent.get("name") or "").strip()
+        if not ent_name:
+            continue
+        if ent_name in referenced:
+            filtered_entities.append(ent)
+        elif main_herbs:
+            ent_type = (ent.get("type") or "Entity").strip()
+            relation_type = _infer_relation_type(ent_type)
+            new_relations.append({
+                "source": main_herbs[0],
+                "source_type": "Herb",
+                "target": ent_name,
+                "target_type": ent_type,
+                "relation": relation_type,
+                "properties": {"description": "由系统根据文档上下文自动补充的关系"},
+            })
+            referenced.add(ent_name)
+            referenced.add(main_herbs[0])
+            filtered_entities.append(ent)
+            logger.debug("自动补充关系: %s -[%s]-> %s", main_herbs[0], relation_type, ent_name)
+        else:
+            logger.debug("过滤孤立实体: %s", ent_name)
+
+    return filtered_entities, new_relations
+
+
+# =========================================================================
 # 数据模型
 # =========================================================================
 
@@ -75,6 +173,12 @@ EXTRACT_PROMPT = """你是一个中药材种植领域的知识图谱构建专家
 本知识图谱专注于中药材种植领域，涵盖中药材品种、种植技术、病虫害防治、产地与适生区、
 采收加工、药用价值、药性归经、化学成分、炮制方法、方剂配伍、植物形态特征等全部内容。
 
+## 文档上下文（极其重要，必须使用）
+{doc_context}
+**你必须将当前文本中抽取到的每一个实体都与上述主体实体建立关系。**
+例如：如果文档主体是"枸杞"，而文本中提到了"温度""湿度""播种"等，
+则必须建立"枸杞→温度""枸杞→湿度""枸杞→播种"等关系，绝对不允许这些实体成为孤立节点。
+
 ## 实体类型（优先使用以下类型，如遇以下类型无法覆盖但与中药材相关的实体，使用 Concept 类型兜底）
 - Herb（中药材）：具体的中药材名称，如黄芪、当归、人参、枸杞、甘草、川芎等
 - Variety（品种）：中药材的具体品种或栽培品种，如蒙古黄芪、膜荚黄芪、北柴胡等
@@ -115,6 +219,21 @@ EXTRACT_PROMPT = """你是一个中药材种植领域的知识图谱构建专家
 - 加工相关：采收方式为、炮制方法为、加工为、贮藏方式为
 - 品种相关：属于品种、变种为、别名为、同科属
 - 病害相关：易感染、防治方法为、症状为、用药为
+
+## 最重要规则：禁止孤立实体（必须严格遵守）
+
+**每一个实体都必须至少出现在一条关系中（作为 source 或 target）。**
+如果文本中没有显式说明某实体的关系，你必须根据上下文推断并建立合理的关系。
+
+推断规则：
+1. GrowingCondition（温度、湿度、光照等）→ 必须用"需要条件"关系连接到对应的 Herb
+2. CultivationMethod（播种、移栽等）→ 必须用"种植方式"关系连接到对应的 Herb
+3. Disease（病虫害）→ 必须用"易感染"关系连接到对应的 Herb
+4. Region（产地）→ 必须用"适宜种植于"或"生长于"关系连接到对应的 Herb
+5. Season（季节）→ 必须用"种植时间"或"采收时间"关系连接到对应的 Herb
+6. 所有其他实体类型 → 必须找到合理的关系连接到文档主体或其他已有实体
+
+**如果你无法为某个实体建立任何关系，则不要提取该实体。**
 
 ## 关键要求：数值指标的处理方式（非常重要！）
 
@@ -342,14 +461,31 @@ class GraphRAGService:
             total_entities = 0
             total_relations = 0
 
+            # 跨块上下文：追踪文档主体实体
+            main_herbs = []
+            all_key_entities = []
+
             for i, chunk in enumerate(chunks):
                 try:
-                    extracted = self._extract_entities_relations(chunk)
+                    doc_context = _build_doc_context(doc_name, main_herbs, all_key_entities)
+                    extracted = self._extract_entities_relations(chunk, doc_context=doc_context)
                     if not extracted:
                         continue
 
                     entities = extracted.get("entities", [])
                     relations = extracted.get("relations", [])
+
+                    # 收集主体实体
+                    for ent in entities:
+                        ent_name = (ent.get("name") or "").strip()
+                        ent_type = (ent.get("type") or "").strip()
+                        if ent_type == "Herb" and ent_name and ent_name not in main_herbs:
+                            main_herbs.append(ent_name)
+                        if ent_name and ent_name not in all_key_entities:
+                            all_key_entities.append(ent_name)
+
+                    # 过滤孤立实体
+                    entities, relations = _filter_orphan_entities(entities, relations, main_herbs)
 
                     chunk_id = f"{doc_name}#chunk_{i}"
                     self._write_to_neo4j(entities, relations, doc_name, chunk_id)
@@ -363,6 +499,22 @@ class GraphRAGService:
                 except Exception as e:
                     logger.warning("块 %d 处理失败: %s", i + 1, e)
                     continue
+
+            # 导入完成后，清理该文档产生的孤立节点
+            try:
+                orphan_result = self.graph.query(
+                    "MATCH (n) WHERE n.doc_source = $doc "
+                    "AND NOT EXISTS { MATCH (n)-[]-() } "
+                    "WITH n, n.name AS name "
+                    "DELETE n "
+                    "RETURN count(name) AS deleted_count",
+                    params={"doc": doc_name},
+                )
+                orphan_count = orphan_result[0]["deleted_count"] if orphan_result else 0
+                if orphan_count > 0:
+                    logger.info("图谱清理 - 已删除 %d 个孤立节点 [%s]", orphan_count, doc_name)
+            except Exception as e:
+                logger.warning("清理孤立节点失败: %s", e)
 
             self.graph.refresh_schema()
 
@@ -381,11 +533,13 @@ class GraphRAGService:
             logger.error("图谱导入失败: %s", e)
             return GraphImportResult(success=False, error_message=str(e))
 
-    def _extract_entities_relations(self, text):
+    def _extract_entities_relations(self, text, doc_context=""):
         """使用 LLM 从文本中抽取实体和关系"""
         import json as _json
 
-        prompt = EXTRACT_PROMPT.format(text=text)
+        if not doc_context:
+            doc_context = "无额外上下文信息。请从文本中自行识别主体药材并确保所有实体与之关联。"
+        prompt = EXTRACT_PROMPT.format(text=text, doc_context=doc_context)
         try:
             result = self.llm.invoke(prompt)
             content = result.content.strip()
