@@ -1,6 +1,0 @@
-.env
-logger/__pycache__/
-parser/__pycache__/
-__pycache__/
-agribot_index.log
-*.log

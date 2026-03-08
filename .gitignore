@@ -1,4 +1,39 @@
+# Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# 环境变量
+.env
+
+# 日志文件
 *.log
-agribot_chat/agribot_chat.log
+
+# 虚拟环境
+venv/
+.venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 证书
+.cert/
+
+# Specstory
+.specstory/
+
+# Docker volumes
+volumes/
