@@ -1,9 +1,9 @@
-version: '3.5'
-
 services:
+  # ======================== Milvus 依赖 ========================
   etcd:
     container_name: milvus-etcd
     image: quay.io/coreos/etcd:v3.5.18
+    restart: unless-stopped
     environment:
       - TZ=Asia/Shanghai
       - ETCD_AUTO_COMPACTION_MODE=revision
@@ -22,12 +22,13 @@ services:
   minio:
     container_name: milvus-minio
     image: minio/minio:RELEASE.2024-05-28T17-19-04Z
+    restart: unless-stopped
     environment:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
     ports:
-      - "9001:9001"
-      - "9000:9000"
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/minio:/minio_data
     command: minio server /minio_data --console-address ":9001"
@@ -40,6 +41,7 @@ services:
   standalone:
     container_name: milvus-standalone
     image: milvusdb/milvus:v2.5.16
+    restart: unless-stopped
     command: ["milvus", "run", "standalone"]
     security_opt:
       - seccomp:unconfined
@@ -55,11 +57,75 @@ services:
       timeout: 20s
       retries: 3
     ports:
-      - "19530:19530"
-      - "9091:9091"
+      - "${MILVUS_API_PORT:-19530}:19530"
+      - "${MILVUS_MGMT_PORT:-9091}:9091"
     depends_on:
       - "etcd"
       - "minio"
+
+  # ======================== MongoDB ========================
+  mongodb:
+    container_name: agribot-mongodb
+    image: mongo:7.0
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_USER:-agribot}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_PASSWORD:-agribot123}"
+      MONGO_INITDB_DATABASE: "${MONGO_DATABASE:-agribot}"
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/mongodb:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ======================== MySQL (使用已有 mysql:5.7) ========================
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-my57root@nku}"
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - /export/data/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ======================== Neo4j (使用已有 neo4j:5.26-community) ========================
+  neo4j:
+    container_name: mildoc-neo4j
+    image: neo4j:5.26-community
+    restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
+      NEO4J_AUTH: "${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-REDACTED_NEO4J_PASSWORD}"
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+    ports:
+      - "${NEO4J_HTTP_PORT:-7474}:7474"
+      - "${NEO4J_BOLT_PORT:-7687}:7687"
+    volumes:
+      - neo4j_data2:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  neo4j_data2:
+    external: true
 
 networks:
   default:
