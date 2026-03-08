@@ -375,7 +375,7 @@ async function sendQuestion() {
         question: text,
         use_rerank: true,
         use_rag: useRag,
-        use_graph: useGraph,
+        use_graph: useRag,
         session_id: activeSessionId || undefined
       })
     });
@@ -589,8 +589,6 @@ if (navSessionsList) {
       }
 
       if (action === 'delete') {
-        const ok = window.confirm('确定删除该会话吗？');
-        if (!ok) return;
         apiJson('/api/sessions/' + encodeURIComponent(id), { method: 'DELETE' })
           .then(async function () {
             await loadSessions();

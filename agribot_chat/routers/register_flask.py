@@ -150,10 +150,9 @@ def register_post():
         logger.exception("db create_user failed")
         return render_template("register.html", error_message=f"注册失败：{e}", last_email=email, last_username=username)
 
-    # 注册成功后清理验证码并直接登录
+    # 注册成功后清理验证码并跳转到登录页面
     _register_codes.pop(key, None)
-    session["chat_username"] = username
-    return redirect(url_for("index"))
+    return redirect(url_for("agribot_chat_login.login"))
 
 
 @register_bp.post("/api/register/send_code")

@@ -210,7 +210,7 @@ class GraphIndexer:
         # 用于 LLM 抽取实体/关系（复用 agribot_index 的 OpenAI 配置，或使用专用 LLM 配置）
         llm_api_key = os.getenv("LLM_API_KEY") or os.getenv("OPENAI_API_KEY", "")
         llm_base_url = os.getenv("LLM_BASE_URL") or os.getenv("OPENAI_BASE_URL", "")
-        self._llm_model = os.getenv("LLM_MODEL_NAME", "qwen-plus")
+        self._llm_model = os.getenv("LLM_MODEL_NAME", "qwen3.5-plus")
         self._llm_client = OpenAI(api_key=llm_api_key, base_url=llm_base_url)
 
         # 验证连接
