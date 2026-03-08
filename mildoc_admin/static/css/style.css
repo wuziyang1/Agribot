@@ -117,12 +117,16 @@ body {
     color: #0c5460;
 }
 
-/* 登录页面样式 */
-.login-container {
+/* 登录页面样式：浅蓝背景铺满整屏，仅保留一个登录卡片居中 */
+.main:has(.login-box) {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
     background-color: #eef1f5;
 }
 
