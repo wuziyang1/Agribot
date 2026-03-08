@@ -1,6 +1,0 @@
-.env
-logger/__pycache__/
-parser/__pycache__/
-__pycache__/
-mildoc_index.log
-*.log

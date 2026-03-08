@@ -1,0 +1,6 @@
+.env
+.specstory/
+.cert/
+__pycache__/
+agribot_admin.log
+*.log

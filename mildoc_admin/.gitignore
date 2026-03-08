@@ -1,6 +1,0 @@
-.env
-.specstory/
-.cert/
-__pycache__/
-mildoc_admin.log
-*.log

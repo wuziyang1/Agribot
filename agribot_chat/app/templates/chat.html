@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="color-scheme" content="light" />
+  <title>Agribot Chat - 知识库问答</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}" />
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <div class="app-root">
+    <!-- 左侧导航栏，模仿 ChatGPT 的侧边栏风格（仅前端样式，不影响现有接口） -->
+    <aside class="nav-sidebar">
+      <div class="nav-top">
+        <div class="title">
+          <div class="logo-dot"></div>
+          <div class="title-text">
+            <h1>Agribot Chat</h1>
+          </div>
+          <button type="button" class="nav-sidebar-toggle" title="收起侧边栏" aria-label="收起侧边栏"><span class="nav-sidebar-toggle-icon">☰</span></button>
+        </div>
+
+        <button class="nav-new-chat" type="button">
+          <span class="nav-new-chat-icon">＋</span>
+          <span>新聊天</span>
+        </button>
+
+        <div class="nav-section">
+          <div class="nav-section-title">你的聊天</div>
+          <div class="nav-sessions-list" id="nav-sessions-list">
+            <!-- session 列表由 JS 动态渲染 -->
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-bottom">
+        <a href="{{ url_for('profile') }}" class="nav-user" title="进入个人主页">
+          <div class="nav-user-avatar">{{ (username or 'M')[0]|upper }}</div>
+          <div class="nav-user-info">
+            <div class="nav-user-name">{{ username }}</div>
+            <div class="nav-user-desc">点击进入个人主页</div>
+          </div>
+        </a>
+      </div>
+    </aside>
+    <button type="button" class="nav-sidebar-open-tab" title="展开侧边栏" aria-label="展开侧边栏"><span class="nav-sidebar-toggle-icon">☰</span></button>
+
+    <!-- 右侧主聊天区域 -->
+    <div class="shell">
+      <header class="header">
+        <div class="badge">
+          <span class="badge-dot"></span>
+          <span id="status-label">RAG 服务已连接</span>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="chat-main">
+          <div class="messages" id="messages"></div>
+
+          <!-- 底部卡片：输入框与发送按钮（引用文档已移至每条模型回答下方） -->
+          <div class="chat-footer-card">
+            <div class="input-area">
+              <div class="input-row input-row-text">
+                <textarea
+                  id="input"
+                  placeholder="请输入你的问题，例如：知识库里的某个合同有哪些关键条款？"
+                ></textarea>
+              </div>
+              <div class="input-row input-row-buttons">
+                <div class="input-row-buttons-left">
+                  <button id="rag-toggle-btn" type="button" class="rag-toggle on" title="使用知识库检索（当前：开）。点击切换">
+                    <span id="rag-toggle-label">知识库</span>
+                  </button>
+                </div>
+                <button id="send-btn" type="button">
+                  <span id="send-label">➤</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Markdown 解析库（前端将模型返回的 Markdown 转成 HTML 渲染） -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
+

@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "Agribot Admin Starting... "
+
+source /export/server/anaconda3/etc/profile.d/conda.sh
+conda activate mildocadmin
+
+nohup python -u admin_app.py >> agribot_admin.log 2>&1 &

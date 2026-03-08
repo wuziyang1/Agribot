@@ -1,0 +1,9 @@
+#!/bin/bash
+echo "Agribot Chat Starting... "
+
+source /export/server/anaconda3/etc/profile.d/conda.sh
+conda activate mildocchat
+
+cd /export/workspace/rag
+nohup python -u -m agribot_chat.chat_app >> /export/workspace/rag/agribot_chat/routers/agribot_chat.log 2>&1 &
+
