@@ -17,7 +17,15 @@ let useRag = true;
 const useGraph = true;
 
 /** Session 管理（数据库持久化） */
-const WELCOME_MSG = '你好，我是 Agribot Chat，可以基于 Milvus + 文档知识库回答你的问题，并在下方展示引用的文档来源。';
+const WELCOME_MSG = '## 🌿 欢迎使用中药材种植技术智能问答系统\n\n' +
+  '我是您的 **中药材种植智能助手**，基于专业文档知识库为您提供权威解答。\n\n' +
+  '您可以向我咨询：\n' +
+  '- 🌱 **种植技术** — 选地整地、播种育苗、田间管理\n' +
+  '- 🧪 **病虫害防治** — 常见病害识别与绿色防控方案\n' +
+  '- 🌾 **采收加工** — 最佳采收期判定与产地初加工\n' +
+  '- 📋 **品种鉴别** — 道地药材品种特征与质量标准\n\n' +
+  '> 💡 回答将附带 **文档来源引用**，方便您查阅原始资料。\n\n' +
+  '请在下方输入您的问题，开始咨询吧！';
 
 const sessions = [];
 let activeSessionId = null;
@@ -159,30 +167,33 @@ function typesetMath(targetEl) {
   }
 }
 
-function getMarkedRenderer() {
-  if (!window.marked) return null;
-  if (getMarkedRenderer._renderer) return getMarkedRenderer._renderer;
-  const renderer = new window.marked.Renderer();
-  renderer.html = function () {
-    return '';
-  };
-  getMarkedRenderer._renderer = renderer;
-  return renderer;
-}
+/** 初始化 marked 配置（全局只执行一次） */
+(function initMarked() {
+  if (!window.marked || typeof window.marked.use !== 'function') return;
+  window.marked.use({
+    breaks: true,
+    gfm: true,
+    renderer: {
+      html() {
+        return '';
+      }
+    }
+  });
+})();
 
 function renderBotMarkdown(targetEl, text, opts) {
   if (!targetEl) return;
   const options = opts || {};
   const safeText = text || '';
 
-  if (window.marked && typeof window.marked.parse === 'function') {
-    const renderer = getMarkedRenderer();
-    targetEl.innerHTML = window.marked.parse(safeText, {
-      breaks: true,
-      gfm: true,
-      renderer: renderer || undefined
-    });
-  } else {
+  try {
+    if (window.marked && typeof window.marked.parse === 'function') {
+      targetEl.innerHTML = window.marked.parse(safeText);
+    } else {
+      targetEl.textContent = safeText;
+    }
+  } catch (e) {
+    console.error('Markdown 渲染出错:', e);
     targetEl.textContent = safeText;
   }
 
