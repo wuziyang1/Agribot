@@ -38,7 +38,7 @@ body {
 .logo {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #1a73e8;
+    color: #16a34a;
 }
 
 .nav {
@@ -57,7 +57,7 @@ body {
 
 .nav-link:hover {
     background-color: #f8f9fa;
-    color: #1a73e8;
+    color: #16a34a;
 }
 
 .nav-link.logout {
@@ -142,7 +142,7 @@ body {
 
 .login-title {
     margin: 0 0 8px;
-    color: #1e3a5f;
+    color: #16a34a;
     font-size: 24px;
     font-weight: 600;
 }
@@ -181,7 +181,7 @@ body {
 
 .login-form .form-group input:focus {
     background: #e8e8e8;
-    box-shadow: 0 0 0 2px rgba(30, 58, 95, 0.08);
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.08);
 }
 
 .login-btn {
@@ -189,7 +189,7 @@ body {
     padding: 14px;
     border: none;
     border-radius: 12px;
-    background: #1e3a5f;
+    background: #16a34a;
     color: #ffffff;
     font-size: 16px;
     font-weight: 500;
@@ -275,7 +275,7 @@ body {
 }
 
 .create-dir-btn {
-    background: #007bff;
+    background: #16a34a;
     color: #fff;
     border: none;
     padding: 8px 16px;
@@ -287,7 +287,7 @@ body {
 }
 
 .create-dir-btn:hover {
-    background: #0056b3;
+    background: #15803d;
 }
 
 .delete-dir-btn {
@@ -316,7 +316,7 @@ body {
 }
 
 .breadcrumb-link {
-    color: #1a73e8;
+    color: #16a34a;
     text-decoration: none;
 }
 
@@ -450,16 +450,16 @@ body {
 }
 
 .back-btn {
-    color: #1a73e8;
+    color: #16a34a;
     text-decoration: none;
     padding: 8px 16px;
-    border: 1px solid #1a73e8;
+    border: 1px solid #16a34a;
     border-radius: 4px;
     transition: all 0.2s;
 }
 
 .back-btn:hover {
-    background: #1a73e8;
+    background: #16a34a;
     color: #fff;
 }
 
@@ -665,7 +665,7 @@ body {
 
 .btn-text {
     background: transparent;
-    color: #1a73e8;
+    color: #16a34a;
     border: none;
     padding: 6px 12px;
     font-size: 0.9rem;
@@ -1054,8 +1054,8 @@ body {
 
 /* 文件上传样式 */
 .file-item.uploading {
-    background: #e8f4fd;
-    border: 1px dashed #1a73e8;
+    background: #dcfce7;
+    border: 1px dashed #16a34a;
     animation: uploadPulse 2s infinite;
 }
 
@@ -1072,7 +1072,7 @@ body {
 .upload-status {
     margin-left: 8px;
     font-size: 0.8rem;
-    color: #1a73e8;
+    color: #16a34a;
     font-weight: 500;
 }
 
@@ -1172,14 +1172,14 @@ body {
 }
 
 .btn-primary {
-    background: #1a73e8;
+    background: #16a34a;
     color: #fff;
-    border: 1px solid #1a73e8;
+    border: 1px solid #16a34a;
 }
 
 .btn-primary:hover {
-    background: #1557b0;
-    border-color: #1557b0;
+    background: #15803d;
+    border-color: #15803d;
 }
 
 /* 响应式设计补充 */

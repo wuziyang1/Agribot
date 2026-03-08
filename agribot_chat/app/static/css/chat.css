@@ -9,7 +9,7 @@ html {
   --surface: #ffffff;
   --surface-soft: #f9fafb;
   --border: #e5e7eb;
-  --primary: #2563eb;
+  --primary: #16a34a;
   --primary-soft: rgba(37, 99, 235, 0.08);
   --text: #111827;
   --muted: #6b7280;
@@ -394,7 +394,7 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 999px;
-  background: radial-gradient(circle at 30% 20%, #bfdbfe, #2563eb);
+  background: radial-gradient(circle at 30% 20%, #bbf7d0, #16a34a);
   box-shadow:
     0 0 0 3px rgba(191, 219, 254, 0.8),
     0 0 16px rgba(37, 99, 235, 0.6);
@@ -504,8 +504,8 @@ body {
 }
 
 .suggestion:hover {
-  background: #eff6ff;
-  border-color: #bfdbfe;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
 }
 
 .tips {
@@ -595,8 +595,8 @@ body {
 }
 
 .avatar.user {
-  background: #e0f2fe;
-  color: #1d4ed8;
+  background: #dcfce7;
+  color: #15803d;
 }
 
 .avatar.bot {
@@ -625,7 +625,7 @@ body {
 }
 
 .msg-bubble.user {
-  background: #2563eb;
+  background: #16a34a;
   color: #f9fafb;
   border-color: transparent;
 }
@@ -712,7 +712,7 @@ body {
 .msg-bubble.bot blockquote {
   margin: 0.8em 0;
   padding: 0.5em 0 0.5em 1em;
-  border-left: 4px solid #93c5fd;
+  border-left: 4px solid #86efac;
   background: #f8fafc;
   border-radius: 0 6px 6px 0;
   color: #374151;
@@ -728,7 +728,7 @@ body {
 /* 行内代码 */
 .msg-bubble.bot code {
   background: #f1f5f9;
-  color: #1e40af;
+  color: #166534;
   padding: 0.2em 0.45em;
   border-radius: 6px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -758,15 +758,15 @@ body {
 
 /* 链接 */
 .msg-bubble.bot a {
-  color: #2563eb;
+  color: #16a34a;
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .msg-bubble.bot a:hover {
-  color: #1d4ed8;
-  border-bottom-color: #93c5fd;
+  color: #15803d;
+  border-bottom-color: #86efac;
 }
 
 /* 表格 */
@@ -886,27 +886,27 @@ body {
   padding: 0 12px;
   max-width: 220px;
   border-radius: 999px;
-  border: 1px solid #93c5fd;
-  background: #dbeafe;
+  border: 1px solid #86efac;
+  background: #dcfce7;
   font-size: 12px;
   font-weight: 500;
-  color: #1d4ed8;
+  color: #15803d;
   cursor: default;
   flex-shrink: 0;
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .doc-chip:hover {
-  background: #bfdbfe;
-  border-color: #60a5fa;
+  background: #bbf7d0;
+  border-color: #4ade80;
 }
 
 .doc-chip-index {
   width: 18px;
   height: 18px;
   border-radius: 999px;
-  background: #bfdbfe;
-  color: #1d4ed8;
+  background: #bbf7d0;
+  color: #15803d;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1007,7 +1007,7 @@ button {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  background: linear-gradient(to right, #16a34a, #15803d);
   color: #f9fafb;
   white-space: nowrap;
   min-width: 80px;
@@ -1044,9 +1044,9 @@ button:not(:disabled):active {
 }
 
 #rag-toggle-btn.rag-toggle.on {
-  background: #2563eb;
+  background: #16a34a;
   color: #f9fafb;
-  border: 1px solid #2563eb;
+  border: 1px solid #16a34a;
 }
 
 #rag-toggle-btn.rag-toggle.off {
@@ -1071,7 +1071,7 @@ button:not(:disabled):active {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #2563eb;
+  background: #16a34a;
   box-shadow: none;
 }
 
@@ -1173,7 +1173,7 @@ button:not(:disabled):active {
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: #2563eb;
+  background: #16a34a;
   opacity: 0.45;
   animation: rag-dot-bounce 1.2s ease-in-out infinite;
 }

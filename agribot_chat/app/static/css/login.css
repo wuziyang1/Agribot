@@ -1,7 +1,7 @@
 /* Agribot Chat 登录页（尺寸参考 agribot_chat/1.html） */
 
  :root {
-  --primary-color: #2d2d2d; /* 深灰 */
+  --primary-color: #16a34a; /* 深灰 */
   --bg-color: #f7f7f7;
   --card-bg: #ffffff;
   --input-bg: #f0f0f0;
@@ -39,7 +39,7 @@ body {
   background: var(--card-bg);
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.08);
   width: 100%;
   max-width: 360px;
   text-align: center;
@@ -78,7 +78,7 @@ body {
 
 .form-group input:focus {
   background: #e8e8e8;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.08);
 }
 
 .fp-code-row {

@@ -42,7 +42,7 @@ body {
   height: 80px;
   margin: 0 auto 16px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   color: #ffffff;
   font-size: 32px;
   font-weight: 600;
@@ -131,7 +131,7 @@ body {
   flex: 1;
   min-width: 0;
   padding: 6px 10px;
-  border: 1px solid #2563eb;
+  border: 1px solid #16a34a;
   border-radius: 8px;
   font-size: 15px;
   outline: none;
@@ -172,12 +172,12 @@ body {
 }
 
 .btn-primary {
-  background: #2563eb;
+  background: #16a34a;
   color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: #1d4ed8;
+  background: #15803d;
 }
 
 .btn-outline {
