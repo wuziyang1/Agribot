@@ -25,6 +25,7 @@ class EmbeddingTool:
             logger.error("Embedding工具初始化失败")
             raise ValueError("Embedding工具初始化失败")
         
+    #把单条文本转成一条 embedding 向量
     def get_embedding(self, text: str) -> List[float]:
         """
         获取单个文本的embedding向量
@@ -101,6 +102,7 @@ class EmbeddingTool:
             print(f"批量获取embedding失败: {e}")
             return []
     
+    # 回当前使用的模型与向量配置用以打印日志
     def get_model_info(self) -> dict:
         """
         获取模型信息

@@ -10,7 +10,9 @@ load_dotenv()
 
 logger = setup_logging()
 
+'''Milvus 向量库的读写与检索'''
 
+# 规定：「一条要写入 Milvus 的文档片段」的内存结构。
 @dataclass #@dataclass 是 Python 标准库 dataclasses 模块提供的装饰器，会自动为类生成常用方法。
 class MilvusDocument:
     doc_name: str # 文档名称
@@ -22,6 +24,7 @@ class MilvusDocument:
     content_vector: list # 分段内容向量
     embedding_model: str # embedding模型名称
 
+# 初始化 Milvus 客户端并完成集合/索引/加载。
 class MilvusDocumentField(str, Enum):
     ID = "id" # 主键ID
     DOC_NAME = "doc_name" # 文档名称
@@ -34,6 +37,8 @@ class MilvusDocumentField(str, Enum):
     EMBEDDING_MODEL = "embedding_model" # embedding模型名称
 
 class MilvusAPI:
+
+    # 初始化 Milvus 客户端并完成集合/索引/加载。
     def __init__(self):
         """初始化Milvus客户端连接"""
         self.database_name = os.getenv("MILVUS_DATABASE")
@@ -58,6 +63,7 @@ class MilvusAPI:
             logger.error("Milvus初始化失败")
             raise ValueError("Milvus初始化失败")
                 
+    # 若集合不存在则创建集合（相当于建表）
     def _create_collection_if_not_exists(self) -> bool:
         """
         创建集合（如果不存在则创建）
@@ -162,6 +168,7 @@ class MilvusAPI:
             logger.error(f"创建集合失败: {e}")
             return False
     
+    # 若向量索引不存在则创建，用于加速相似度搜索。
     def _create_index_if_not_exists(self) -> bool:
         """创建索引
             1. 给表中的content_vector字段创建索引，索引名字为content_vector
@@ -203,6 +210,7 @@ class MilvusAPI:
             logger.error(f"创建索引失败: {e}")
             return False
     
+    # 把集合加载到内存，使搜索/查询可用
     def _load_collection(self) -> bool:
         """加载集合到内存"""
         try:
@@ -213,6 +221,7 @@ class MilvusAPI:
             logger.error(f"加载集合失败: {e}")
             return False
     
+    # 建表 → 建索引 → 加载」的初始化流程。
     def _initialize(self) -> bool:
         """初始化数据库、集合和索引"""
         logger.info("开始初始化Milvus...")
@@ -232,6 +241,7 @@ class MilvusAPI:
         logger.info("Milvus初始化完成!")
         return True
     
+    # 文档路径判断该文档是否已在集合中存在
     def check_document_exists(self, doc_path_name: str) -> bool:
         """
         检查文档是否已存在
@@ -262,6 +272,7 @@ class MilvusAPI:
             logger.error(f"检查文档是否存在失败: {e}")
             raise e
     
+    # 删除该文档路径下的所有记录
     def delete_existing_document(self, doc_path_name: str) -> bool:
         """
         删除已存在的文档记录
@@ -294,6 +305,7 @@ class MilvusAPI:
             logger.error(f"删除已存在文档失败: {e}")
             raise e
 
+    # 插入一条文档片段（含标量字段 + 向量）
     def insert_document(self, doc_data: MilvusDocument) -> bool:
         """插入文档数据"""
         try:
@@ -307,6 +319,7 @@ class MilvusAPI:
             logger.error(f"插入文档失败: {e}")
             return False
             
+    # 将内存中的写入刷到持久化存储，保证数据落盘。
     def flush_collection(self) -> bool:
         """刷新集合"""
         try:
@@ -318,6 +331,7 @@ class MilvusAPI:
             return False
 
     
+    # 用一条查询向量做向量相似度搜索，返回最相似的若干条记录。
     def search_similar_documents(self, query_vector, limit=10):
         """搜索相似文档
         
@@ -349,6 +363,7 @@ class MilvusAPI:
             logger.error(f"搜索失败: {e}")
             return []
     
+    # 获取当前集合的描述信息（schema、状态等）
     def get_collection_info(self):
         """获取集合信息"""
         try:

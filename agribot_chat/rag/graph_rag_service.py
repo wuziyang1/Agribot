@@ -169,141 +169,142 @@ class GraphImportResult(BaseModel):
 
 EXTRACT_PROMPT = """你是一个中药材种植领域的知识图谱构建专家。请从以下文本中抽取与中药材相关的实体和关系。
 
-## 领域说明
-本知识图谱专注于中药材种植领域，涵盖中药材品种、种植技术、病虫害防治、产地与适生区、
-采收加工、药用价值、药性归经、化学成分、炮制方法、方剂配伍、植物形态特征等全部内容。
+    ## 领域说明
+    本知识图谱专注于中药材种植领域，涵盖中药材品种、种植技术、病虫害防治、产地与适生区、
+    采收加工、药用价值、药性归经、化学成分、炮制方法、方剂配伍、植物形态特征等全部内容。
 
-## 文档上下文（极其重要，必须使用）
-{doc_context}
-**你必须将当前文本中抽取到的每一个实体都与上述主体实体建立关系。**
-例如：如果文档主体是"枸杞"，而文本中提到了"温度""湿度""播种"等，
-则必须建立"枸杞→温度""枸杞→湿度""枸杞→播种"等关系，绝对不允许这些实体成为孤立节点。
+    ## 文档上下文（极其重要，必须使用）
+    {doc_context}
+    **你必须将当前文本中抽取到的每一个实体都与上述主体实体建立关系。**
+    例如：如果文档主体是"枸杞"，而文本中提到了"温度""湿度""播种"等，
+    则必须建立"枸杞→温度""枸杞→湿度""枸杞→播种"等关系，绝对不允许这些实体成为孤立节点。
 
-## 实体类型（优先使用以下类型，如遇以下类型无法覆盖但与中药材相关的实体，使用 Concept 类型兜底）
-- Herb（中药材）：具体的中药材名称，如黄芪、当归、人参、枸杞、甘草、川芎等
-- Variety（品种）：中药材的具体品种或栽培品种，如蒙古黄芪、膜荚黄芪、北柴胡等
-- MedicinalPart（药用部位）：根、茎、叶、花、果实、种子、全草、根茎、树皮、块茎等
-- Efficacy（功效）：补气、活血、清热、解毒、止咳、化痰、安神、利湿等药理功效
-- MedicinalProperty（药性）：四气（寒、热、温、凉、平）、五味（酸、苦、甘、辛、咸）、归经（归肝经、归脾经等）、毒性
-- Disease（病虫害）：根腐病、白粉病、锈病、蚜虫、地老虎、红蜘蛛等
-- HumanDisease（人体疾病）：感冒、高血压、糖尿病、贫血等中药材可治疗的疾病
-- CultivationMethod（种植技术）：播种、育苗、移栽、扦插、分株、组培等栽培技术
-- PlantingPattern（种植模式）：轮作、间作、套种、连作、林下种植等
-- GrowingCondition（生长条件）：温度、湿度、光照、海拔、pH值、降水量等环境因子
-- Region（产地/适生区）：省份、县市、山脉、道地产区，如甘肃岷县、云南文山等
-- HarvestProcess（采收加工）：采收时间、采收方法、干燥方式（晒干、阴干、烘干）、初加工
-- ProcessingMethod（炮制方法）：酒制、醋制、盐制、蜜炙、炒制、煅制、蒸制等
-- ChemicalCompound（化学成分）：黄芪甲苷、多糖、皂苷、生物碱、黄酮、挥发油、有机酸等
-- Formula（方剂）：四物汤、六味地黄丸、补中益气汤等经典方剂和现代制剂
-- PlantMorphology（植物形态）：株高、叶形、花色、根形等形态鉴别特征
-- Fertilizer（肥料）：有机肥、氮肥、磷肥、钾肥、基肥、追肥、叶面肥等
-- Pesticide（农药/药剂）：多菌灵、百菌清、吡虫啉等防治用药
-- Soil（土壤）：沙壤土、黏土、腐殖土、酸性土壤、碱性土壤等
-- Season（时间/季节）：春季、秋季、生长期、休眠期、花期、果期等
-- StorageMethod（贮藏方法）：密封保存、阴凉干燥、防潮、防虫蛀等
-- Standard（质量标准）：药典标准、等级划分、含量指标、GAP标准等
-- Concept（通用概念）：无法归入以上类型但与中药材领域直接相关的重要概念
+    ## 实体类型（优先使用以下类型，如遇以下类型无法覆盖但与中药材相关的实体，使用 Concept 类型兜底）
+    - Herb（中药材）：具体的中药材名称，如黄芪、当归、人参、枸杞、甘草、川芎等
+    - Variety（品种）：中药材的具体品种或栽培品种，如蒙古黄芪、膜荚黄芪、北柴胡等
+    - MedicinalPart（药用部位）：根、茎、叶、花、果实、种子、全草、根茎、树皮、块茎等
+    - Efficacy（功效）：补气、活血、清热、解毒、止咳、化痰、安神、利湿等药理功效
+    - MedicinalProperty（药性）：四气（寒、热、温、凉、平）、五味（酸、苦、甘、辛、咸）、归经（归肝经、归脾经等）、毒性
+    - Disease（病虫害）：根腐病、白粉病、锈病、蚜虫、地老虎、红蜘蛛等
+    - HumanDisease（人体疾病）：感冒、高血压、糖尿病、贫血等中药材可治疗的疾病
+    - CultivationMethod（种植技术）：播种、育苗、移栽、扦插、分株、组培等栽培技术
+    - PlantingPattern（种植模式）：轮作、间作、套种、连作、林下种植等
+    - GrowingCondition（生长条件）：温度、湿度、光照、海拔、pH值、降水量等环境因子
+    - Region（产地/适生区）：省份、县市、山脉、道地产区，如甘肃岷县、云南文山等
+    - HarvestProcess（采收加工）：采收时间、采收方法、干燥方式（晒干、阴干、烘干）、初加工
+    - ProcessingMethod（炮制方法）：酒制、醋制、盐制、蜜炙、炒制、煅制、蒸制等
+    - ChemicalCompound（化学成分）：黄芪甲苷、多糖、皂苷、生物碱、黄酮、挥发油、有机酸等
+    - Formula（方剂）：四物汤、六味地黄丸、补中益气汤等经典方剂和现代制剂
+    - PlantMorphology（植物形态）：株高、叶形、花色、根形等形态鉴别特征
+    - Fertilizer（肥料）：有机肥、氮肥、磷肥、钾肥、基肥、追肥、叶面肥等
+    - Pesticide（农药/药剂）：多菌灵、百菌清、吡虫啉等防治用药
+    - Soil（土壤）：沙壤土、黏土、腐殖土、酸性土壤、碱性土壤等
+    - Season（时间/季节）：春季、秋季、生长期、休眠期、花期、果期等
+    - StorageMethod（贮藏方法）：密封保存、阴凉干燥、防潮、防虫蛀等
+    - Standard（质量标准）：药典标准、等级划分、含量指标、GAP标准等
+    - Concept（通用概念）：无法归入以上类型但与中药材领域直接相关的重要概念
 
-## 过滤规则（重要）
-- **不要提取**：普通人名、作者名、编辑名、出版社、文献编号、页码、ISBN、参考文献等文献元数据
-- **不要提取**：与中药材无直接关联的通用概念（如"信息技术""经济发展""市场分析"等）
-- **不要提取**：纯数字编号、表格序号等无语义价值的内容
-- **保留**：古代医药学家（如张仲景、李时珍、孙思邈）仅在其与具体药材或方剂直接关联时提取，类型设为 Concept
-- 每个实体的 name 应尽量简洁准确，避免冗余修饰
-- 尽量充分提取，不要遗漏文本中与中药材相关的重要信息
+    ## 过滤规则（重要）
+    - **不要提取**：普通人名、作者名、编辑名、出版社、文献编号、页码、ISBN、参考文献等文献元数据
+    - **不要提取**：与中药材无直接关联的通用概念（如"信息技术""经济发展""市场分析"等）
+    - **不要提取**：纯数字编号、表格序号等无语义价值的内容
+    - **保留**：古代医药学家（如张仲景、李时珍、孙思邈）仅在其与具体药材或方剂直接关联时提取，类型设为 Concept
+    - 每个实体的 name 应尽量简洁准确，避免冗余修饰
+    - 尽量充分提取，不要遗漏文本中与中药材相关的重要信息
 
-## 关系类型参考（不限于此，可根据文本语义自行命名关系）
-- 种植相关：适宜种植于、生长于、需要条件、施用、防治用药为、轮作搭配、间作搭配
-- 药用相关：功效为、含有成分、药用部位为、可治疗、配伍、药性为、归经为、属于方剂
-- 形态相关：形态特征为、鉴别特征为
-- 加工相关：采收方式为、炮制方法为、加工为、贮藏方式为
-- 品种相关：属于品种、变种为、别名为、同科属
-- 病害相关：易感染、防治方法为、症状为、用药为
+    ## 关系类型参考（不限于此，可根据文本语义自行命名关系）
+    - 种植相关：适宜种植于、生长于、需要条件、施用、防治用药为、轮作搭配、间作搭配
+    - 药用相关：功效为、含有成分、药用部位为、可治疗、配伍、药性为、归经为、属于方剂
+    - 形态相关：形态特征为、鉴别特征为
+    - 加工相关：采收方式为、炮制方法为、加工为、贮藏方式为
+    - 品种相关：属于品种、变种为、别名为、同科属
+    - 病害相关：易感染、防治方法为、症状为、用药为
 
-## 最重要规则：禁止孤立实体（必须严格遵守）
+    ## 最重要规则：禁止孤立实体（必须严格遵守）
 
-**每一个实体都必须至少出现在一条关系中（作为 source 或 target）。**
-如果文本中没有显式说明某实体的关系，你必须根据上下文推断并建立合理的关系。
+    **每一个实体都必须至少出现在一条关系中（作为 source 或 target）。**
+    如果文本中没有显式说明某实体的关系，你必须根据上下文推断并建立合理的关系。
 
-推断规则：
-1. GrowingCondition（温度、湿度、光照等）→ 必须用"需要条件"关系连接到对应的 Herb
-2. CultivationMethod（播种、移栽等）→ 必须用"种植方式"关系连接到对应的 Herb
-3. Disease（病虫害）→ 必须用"易感染"关系连接到对应的 Herb
-4. Region（产地）→ 必须用"适宜种植于"或"生长于"关系连接到对应的 Herb
-5. Season（季节）→ 必须用"种植时间"或"采收时间"关系连接到对应的 Herb
-6. 所有其他实体类型 → 必须找到合理的关系连接到文档主体或其他已有实体
+    推断规则：
+    1. GrowingCondition（温度、湿度、光照等）→ 必须用"需要条件"关系连接到对应的 Herb
+    2. CultivationMethod（播种、移栽等）→ 必须用"种植方式"关系连接到对应的 Herb
+    3. Disease（病虫害）→ 必须用"易感染"关系连接到对应的 Herb
+    4. Region（产地）→ 必须用"适宜种植于"或"生长于"关系连接到对应的 Herb
+    5. Season（季节）→ 必须用"种植时间"或"采收时间"关系连接到对应的 Herb
+    6. 所有其他实体类型 → 必须找到合理的关系连接到文档主体或其他已有实体
 
-**如果你无法为某个实体建立任何关系，则不要提取该实体。**
+    **如果你无法为某个实体建立任何关系，则不要提取该实体。**
 
-## 关键要求：数值指标的处理方式（非常重要！）
+    ## 关键要求：数值指标的处理方式（非常重要！）
 
-### 绝对禁止：
-- **禁止**将纯数值（如 "25°C"、"60%~65%"、"2~3厘米"、"pH5.5"、"3月"）作为独立实体。
-  纯数值不能出现在 entities 的 name 字段中。
-- **禁止**创建没有任何关系连接的孤立实体。每个实体至少应出现在一条关系中。
+    ### 绝对禁止：
+    - **禁止**将纯数值（如 "25°C"、"60%~65%"、"2~3厘米"、"pH5.5"、"3月"）作为独立实体。
+    纯数值不能出现在 entities 的 name 字段中。
+    - **禁止**创建没有任何关系连接的孤立实体。每个实体至少应出现在一条关系中。
 
-### 正确做法：
-数值指标必须通过**关系的 properties** 挂载到有语义的实体上。具体规则：
-1. 实体的 name 必须是有语义含义的名词概念（如"温度"、"含水量"、"播种深度"），而不是数值本身。
-2. 具体数值放在**关系的 properties.value** 字段中，单位放在 **properties.unit** 字段中。
-3. 每条含数值的关系都必须有明确的 source（如某种药材）和 target（如某个条件/方法）。
+    ### 正确做法：
+    数值指标必须通过**关系的 properties** 挂载到有语义的实体上。具体规则：
+    1. 实体的 name 必须是有语义含义的名词概念（如"温度"、"含水量"、"播种深度"），而不是数值本身。
+    2. 具体数值放在**关系的 properties.value** 字段中，单位放在 **properties.unit** 字段中。
+    3. 每条含数值的关系都必须有明确的 source（如某种药材）和 target（如某个条件/方法）。
 
-### 示例（务必严格参照）：
+    ### 示例（务必严格参照）：
 
-原文："灵芝培养基含水量为60%~65%"
-正确抽取：
-- entities: [{{"name": "灵芝", "type": "Herb", "properties": {{}}}},
-             {{"name": "含水量", "type": "GrowingCondition", "properties": {{"description": "培养基含水量"}}}}]
-- relations: [{{"source": "灵芝", "source_type": "Herb",
-               "target": "含水量", "target_type": "GrowingCondition",
-               "relation": "生长条件", "properties": {{"value": "60%~65%", "description": "培养基含水量"}}}}]
-错误示范：❌ 将 "60%~65%" 作为实体的 name
+    原文："灵芝培养基含水量为60%~65%"
+    正确抽取：
+    - entities: [{{"name": "灵芝", "type": "Herb", "properties": {{}}}},
+                {{"name": "含水量", "type": "GrowingCondition", "properties": {{"description": "培养基含水量"}}}}]
+    - relations: [{{"source": "灵芝", "source_type": "Herb",
+                "target": "含水量", "target_type": "GrowingCondition",
+                "relation": "生长条件", "properties": {{"value": "60%~65%", "description": "培养基含水量"}}}}]
+    错误示范：❌ 将 "60%~65%" 作为实体的 name
 
-原文："黄芪适宜生长温度为20~25℃，播种深度2~3厘米，土壤pH值6.5~8.0"
-正确抽取（每个数值指标一条关系）：
-- entities: [{{"name": "黄芪", "type": "Herb", "properties": {{}}}},
-             {{"name": "生长温度", "type": "GrowingCondition", "properties": {{}}}},
-             {{"name": "播种深度", "type": "CultivationMethod", "properties": {{}}}},
-             {{"name": "土壤pH值", "type": "GrowingCondition", "properties": {{}}}}]
-- relations: [{{"source": "黄芪", "source_type": "Herb", "target": "生长温度", "target_type": "GrowingCondition",
-               "relation": "适宜条件", "properties": {{"value": "20~25", "unit": "℃"}}}},
-              {{"source": "黄芪", "source_type": "Herb", "target": "播种深度", "target_type": "CultivationMethod",
-               "relation": "种植技术", "properties": {{"value": "2~3", "unit": "厘米"}}}},
-              {{"source": "黄芪", "source_type": "Herb", "target": "土壤pH值", "target_type": "GrowingCondition",
-               "relation": "适宜条件", "properties": {{"value": "6.5~8.0"}}}}]
-错误示范：❌ 将 "20~25℃"、"2~3厘米"、"6.5~8.0" 作为实体的 name
+    原文："黄芪适宜生长温度为20~25℃，播种深度2~3厘米，土壤pH值6.5~8.0"
+    正确抽取（每个数值指标一条关系）：
+    - entities: [{{"name": "黄芪", "type": "Herb", "properties": {{}}}},
+                {{"name": "生长温度", "type": "GrowingCondition", "properties": {{}}}},
+                {{"name": "播种深度", "type": "CultivationMethod", "properties": {{}}}},
+                {{"name": "土壤pH值", "type": "GrowingCondition", "properties": {{}}}}]
+    - relations: [{{"source": "黄芪", "source_type": "Herb", "target": "生长温度", "target_type": "GrowingCondition",
+                "relation": "适宜条件", "properties": {{"value": "20~25", "unit": "℃"}}}},
+                {{"source": "黄芪", "source_type": "Herb", "target": "播种深度", "target_type": "CultivationMethod",
+                "relation": "种植技术", "properties": {{"value": "2~3", "unit": "厘米"}}}},
+                {{"source": "黄芪", "source_type": "Herb", "target": "土壤pH值", "target_type": "GrowingCondition",
+                "relation": "适宜条件", "properties": {{"value": "6.5~8.0"}}}}]
+    错误示范：❌ 将 "20~25℃"、"2~3厘米"、"6.5~8.0" 作为实体的 name
 
-原文："灵芝子实体生长阶段温度控制在25~28℃，空气湿度85%~95%，CO2浓度低于0.1%"
-正确抽取（三条关系，数值全部在 properties 中）：
-- relations: [{{"source": "灵芝", ..., "target": "子实体生长温度", "target_type": "GrowingCondition",
-               "relation": "生长条件", "properties": {{"value": "25~28", "unit": "℃", "description": "子实体生长阶段"}}}},
-              {{"source": "灵芝", ..., "target": "空气湿度", "target_type": "GrowingCondition",
-               "relation": "生长条件", "properties": {{"value": "85%~95%", "description": "子实体生长阶段"}}}},
-              {{"source": "灵芝", ..., "target": "CO2浓度", "target_type": "GrowingCondition",
-               "relation": "生长条件", "properties": {{"value": "低于0.1%", "description": "子实体生长阶段"}}}}]
+    原文："灵芝子实体生长阶段温度控制在25~28℃，空气湿度85%~95%，CO2浓度低于0.1%"
+    正确抽取（三条关系，数值全部在 properties 中）：
+    - relations: [{{"source": "灵芝", ..., "target": "子实体生长温度", "target_type": "GrowingCondition",
+                "relation": "生长条件", "properties": {{"value": "25~28", "unit": "℃", "description": "子实体生长阶段"}}}},
+                {{"source": "灵芝", ..., "target": "空气湿度", "target_type": "GrowingCondition",
+                "relation": "生长条件", "properties": {{"value": "85%~95%", "description": "子实体生长阶段"}}}},
+                {{"source": "灵芝", ..., "target": "CO2浓度", "target_type": "GrowingCondition",
+                "relation": "生长条件", "properties": {{"value": "低于0.1%", "description": "子实体生长阶段"}}}}]
 
-## 输出格式
-严格遵循以下 JSON 格式，不要输出多余文字：
-```json
-{{
-  "entities": [
-    {{"name": "实体名称", "type": "实体类型", "properties": {{"description": "简要描述", "value": "具体数值（如有）", "unit": "单位（如有）"}}}}
-  ],
-  "relations": [
-    {{"source": "源实体名称", "source_type": "源实体类型",
-      "target": "目标实体名称", "target_type": "目标实体类型",
-      "relation": "关系类型", "properties": {{"value": "具体数值（如有）", "unit": "单位（如有）", "description": "补充说明（如有）"}}}}
-  ]
-}}
-```
+    ## 输出格式
+    严格遵循以下 JSON 格式，不要输出多余文字：
+    ```json
+    {{
+    "entities": [
+        {{"name": "实体名称", "type": "实体类型", "properties": {{"description": "简要描述", "value": "具体数值（如有）", "unit": "单位（如有）"}}}}
+    ],
+    "relations": [
+        {{"source": "源实体名称", "source_type": "源实体类型",
+        "target": "目标实体名称", "target_type": "目标实体类型",
+        "relation": "关系类型", "properties": {{"value": "具体数值（如有）", "unit": "单位（如有）", "description": "补充说明（如有）"}}}}
+    ]
+    }}
+    ```
 
-文本内容：
-{text}
+    文本内容：
+    {text}
 
-请充分抽取上述文本中与中药材相关的所有实体和关系。
-重要提醒：具体数值（温度、含水量、pH值、浓度、用量等）绝不能作为实体名称，只能放在关系的 properties.value 中。
-每个实体必须至少出现在一条关系中，不允许孤立节点。
-以 JSON 格式输出："""
+    请充分抽取上述文本中与中药材相关的所有实体和关系。
+    重要提醒：具体数值（温度、含水量、pH值、浓度、用量等）绝不能作为实体名称，只能放在关系的 properties.value 中。
+    每个实体必须至少出现在一条关系中，不允许孤立节点。
+    以 JSON 格式输出：
+"""
 
 
 # =========================================================================
@@ -311,31 +312,32 @@ EXTRACT_PROMPT = """你是一个中药材种植领域的知识图谱构建专家
 # =========================================================================
 
 CYPHER_GENERATION_PROMPT = """你是一个 Neo4j Cypher 查询专家，专注于中药材种植领域的知识图谱查询。
-请根据用户问题和图谱 Schema 生成 Cypher 查询语句。
+    请根据用户问题和图谱 Schema 生成 Cypher 查询语句。
 
-图谱 Schema：
-{schema}
+    图谱 Schema：
+    {schema}
 
-图谱中的节点类型主要包括：Herb（中药材）、Variety（品种）、MedicinalPart（药用部位）、
-Efficacy（功效）、MedicinalProperty（药性）、Disease（病虫害）、HumanDisease（人体疾病）、
-CultivationMethod（种植技术）、PlantingPattern（种植模式）、GrowingCondition（生长条件）、
-Region（产地/适生区）、HarvestProcess（采收加工）、ProcessingMethod（炮制方法）、
-ChemicalCompound（化学成分）、Formula（方剂）、PlantMorphology（植物形态）、
-Fertilizer（肥料）、Pesticide（农药/药剂）、Soil（土壤）、Season（时间/季节）、
-StorageMethod（贮藏方法）、Standard（质量标准）、Concept（通用概念）。
+    图谱中的节点类型主要包括：Herb（中药材）、Variety（品种）、MedicinalPart（药用部位）、
+    Efficacy（功效）、MedicinalProperty（药性）、Disease（病虫害）、HumanDisease（人体疾病）、
+    CultivationMethod（种植技术）、PlantingPattern（种植模式）、GrowingCondition（生长条件）、
+    Region（产地/适生区）、HarvestProcess（采收加工）、ProcessingMethod（炮制方法）、
+    ChemicalCompound（化学成分）、Formula（方剂）、PlantMorphology（植物形态）、
+    Fertilizer（肥料）、Pesticide（农药/药剂）、Soil（土壤）、Season（时间/季节）、
+    StorageMethod（贮藏方法）、Standard（质量标准）、Concept（通用概念）。
 
-注意事项：
-1. 只生成 READ 查询（MATCH），不要生成任何写入/删除操作
-2. 使用 CONTAINS 进行模糊匹配（中文实体名称可能不完全一致）
-3. 限制返回结果数量（LIMIT 20）
-4. 返回节点的名称、类型、关系信息，以及节点和关系的全部属性（使用 properties() 函数），
-   确保具体数值（如含水量、温度、pH值、浓度、剂量等）不会丢失
-5. 只输出 Cypher 语句，不要输出其他内容
-6. 当用户询问某种中药材时，优先查询以该药材为中心的所有关联节点和关系
+    注意事项：
+    1. 只生成 READ 查询（MATCH），不要生成任何写入/删除操作
+    2. 使用 CONTAINS 进行模糊匹配（中文实体名称可能不完全一致）
+    3. 限制返回结果数量（LIMIT 20）
+    4. 返回节点的名称、类型、关系信息，以及节点和关系的全部属性（使用 properties() 函数），
+    确保具体数值（如含水量、温度、pH值、浓度、剂量等）不会丢失
+    5. 只输出 Cypher 语句，不要输出其他内容
+    6. 当用户询问某种中药材时，优先查询以该药材为中心的所有关联节点和关系
 
-用户问题：{question}
+    用户问题：{question}
 
-Cypher 查询语句："""
+    Cypher 查询语句：
+"""
 
 
 # =========================================================================
@@ -344,22 +346,23 @@ Cypher 查询语句："""
 
 GRAPH_QA_PROMPT = """你是一个基于知识图谱的问答助手。请根据知识图谱查询结果回答用户问题。
 
-知识图谱查询结果：
-{graph_context}
+    知识图谱查询结果：
+    {graph_context}
 
-以下是本对话的近期历史（请结合历史理解并回答当前问题）：
-{chat_history}
+    以下是本对话的近期历史（请结合历史理解并回答当前问题）：
+    {chat_history}
 
-用户问题：{question}
+    用户问题：{question}
 
-回答要求：
-1. 基于知识图谱中的实体和关系进行回答
-2. 如果图谱信息不足以回答，请如实说明并结合通用知识补充
-3. 回答使用自然流畅的中文，语言简洁、逻辑清晰
-4. 可以合理使用 Markdown 语法提升可读性
-5. 若有近期对话历史，请结合上下文保持连贯
+    回答要求：
+    1. 基于知识图谱中的实体和关系进行回答
+    2. 如果图谱信息不足以回答，请如实说明并结合通用知识补充
+    3. 回答使用自然流畅的中文，语言简洁、逻辑清晰
+    4. 可以合理使用 Markdown 语法提升可读性
+    5. 若有近期对话历史，请结合上下文保持连贯
 
-请给出回答："""
+    请给出回答：
+"""
 
 
 # =========================================================================

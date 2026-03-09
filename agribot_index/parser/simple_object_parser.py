@@ -30,6 +30,7 @@ logger = setup_logging()
 class SimpleObjectParser:
     """简单对象解析器"""
     
+    # 配置分片参数并连接 MinIO、注册各格式解析器。
     def __init__(self, chunk_size: int = 2048, overlap_size: int = 128):
         """
         初始化解析器
@@ -67,6 +68,7 @@ class SimpleObjectParser:
         """
         self.parsers.append(parser)
     
+    # 根据 MinIO 返回的 Content-Type，在已注册的解析器里选一个“支持”该类型的来用
     def _get_parser(self, content_type: str) -> Optional[DocumentParser]:
         """
         根据内容类型获取合适的解析器
@@ -82,6 +84,7 @@ class SimpleObjectParser:
                 return parser
         return None
     
+    # 从 MinIO 对象路径中取出“文件名”作为文档名
     def _extract_doc_name(self, object_path: str) -> str:
         """
         从对象路径中提取文档名称
@@ -147,6 +150,7 @@ class SimpleObjectParser:
         """
         return hashlib.md5(data).hexdigest()
     
+    # 把一整段文本按固定大小、带重叠地切成多个块
     def _split_text_by_langchain(self, text: str) -> List[str]:
         """
         使用LangChain分割文本
@@ -155,6 +159,7 @@ class SimpleObjectParser:
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.overlap_size)
         return text_splitter.split_text(text)
     
+    # 对 MinIO 中一个对象做“拉取 → 解析 → 分片”，返回文档元数据 + 文本块列表。
     def parse_object(self, bucket_name: str, object_name: str) -> Dict[str, Any]:
         """
         解析简单对象

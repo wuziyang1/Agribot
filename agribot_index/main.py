@@ -60,6 +60,7 @@ class MinioEventListener:
         self.graph_indexer = create_graph_indexer()
         logger.info("所有组件初始化完成！")
     
+    #从 MinIO/S3 的原始事件 JSON 里抽出需要用的字段
     def _extract_event_info(self, event_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         从事件数据中提取关键信息
@@ -136,6 +137,7 @@ class MinioEventListener:
             logger.error(f"提取事件信息失败: {e}")
             return {}
     
+    #处理「对象被创建」（上传）事件
     def _handle_object_created(self, event_info: Dict[str, Any]):
         """
         处理对象创建事件
@@ -157,6 +159,7 @@ class MinioEventListener:
         except Exception as e:
             logger.error(f"处理对象创建事件失败: {e}")
     
+    #处理「对象被删除」事件
     def _handle_object_deleted(self, event_info: Dict[str, Any]):
         """
         处理对象删除事件
@@ -190,6 +193,7 @@ class MinioEventListener:
         except Exception as e:
             logger.error(f"处理对象删除事件失败: {e}")
     
+    #统一入口，处理单条 MinIO 事件。
     def _process_event(self, event_data: Dict[str, Any]):
         """
         处理单个事件
@@ -221,6 +225,7 @@ class MinioEventListener:
         except Exception as e:
             logger.error(f"处理事件时出错: {e}")
     
+    #对「单个 MinIO 对象」（一个文件）做完整处理：解析 → 向量化 → 写入 Milvus → 写 Neo4j。
     def _process_single_object(self, bucket_name: str, object_name: str, force_update: bool = False):
         """
         处理单个对象（用于全量刷新和排查补漏）
@@ -334,6 +339,7 @@ class MinioEventListener:
             logger.error(f"  处理对象失败: {e}")
             return False
     
+    #全量刷新
     def full_update(self):
         """
         模式1：全量刷新 - 遍历Minio桶中的所有数据并更新到Milvus
@@ -374,6 +380,7 @@ class MinioEventListener:
         except Exception as e:
             logger.error(f"全量刷新失败: {e}")
     
+    #排查补漏
     def backfill_update(self):
         """
         模式2：排查补漏 - 检查Milvus中不存在的文档并新增
@@ -419,6 +426,7 @@ class MinioEventListener:
         except Exception as e:
             logger.error(f"排查补漏失败: {e}")
     
+    #增量更新
     def start_listening(self):
         """
         模式3：增量更新 - 根据消息通知进行增量更新
