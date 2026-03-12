@@ -141,7 +141,7 @@ class MilvusAPI:
                 max_length=65535  # 最大长度
             )
             
-            # 内容向量（text-embedding-v4的维度是1536）
+            # 内容向量（当前使用 BAAI/bge-m3，维度默认 1024）
             schema.add_field(
                 field_name=MilvusDocumentField.CONTENT_VECTOR.value,
                 datatype=DataType.FLOAT_VECTOR,

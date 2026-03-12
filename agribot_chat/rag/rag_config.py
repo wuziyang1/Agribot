@@ -20,10 +20,10 @@ class Config:
     MILVUS_PORT = int(os.getenv("MILVUS_PORT", "19530"))
     MILVUS_USER = os.getenv("MILVUS_USER") or ""
     MILVUS_PASSWORD = os.getenv("MILVUS_PASSWORD") or ""
-    MILVUS_DATABASE = os.getenv("MILVUS_DATABASE", "default")
-    MILVUS_COLLECTION_NAME = os.getenv("MILVUS_COLLECTION", "mildoc_collection")
+    MILVUS_DATABASE = os.getenv("MILVUS_DATABASE", "agribot")
+    MILVUS_COLLECTION_NAME = os.getenv("MILVUS_COLLECTION", "agribot_collection")
     MILVUS_INDEX_TYPE = os.getenv("MILVUS_INDEX_TYPE", "IVF_FLAT")
-    MILVUS_VECTOR_DIM = int(os.getenv("MILVUS_VECTOR_DIM", "1536"))
+    MILVUS_VECTOR_DIM = int(os.getenv("MILVUS_VECTOR_DIM", "1024"))
 
     LLM_MODEL_NAME = os.getenv("LLM_MODEL_NAME", "")
     LLM_API_KEY = os.getenv("LLM_API_KEY", "")

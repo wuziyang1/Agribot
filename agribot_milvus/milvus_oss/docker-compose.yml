@@ -36,12 +36,12 @@ services:
       MINIO_SECRET_ACCESS_KEY: ${MINIO_SECRET_ACCESS_KEY}
       MINIO_USE_VIRTUAL_HOST: true
       MINIO_USE_SSL: true
-      MINIO_BUCKET_NAME: milvus-alioss
+      MINIO_BUCKET_NAME: agribot-milvus-oss
       MINIO_CLOUD_PROVIDER: aliyun
       # milvus 账号权限
       COMMON_SECURITY_AUTHORIZATION_ENABLED: true
       COMMON_SECURITY_SUPER_USERS: root
-      COMMON_SECURITY_DEFAULT_ROOT_PASSWORD: admin123
+      COMMON_SECURITY_DEFAULT_ROOT_PASSWORD: ${COMMON_SECURITY_DEFAULT_ROOT_PASSWORD}
 
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus
