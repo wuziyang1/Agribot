@@ -54,10 +54,18 @@ class MinioEventListener:
         logger.info("测试embedding工具...")
         self.embedding_tool: EmbeddingTool = EmbeddingTool()
 
+        # 知识图谱开关（通过环境变量控制，默认关闭）
+        self.enable_graph_rag = os.getenv("ENABLE_GRAPH_RAG", "false").lower() == "true"
 
-        # 初始化知识图谱索引器（可选，缺少 Neo4j 配置时自动跳过）
-        logger.info("初始化知识图谱索引器...")
-        self.graph_indexer = create_graph_indexer()
+        # 初始化知识图谱索引器（可选）
+        if self.enable_graph_rag:
+            logger.info("初始化知识图谱索引器...")
+            self.graph_indexer = create_graph_indexer()
+            if self.graph_indexer is None:
+                logger.info("Neo4j 配置不可用，知识图谱索引功能已跳过")
+        else:
+            self.graph_indexer = None
+            logger.info("知识图谱未启用（ENABLE_GRAPH_RAG=false），上传时不进行命名实体识别和关系抽取")
         logger.info("所有组件初始化完成！")
     
     #从 MinIO/S3 的原始事件 JSON 里抽出需要用的字段
@@ -332,6 +340,8 @@ class MinioEventListener:
                     )
                 except Exception as e:
                     logger.warning(f"    知识图谱导入失败（不影响向量索引）: {e}")
+            else:
+                logger.info("    知识图谱功能当前未启用，本次仅完成向量索引（实体识别与关系抽取已跳过）")
 
             return success_count > 0
             

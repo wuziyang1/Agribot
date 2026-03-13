@@ -51,11 +51,15 @@ class SimpleObjectParser:
         )
         
         # 注册解析器（按优先级排序）
+        # 说明：PDF 优先使用 PyPDF2；扫描件/提取为空时再走 OCR；最后 markitdown 兜底
+        from parser.deepseek_ocr_parser import DeepSeekOCRParser
+
         self.parsers = [
-            OfficeParser(),          # markitdown解析Office文档（Word、Excel、PowerPoint）
-            PDFParser(),             # PyPDF2作为PDF的备选解析器
-            #MinerUParser(),          # MinerU解析器，专门处理PDF，OCR，暂不开启
-            MarkdownParser(),        # Markdown解析器，
+            PDFParser(),             # PDF 优先：PyPDF2
+            DeepSeekOCRParser(),     # 扫描件 PDF：OCR（DeepSeek-OCR）
+            OfficeParser(),          # 兜底：markitdown（也支持 PDF/Office）
+            # MinerUParser(),        # MinerU解析器，专门处理PDF，OCR，暂不开启
+            MarkdownParser(),        # Markdown解析器
             TextParser(),            # 纯文本解析器作为最后的备选
         ]
     
@@ -235,10 +239,11 @@ class SimpleObjectParser:
             if not parser:
                 logger.info(f"警告: 未找到适合 {content_type} 的解析器，尝试使用文本解析器")
                 parser = TextParser()
-            
+
             # 解析文档内容
             logger.info(f"使用解析器: {parser.__class__.__name__}")
             text_content = parser.parse(data)
+
             
             if not text_content:
                 logger.info("警告: 未提取到文本内容")
