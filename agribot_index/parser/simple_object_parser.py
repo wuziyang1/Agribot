@@ -235,18 +235,44 @@ class SimpleObjectParser:
             doc_length = int(headers.get('Content-Length', len(data)))
             
             # 选择合适的解析器
-            parser = self._get_parser(content_type)
-            if not parser:
+            first_parser = self._get_parser(content_type)
+            candidate_parsers: List[DocumentParser] = []
+
+            if first_parser:
+                candidate_parsers.append(first_parser)
+
+                # 如果首选解析器是 PDFParser，则在其后追加其它支持该类型的解析器，形成“级联回退”
+                if isinstance(first_parser, PDFParser):
+                    for p in self.parsers:
+                        if p is first_parser:
+                            continue
+                        try:
+                            if p.supports(content_type):
+                                candidate_parsers.append(p)
+                        except Exception as e:
+                            logger.info(f"检查解析器 {p.__class__.__name__} 是否支持 {content_type} 时出错: {e}")
+            else:
                 logger.info(f"警告: 未找到适合 {content_type} 的解析器，尝试使用文本解析器")
-                parser = TextParser()
+                candidate_parsers.append(TextParser())
 
-            # 解析文档内容
-            logger.info(f"使用解析器: {parser.__class__.__name__}")
-            text_content = parser.parse(data)
+            text_content = ""
 
-            
+            # 按顺序尝试所有候选解析器，直到成功提取到非空文本
+            for parser in candidate_parsers:
+                logger.info(f"使用解析器: {parser.__class__.__name__}")
+                try:
+                    text_content = parser.parse(data)
+                except Exception as e:
+                    logger.info(f"解析器 {parser.__class__.__name__} 解析失败: {e}")
+                    text_content = ""
+
+                if text_content:
+                    break
+                else:
+                    logger.info(f"解析器 {parser.__class__.__name__} 未提取到文本内容，将尝试下一个解析器（如有）")
+
             if not text_content:
-                logger.info("警告: 未提取到文本内容")
+                logger.info("警告: 所有候选解析器均未提取到文本内容")
                 contents = []
             else:
                 logger.info(f"提取到文本: {len(text_content)} 字符")
