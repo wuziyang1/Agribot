@@ -55,8 +55,9 @@ class SimpleObjectParser:
         from parser.deepseek_ocr_parser import PDFOCRParser
 
         self.parsers = [
-            PDFParser(),             # PDF 优先：PyPDF2
             PDFOCRParser(),          # 扫描件 PDF：OCR（PaddleOCR-VL 等视觉模型）
+            PDFParser(),             # PDF 优先：PyPDF2
+            
             OfficeParser(),          # 兜底：markitdown（也支持 PDF/Office）
             # MinerUParser(),        # MinerU解析器，专门处理PDF，OCR，暂不开启
             MarkdownParser(),        # Markdown解析器
