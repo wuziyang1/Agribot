@@ -16,3 +16,5 @@ responses = client.embeddings.create(
 for i, data in enumerate(responses.data):
     print(f"文本 {i} 的向量维度: {len(data.embedding)}")
     print(f"前 5 维数据: {data.embedding[:5]}")
+
+    #123
