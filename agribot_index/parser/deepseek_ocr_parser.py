@@ -25,10 +25,12 @@ class PDFOCRParser(DocumentParser):
         self.base_url = os.getenv("OCR_BASE_URL") or os.getenv("LLM_BASE_URL") or os.getenv("OPENAI_BASE_URL")
         self.model = os.getenv("OCR_MODEL_NAME", "PaddlePaddle/PaddleOCR-VL-1.5")
 
-        self.dpi = int(os.getenv("OCR_PDF_DPI", "200"))
+        # OCR 渲染分辨率，固定为 200 DPI（不再从环境变量读取）
+        self.dpi = 200
         # OCR_MAX_PAGES <= 0 表示不限制页数，默认对整本 PDF 做 OCR
         self.max_pages = int(os.getenv("OCR_MAX_PAGES", "0"))
-        self.timeout_s = float(os.getenv("OCR_TIMEOUT_S", "120"))
+        # 单页 OCR 超时时间（秒），固定为 120 秒（不再从环境变量读取）
+        self.timeout_s = 120.0
         self.retry_dpi_list = self._parse_dpi_list(os.getenv("OCR_RETRY_DPI_LIST", ""))
         self.min_chars_per_page = int(os.getenv("OCR_MIN_CHARS_PER_PAGE", "30"))
         self.max_junk_ratio = float(os.getenv("OCR_MAX_JUNK_RATIO", "0.65"))
