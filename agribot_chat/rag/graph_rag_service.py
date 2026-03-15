@@ -15,7 +15,11 @@ from typing import Dict, Any, List, Optional
 
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
-from langchain_neo4j import Neo4jGraph
+try:
+    # 图谱功能的可选依赖；若未安装，则禁用 Graph RAG，避免影响纯向量 RAG 与评估脚本
+    from langchain_neo4j import Neo4jGraph  # type: ignore
+except Exception:  # noqa: BLE001
+    Neo4jGraph = None  # type: ignore
 from langchain_community.callbacks.manager import get_openai_callback
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
@@ -382,7 +386,10 @@ class GraphRAGService:
     CHAT_HISTORY_MAX_MESSAGES = 10
 
     def __init__(self):
-        self.graph: Optional[Neo4jGraph] = None
+        if Neo4jGraph is None:
+            # 当未安装 langchain_neo4j 时，直接禁止使用 Graph RAG
+            raise RuntimeError("langchain_neo4j 未安装，Graph RAG 功能不可用（但普通 RAG 不受影响）")
+        self.graph: Optional[Neo4jGraph] = None  # type: ignore[assignment]
         self.llm: Optional[ChatOpenAI] = None
         self._initialize()
 
@@ -994,23 +1001,13 @@ class GraphRAGService:
 # 单例管理
 # =========================================================================
 
-_graph_rag_instance = None
-
-
 def get_graph_rag_service():
-    """获取 GraphRAGService 单例（仅在配置了 Neo4j 时创建）"""
-    global _graph_rag_instance
-    if _graph_rag_instance is not None:
-        return _graph_rag_instance
+    """
+    获取 GraphRAGService 单例。
 
-    if not Config.NEO4J_URI:
-        logger.info("未配置 NEO4J_URI，Graph RAG 服务不可用")
-        return None
-
-    try:
-        _graph_rag_instance = GraphRAGService()
-        logger.info("Graph RAG 服务实例创建成功")
-        return _graph_rag_instance
-    except Exception as e:
-        logger.error("Graph RAG 服务实例创建失败: %s", e)
-        return None
+    当前已在实验环境中禁用 Graph RAG（统一只评估向量检索 RAG），
+    因此这里直接返回 None，避免任何 Neo4j / 图谱相关依赖。
+    若后续需要启用 Graph RAG，可恢复此函数内的初始化逻辑。
+    """
+    logger.info("Graph RAG 在当前环境中已被禁用（get_graph_rag_service 返回 None）")
+    return None

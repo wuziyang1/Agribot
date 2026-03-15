@@ -1,0 +1,9 @@
+# RAG 测试数据生成脚本依赖
+# 需同时能导入 agribot_index（解析器、MinIO），建议在项目根目录安装 agribot_index 依赖后再安装本目录依赖
+openai>=1.0.0
+python-dotenv>=1.0.0
+minio>=7.2.0
+
+# RAG 评估（run_rag_eval.py）
+ragas>=0.2.0
+langchain-openai>=0.2.0

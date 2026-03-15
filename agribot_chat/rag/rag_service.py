@@ -50,6 +50,8 @@ class RAGResponse(BaseModel):
     token_usage: Optional[TokenUsage] = None  # token使用情况
     success: bool = True  # 查询是否成功
     error_message: Optional[str] = None  # 错误信息
+    # 评估用：检索到的完整上下文（仅当 query_service(..., return_contexts=True) 时填充）
+    evaluation_contexts: Optional[List[str]] = None
 
 
 
@@ -507,7 +509,7 @@ class RAGService:
     # 对外查询方法
     # =====================================================================
 
-    def query_service(self, query, use_rerank=True, use_rag=True, use_graph=True, chat_history=None):
+    def query_service(self, query, use_rerank=True, use_rag=True, use_graph=True, chat_history=None, return_contexts=False):
         """核心查询服务方法
 
         Args:
@@ -516,6 +518,7 @@ class RAGService:
             use_rag: 是否使用知识库检索（为 False 时不查库，仅用 LLM 回答）
             use_graph: 是否使用知识图谱检索（为 False 时不查图谱）
             chat_history: 本会话的近期对话历史 [{"role":"user"|"assistant","content":"..."}, ...]，可选
+            return_contexts: 为 True 时，在返回中附带 evaluation_contexts（检索到的完整文本列表），供 RAG 评估使用
         """
         try:
             logger.info(f"🔍 开始处理查询（use_rag={use_rag}, use_graph={use_graph}, rerank={use_rerank}): {query}")
@@ -558,11 +561,13 @@ class RAGService:
                 total_tokens=cb.total_tokens
             )
 
+            evaluation_contexts = [doc.page_content for doc in final_docs] if return_contexts else None
             return RAGResponse(
                 content=answer if answer else "抱歉，我无法根据现有信息回答您的问题。",
                 source_documents=processed_source_docs,
                 token_usage=token_usage,
                 success=True,
+                evaluation_contexts=evaluation_contexts,
             )
 
         except Exception as e:
@@ -572,6 +577,7 @@ class RAGService:
                 source_documents=[],
                 success=False,
                 error_message=f"查询过程中发生错误：{str(e)}",
+                evaluation_contexts=None,
             )
 
     def stream_query(self, query, use_rerank=True, use_rag=True, use_graph=True, chat_history=None):
