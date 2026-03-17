@@ -17,16 +17,18 @@ from __future__ import annotations
 import json
 import os
 import sys
+from pathlib import Path
 
 # 路径常量（固定）
 _script_dir = os.path.dirname(os.path.abspath(__file__))
-_project_root = os.path.dirname(_script_dir)
-DATA_PATH = "/export/workspace/rag/experiment/eval/data/rag_test_data.json"
-OUT_PATH = "/export/workspace/rag/experiment/eval/data/rag_eval_result.json"
+# 仓库根目录：.../experiment/1-base/base.py -> .../
+_project_root = str(Path(__file__).resolve().parents[2])
+DATA_PATH = "/export/workspace/rag/experiment/generate_data/gen_data.json"
+OUT_PATH = "/export/workspace/rag/experiment/1-base/base_res.json"
 
 from dotenv import load_dotenv
 
-# 先加载 experiment/eval/.env（如果有），再保证能导入 agribot_chat
+# 先加载当前目录的 .env（如果有），再保证能导入 agribot_chat
 _env_experiment = os.path.join(_script_dir, ".env")
 load_dotenv(_env_experiment)
 if _project_root not in sys.path:

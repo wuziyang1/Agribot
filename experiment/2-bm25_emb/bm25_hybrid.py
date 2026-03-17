@@ -23,8 +23,8 @@ _script_dir = os.path.dirname(os.path.abspath(__file__))
 # 脚本位于 /export/workspace/rag/experiment/eval
 # 项目根目录是再往上一层：/export/workspace/rag
 _project_root = os.path.dirname(os.path.dirname(_script_dir))
-DATA_PATH = "/export/workspace/rag/experiment/eval/data/rag_test_data.json"
-OUT_PATH = "/export/workspace/rag/experiment/eval/data/rag_eval_result_hybrid.json"
+DATA_PATH = "/export/workspace/rag/experiment/generate_data/gen_data.json"
+OUT_PATH = "/export/workspace/rag/experiment/2-bm25_emb/bm25_res.json"
 
 # 加载本目录下的 .env（若有），并保证能导入 agribot_chat
 _env_experiment = os.path.join(_script_dir, ".env")
