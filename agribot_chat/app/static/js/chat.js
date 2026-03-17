@@ -534,7 +534,13 @@ document.querySelectorAll('.suggestion[data-question]').forEach((btn) => {
       await switchToSession(s.id);
       return;
     }
-    await switchToSession(activeSessionId);
+    // 刷新页面时，如果后端已经标记了 active session，就不要再 PATCH 一次，
+    // 否则会额外触发多次串行请求（PATCH + loadSessions + loadMessages），在高延迟下会显著拖慢首屏。
+    const msgs = await loadMessages(activeSessionId);
+    messagesEl.innerHTML = '';
+    msgs.forEach((m) => renderMessage(m.role, m.content));
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    renderSessionsList();
   } catch (e) {
     console.error(e);
   }

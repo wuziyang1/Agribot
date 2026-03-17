@@ -14,8 +14,9 @@
       }
     };
   </script>
+  <!-- 使用本地 MathJax，避免部分网络访问 jsDelivr 超时 -->
   <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    src="{{ url_for('static', filename='vendor/mathjax/tex-mml-chtml.js') }}"></script>
 </head>
 <body>
   <div class="app-root">
@@ -96,7 +97,8 @@
   </div>
 
   <!-- Markdown 解析库（前端将模型返回的 Markdown 转成 HTML 渲染） -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
+  <!-- 使用本地 vendor，避免部分网络访问 jsDelivr 失败导致 Markdown 不渲染 -->
+  <script src="{{ url_for('static', filename='vendor/marked.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>

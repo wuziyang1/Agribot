@@ -18,7 +18,6 @@ RAG 测试数据生成脚本
 
 from __future__ import annotations
 
-import argparse
 import json
 import os
 import random
@@ -38,31 +37,6 @@ _agribot_index = os.path.join(_project_root, "agribot_index")
 if _agribot_index not in sys.path:
     sys.path.insert(0, _agribot_index)
 
-from minio import Minio  # noqa: E402
-
-
-# ---------- MinIO 连接（与 agribot_index 一致）----------
-def get_minio_client() -> Minio:
-    endpoint = os.getenv("ENDPOINT")
-    access_key = os.getenv("ACCESS_KEY")
-    secret_key = os.getenv("SECRET_KEY")
-    if not all([endpoint, access_key, secret_key]):
-        raise RuntimeError("请在 .env 中配置 ENDPOINT, ACCESS_KEY, SECRET_KEY")
-    return Minio(
-        endpoint=endpoint,
-        access_key=access_key,
-        secret_key=secret_key,
-        secure=False,
-    )
-
-
-def get_bucket() -> str:
-    bucket = os.getenv("MINIO_BUCKET", "agribot")
-    if not bucket:
-        raise RuntimeError("请在 .env 中配置 MINIO_BUCKET")
-    return bucket
-
-
 # ---------- 从 Milvus 读取已索引分片（不解析文档）----------
 def _ensure_milvus_env() -> None:
     """使用 Milvus 时加载 agribot_index 的 .env，保证 MILVUS_* 已配置。"""
@@ -76,6 +50,66 @@ def get_milvus_api():  # noqa: E402
     """返回 agribot_index 的 MilvusAPI 实例（需已配置 MILVUS_*）。"""
     from milvus_api import MilvusAPI, MilvusDocumentField  # noqa: E402
     return MilvusAPI(), MilvusDocumentField
+
+
+def collect_chunks_directly_from_milvus(
+    milvus_api: Any,
+    milvus_field: Any,
+    max_docs: int,
+    rng: random.Random,
+) -> list[tuple[str, str, int, str]]:
+    """
+    直接从 Milvus 读取已索引分片，不再依赖 MinIO。
+    返回 [(doc_path_name, doc_name, chunk_index, chunk_text), ...]。
+    """
+    try:
+        results = milvus_api.client.query(
+            collection_name=milvus_api.collection_name,
+            filter="",
+            output_fields=[
+                "id",
+                milvus_field.CONTENT.value,
+                milvus_field.DOC_NAME.value,
+                milvus_field.DOC_PATH_NAME.value,
+            ],
+            limit=100_000,
+        )
+    except Exception:
+        return []
+
+    if not results:
+        return []
+
+    # 先按 doc_path_name 分组，再在每个文档内按 id 排序，生成 chunk_index
+    by_doc: dict[str, list[tuple[int, str, str]]] = {}
+    for r in results:
+        doc_path = r.get(milvus_field.DOC_PATH_NAME.value) or ""
+        if not doc_path:
+            continue
+        content = r.get(milvus_field.CONTENT.value) or ""
+        if not (content and str(content).strip()):
+            continue
+        doc_name = r.get(milvus_field.DOC_NAME.value) or os.path.basename(doc_path)
+        by_doc.setdefault(doc_path, []).append(
+            (int(r.get("id", 0)), doc_name, str(content).strip())
+        )
+
+    if not by_doc:
+        return []
+
+    # 随机挑选最多 max_docs 个文档
+    doc_paths = list(by_doc.keys())
+    chosen_paths = rng.sample(doc_paths, min(max_docs, len(doc_paths)))
+
+    flat: list[tuple[str, str, int, str]] = []
+    for doc_path in chosen_paths:
+        items = by_doc[doc_path]
+        # 按 id 排序，保证 chunk 顺序与写入时一致
+        items.sort(key=lambda x: x[0])
+        for idx, (_id, doc_name, content) in enumerate(items):
+            flat.append((doc_path, doc_name, idx, content))
+
+    return flat
 
 
 def get_chunks_for_document(milvus_api: Any, doc_path_name: str, field: Any) -> list[tuple[int, str, str]]:
@@ -102,43 +136,6 @@ def get_chunks_for_document(milvus_api: Any, doc_path_name: str, field: Any) -> 
     return rows
 
 
-def collect_chunks_from_milvus(
-    minio_client: Minio,
-    bucket: str,
-    milvus_api: Any,
-    milvus_field: Any,
-    max_docs: int,
-    rng: random.Random,
-) -> list[tuple[str, str, int, str]]:
-    """
-    与 agribot_index 一致：从 MinIO 列举文档路径，只保留在 Milvus 中已索引的文档，
-    再从 Milvus 读取这些文档的全部分片，展开为 (doc_path_name, doc_name, chunk_index, chunk_text)。
-    不做任何 PDF/文档解析。
-    """
-    object_names = list_document_objects(minio_client, bucket)
-    # 只保留 Milvus 里已有索引的文档
-    doc_paths_in_milvus = []
-    for name in object_names:
-        try:
-            if milvus_api.check_document_exists(name):
-                doc_paths_in_milvus.append(name)
-        except Exception:
-            continue
-    if not doc_paths_in_milvus:
-        return []
-    chosen = rng.sample(doc_paths_in_milvus, min(max_docs, len(doc_paths_in_milvus)))
-    flat = []
-    for doc_path in chosen:
-        rows = get_chunks_for_document(milvus_api, doc_path, milvus_field)
-        doc_name = os.path.basename(doc_path)
-        for i, (_id, content, doc_name_from_milvus) in enumerate(rows):
-            if not (content and content.strip()):
-                continue
-            name_use = doc_name_from_milvus or doc_name
-            flat.append((doc_path, name_use, i, content.strip()))
-    return flat
-
-
 # ---------- Qwen LLM 调用（OpenAI 兼容接口）----------
 def get_llm_client() -> Any:
     try:
@@ -155,20 +152,22 @@ def get_llm_client() -> Any:
 
 def call_llm_generate_question(client: Any, model: str, context_before: str, chunk: str, context_after: str) -> str:
     """根据「前文 + 当前分片 + 后文」让 LLM 生成一个可由当前分片回答的问题。"""
-    prompt = f"""你是一个出题助手。下面是一份文档的连续片段：先是一段「前文」，然后是「当前分片」，最后是「后文」。
-请根据「当前分片」的内容（可参考前后文理解语境），生成一个用户可能提出的、能够由「当前分片」回答的问题。
-要求：只输出这一个问题，不要解释、不要编号、不要多余标点。问题用中文，简洁明确。
+    prompt = f"""
+        你是一个出题助手。下面是一份文档的连续片段：先是一段「前文」，然后是「当前分片」，最后是「后文」。
+        请根据「当前分片」的内容（可参考前后文理解语境），生成一个用户可能提出的、能够由「当前分片」回答的问题。
+        要求：只输出这一个问题，不要解释、不要编号、不要多余标点。问题用中文，简洁明确。
 
-【前文】
-{context_before or '（无）'}
+        【前文】
+        {context_before or '（无）'}
 
-【当前分片】
-{chunk}
+        【当前分片】
+        {chunk}
 
-【后文】
-{context_after or '（无）'}
+        【后文】
+        {context_after or '（无）'}
 
-请直接输出一个问题："""
+        请直接输出一个问题：
+"""
 
     resp = client.chat.completions.create(
         model=model,
@@ -178,126 +177,6 @@ def call_llm_generate_question(client: Any, model: str, context_before: str, chu
     )
     text = (resp.choices[0].message.content or "").strip()
     return text
-
-
-# ---------- 从 MinIO 读取已分片数据（不解析 PDF）----------
-def list_chunk_objects(minio_client: Minio, bucket: str, suffix: str = ".chunks.json") -> list[str]:
-    """列出桶中所有「分片数据」对象，默认后缀 .chunks.json。"""
-    names = []
-    for obj in minio_client.list_objects(bucket, recursive=True):
-        name = getattr(obj, "object_name", None) or ""
-        if name.endswith("/"):
-            continue
-        if suffix and name.lower().endswith(suffix.lower()):
-            names.append(name)
-    return names
-
-
-def load_chunks_json(minio_client: Minio, bucket: str, object_name: str) -> dict[str, Any] | None:
-    """从 MinIO 读取一个分片 JSON 对象，返回 {"doc_name", "doc_path_name", "chunks"} 或 None。"""
-    try:
-        resp = minio_client.get_object(bucket, object_name)
-        data = json.loads(resp.read().decode("utf-8"))
-        resp.close()
-        resp.release_conn()
-    except Exception:
-        return None
-    chunks = data.get("chunks") if isinstance(data.get("chunks"), list) else None
-    if not chunks:
-        return None
-    if object_name.lower().endswith(".chunks.json"):
-        default_doc_path = object_name[: -len(".chunks.json")]
-    else:
-        default_doc_path = object_name
-    doc_path = data.get("doc_path_name") or data.get("doc_name") or default_doc_path
-    doc_name = data.get("doc_name") or os.path.basename(doc_path)
-    return {"doc_path_name": doc_path, "doc_name": doc_name, "chunks": chunks}
-
-
-def collect_chunks_from_minio(
-    minio_client: Minio,
-    bucket: str,
-    chunk_object_names: list[str],
-    max_docs: int,
-    rng: random.Random,
-    chunks_suffix: str = ".chunks.json",
-) -> list[tuple[str, str, int, str]]:
-    """
-    从 MinIO 已分片 JSON 中读取，展开为 (doc_path_name, doc_name, chunk_index, chunk_text)。
-    不调用任何 PDF 解析器。
-    """
-    chosen = rng.sample(chunk_object_names, min(max_docs, len(chunk_object_names)))
-    flat = []
-    for name in chosen:
-        doc = load_chunks_json(minio_client, bucket, name)
-        if not doc:
-            continue
-        doc_path = doc["doc_path_name"]
-        doc_name = doc["doc_name"]
-        for i, content in enumerate(doc["chunks"]):
-            if content is None:
-                continue
-            text = (content if isinstance(content, str) else str(content)).strip()
-            if not text:
-                continue
-            flat.append((doc_path, doc_name, i, text))
-    return flat
-
-
-# ---------- 从 MinIO 列举文档并解析得到 chunks（与 agribot_index 一致）----------
-def list_document_objects(minio_client: Minio, bucket: str) -> list[str]:
-    """
-    与 agribot_index 一致：list_objects(bucket, recursive=True)，跳过目录，
-    只保留可解析的文档后缀（.pdf, .docx 等）。
-    """
-    supported = (".pdf", ".docx", ".doc", ".txt", ".md")
-    names = []
-    for obj in minio_client.list_objects(bucket, recursive=True):
-        name = getattr(obj, "object_name", None) or ""
-        if name.endswith("/"):
-            continue
-        if any(name.lower().endswith(s) for s in supported):
-            names.append(name)
-    return names
-
-
-def _parse_doc_chunks(parser: Any, bucket: str, object_name: str) -> dict[str, Any] | None:
-    """解析单个 PDF/文档，返回 doc 元数据 + contents；失败返回 None。"""
-    try:
-        result = parser.parse_object(bucket, object_name)
-        if not result or "contents" not in result or not result["contents"]:
-            return None
-        return result
-    except Exception:
-        return None
-
-
-def collect_chunks_by_parsing(
-    minio_client: Minio,
-    bucket: str,
-    object_names: list[str],
-    max_docs: int,
-    rng: random.Random,
-) -> list[tuple[str, str, int, str]]:
-    """
-    对 object_names 随机取最多 max_docs 个，用 SimpleObjectParser 解析后展开为
-    (doc_path_name, doc_name, chunk_index, chunk_text)。仅当 --source parse 时使用。
-    """
-    from parser.simple_object_parser import SimpleObjectParser  # noqa: E402
-    parser = SimpleObjectParser()
-    chosen = rng.sample(object_names, min(max_docs, len(object_names)))
-    flat = []
-    for name in chosen:
-        parsed = _parse_doc_chunks(parser, bucket, name)
-        if not parsed:
-            continue
-        doc_path = parsed["doc_path_name"]
-        doc_name = parsed.get("doc_name", os.path.basename(name))
-        for i, content in enumerate(parsed["contents"]):
-            if not (content and content.strip()):
-                continue
-            flat.append((doc_path, doc_name, i, content.strip()))
-    return flat
 
 
 def sample_chunks_with_context(
@@ -342,9 +221,7 @@ def sample_chunks_with_context(
 # ---------- 主流程 ----------
 def main() -> None:
     """
-    固定参数版本：
-      - source: milvus
-      - chunks-suffix: .chunks.json
+    固定参数版本（仅从 Milvus 读取）：
       - count: 30
       - max-docs: 20
       - context-size: 3
@@ -352,58 +229,30 @@ def main() -> None:
       - output: /export/workspace/rag/experiment/eval/data/rag_eval_result.json
     如需调整，直接改下面常量即可。
     """
-    SOURCE = "milvus"
-    CHUNKS_SUFFIX = ".chunks.json"
     COUNT = 30
     MAX_DOCS = 20
     CONTEXT_SIZE = 3
     SEED = None
     OUT_PATH = "/export/workspace/rag/experiment/eval/data/rag_eval_result.json"
 
-    rng = random.Random(SEED)
+    rng = random.Random(SEED) 
 
-    minio_client = get_minio_client()
-    bucket = get_bucket()
-    if not minio_client.bucket_exists(bucket):
-        print(f"错误: MinIO 桶 '{bucket}' 不存在")
+    _ensure_milvus_env()
+    try:
+        milvus_api, milvus_field = get_milvus_api()
+    except Exception as e:
+        print(f"Milvus 初始化失败: {e}")
+        print("  请确保 .env 中配置 MILVUS_*（可复制 agribot_index/.env 中的 Milvus 配置）。")
         sys.exit(1)
 
-    if SOURCE == "milvus":
-        _ensure_milvus_env()
-        try:
-            milvus_api, milvus_field = get_milvus_api()
-        except Exception as e:
-            print(f"Milvus 初始化失败: {e}")
-            print("  请确保 .env 中配置 MILVUS_*（可复制 agribot_index/.env 中的 Milvus 配置），或使用 --source parse 从 MinIO 解析。")
-            sys.exit(1)
-        print("从 Milvus 读取已索引分片（不解析 PDF）…")
-        flat = collect_chunks_from_milvus(minio_client, bucket, milvus_api, milvus_field, MAX_DOCS, rng)
-        if not flat:
-            print("错误: Milvus 中未找到已索引的文档分片。请先通过 agribot_index 将 MinIO 中的文档解析并写入 Milvus。")
-            sys.exit(1)
-        print(f"共得到 {len(flat)} 个分片（来自 Milvus），将随机抽取 {args.count} 条生成问题")
-    elif SOURCE == "chunks":
-        object_names = list_chunk_objects(minio_client, bucket, suffix=CHUNKS_SUFFIX)
-        if not object_names:
-            print(f"错误: 桶中未找到后缀为 '{args.chunks_suffix}' 的分片数据。")
-            print("  请确保 MinIO 中已上传已分片 JSON，或使用 --source milvus 从 Milvus 读取，或 --source parse 从桶内文档现场解析。")
-            sys.exit(1)
-        print(f"MinIO 中共找到 {len(object_names)} 个分片文件（{CHUNKS_SUFFIX}），将随机选取最多 {MAX_DOCS} 个")
-        flat = collect_chunks_from_minio(minio_client, bucket, object_names, MAX_DOCS, rng, CHUNKS_SUFFIX)
-    else:
-        # --source parse：与 agribot_index 一致，从 MinIO 取文档并解析得分片
-        object_names = list_document_objects(minio_client, bucket)
-        if not object_names:
-            print("错误: 桶中没有找到可解析的文档（.pdf / .docx / .txt / .md）")
-            sys.exit(1)
-        print(f"MinIO 中共找到 {len(object_names)} 个文档，将随机选取最多 {MAX_DOCS} 个并解析得分片（会调用 PDF/文档解析器）")
-        flat = collect_chunks_by_parsing(minio_client, bucket, object_names, MAX_DOCS, rng)
+    print("直接从 Milvus 读取已索引分片（不再访问 MinIO）…")
+    flat = collect_chunks_directly_from_milvus(milvus_api, milvus_field, MAX_DOCS, rng)
 
     if not flat:
         print("错误: 未得到任何分片")
         sys.exit(1)
-    if args.source != "milvus":
-        print(f"共得到 {len(flat)} 个分片，将随机抽取 {COUNT} 条生成问题")
+
+    print(f"共得到 {len(flat)} 个分片，将随机抽取 {COUNT} 条生成问题")
 
     samples = sample_chunks_with_context(flat, COUNT, CONTEXT_SIZE, rng)
 
@@ -431,7 +280,7 @@ def main() -> None:
 
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
-    print(f"已写入 {len(results)} 条到 {out_path}")
+    print(f"已写入 {len(results)} 条到 {OUT_PATH}")
 
 
 if __name__ == "__main__":

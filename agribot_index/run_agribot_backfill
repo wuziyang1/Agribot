@@ -1,0 +1,9 @@
+#!/bin/bash
+echo "Agribot index Backfill (查缺补漏) Starting... "
+
+#在当前 shell 中加载 conda 初始化脚本
+source /export/server/anaconda3/etc/profile.d/conda.sh
+conda activate mildocindex
+
+# 查缺补漏模式：只处理 Milvus 中不存在的文档，并将日志写入 agribot_index.log
+nohup python -u main.py --mode backfill >> agribot_index.log 2>&1 &

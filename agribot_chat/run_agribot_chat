@@ -5,5 +5,12 @@ source /export/server/anaconda3/etc/profile.d/conda.sh
 conda activate mildocchat
 
 cd /export/workspace/rag
-nohup python -u -m agribot_chat.chat_app >> /export/workspace/rag/agribot_chat/routers/agribot_chat.log 2>&1 &
+
+# 统一日志输出到一个文件：
+# - 应用内 logging（TimedRotatingFileHandler）写到 AGRIBOT_CHAT_LOG
+# - nohup stdout/stderr 也重定向到同一文件
+LOG_FILE="/export/workspace/rag/agribot_chat/agribot_chat.log"
+export AGRIBOT_CHAT_LOG="$LOG_FILE"
+
+nohup python -u -m agribot_chat.chat_app >> "$LOG_FILE" 2>&1 &
 
