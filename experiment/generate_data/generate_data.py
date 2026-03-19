@@ -22,6 +22,7 @@ import json
 import os
 import random
 import sys
+import time
 from typing import Any
 from dotenv import load_dotenv
 
@@ -214,6 +215,34 @@ def call_llm_extract_minimal_answer(client: Any, model: str, question: str, chun
     return ((resp.choices[0].message.content or "").strip())
 
 
+def _call_with_backoff(fn, *, max_retries: int, base_sleep_s: float, max_sleep_s: float):
+    """
+    对 LLM 调用做指数退避重试（重点处理 429：TPM/RPM 限流）。
+    - 不依赖 openai 内置重试的具体实现与版本差异
+    - 其他网络抖动/5xx 也可受益
+    """
+    last_err: Exception | None = None
+    sleep_s = max(0.0, float(base_sleep_s))
+    for attempt in range(max_retries + 1):
+        try:
+            return fn()
+        except Exception as e:  # noqa: BLE001
+            last_err = e
+            msg = str(e)
+            is_rate_limit = ("429" in msg) or ("rate limit" in msg.lower()) or ("TPM" in msg)
+            if attempt >= max_retries:
+                raise
+            # 限流时更保守一点；非限流也做退避避免打爆
+            jitter = (0.25 + random.random() * 0.75)  # 0.25~1.0
+            wait = min(max_sleep_s, max(0.2, sleep_s) * (2 ** attempt) * jitter)
+            if is_rate_limit:
+                wait = min(max_sleep_s, wait + 1.0)
+            time.sleep(wait)
+    if last_err:
+        raise last_err
+    raise RuntimeError("LLM call failed unexpectedly")
+
+
 def sample_chunks_with_context(
     flat_chunks: list[tuple[str, str, int, str]],
     count: int,
@@ -284,6 +313,33 @@ def sample_chunks_with_context(
     return picks
 
 
+def _load_existing_json_array(path: str) -> list[dict[str, Any]]:
+    if not os.path.exists(path):
+        return []
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except Exception:
+        return []
+
+
+def _append_and_flush_json_array(path: str, new_rows: list[dict[str, Any]]) -> int:
+    """
+    读取 path 中已有的 JSON 数组并追加 new_rows，然后原子写回。
+    返回写回后的总条数。
+    """
+    if not new_rows:
+        return len(_load_existing_json_array(path))
+    existing = _load_existing_json_array(path)
+    existing.extend(new_rows)
+    tmp = f"{path}.tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(existing, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, path)
+    return len(existing)
+
+
 # ---------- 主流程 ----------
 def main() -> None:
     """
@@ -291,12 +347,12 @@ def main() -> None:
       - count: 3
       - context-size: 3
       - seed: None
-      - output: /export/workspace/rag/experiment/generate_data/rag_eval_result.json
+      - output: /export/workspace/rag/experiment/generate_data/gen_data.json
     """
-    COUNT = 30
+    COUNT = 200
     CONTEXT_SIZE = 3
     SEED = None
-    OUT_PATH = "/export/workspace/rag/experiment/generate_data/rag_eval_result.json"
+    OUT_PATH = "/export/workspace/rag/experiment/generate_data/gen_data.json"
 
     rng = random.Random(SEED) 
 
@@ -324,19 +380,57 @@ def main() -> None:
         print(f"LLM 初始化失败: {e}")
         sys.exit(1)
 
-    results = []
+    # --- 限流保护（避免触发 TPM/RPM 429）---
+    # 每个样本会调用 2 次 LLM（问题 + 答案），建议设置一个最小间隔。
+    min_interval_s = float(os.getenv("QWEN_MIN_INTERVAL_SEC", "0.6"))
+    max_retries = int(os.getenv("QWEN_MAX_RETRIES", "8"))
+    backoff_base_s = float(os.getenv("QWEN_BACKOFF_BASE_SEC", "0.8"))
+    backoff_max_s = float(os.getenv("QWEN_BACKOFF_MAX_SEC", "30"))
+    last_call_ts = 0.0
+    FLUSH_EVERY = 64
+
+    def _throttle():
+        nonlocal last_call_ts
+        now = time.time()
+        to_sleep = (last_call_ts + min_interval_s) - now
+        if to_sleep > 0:
+            time.sleep(to_sleep)
+
+    # 每 64 条落盘一次：避免中途 429/中断导致前面结果丢失
+    pending: list[dict[str, Any]] = []
+    already = len(_load_existing_json_array(OUT_PATH))
+    if already:
+        print(f"检测到已有输出文件，当前已存在 {already} 条，将继续追加…")
+
     for idx, (doc_path, doc_name, chunk_index, (before, after), chunk) in enumerate(samples):
         context_before = "\n\n".join(before) if before else ""
         context_after = "\n\n".join(after) if after else ""
+
+        # 全局节流：尽量把请求分散到时间轴上，降低 TPM/RPM 峰值
+        _throttle()
+
         try:
-            question = call_llm_generate_question(llm_client, model, context_before, chunk, context_after)
+            question = _call_with_backoff(
+                lambda: call_llm_generate_question(llm_client, model, context_before, chunk, context_after),
+                max_retries=max_retries,
+                base_sleep_s=backoff_base_s,
+                max_sleep_s=backoff_max_s,
+            )
         except Exception as e:
             print(f"  [{idx+1}/{len(samples)}] 生成问题失败: {e}")
             question = ""
 
+        last_call_ts = time.time()
+        _throttle()
+
         try:
             answer = (
-                call_llm_extract_minimal_answer(llm_client, model, question, chunk)
+                _call_with_backoff(
+                    lambda: call_llm_extract_minimal_answer(llm_client, model, question, chunk),
+                    max_retries=max_retries,
+                    base_sleep_s=backoff_base_s,
+                    max_sleep_s=backoff_max_s,
+                )
                 if question
                 else ""
             )
@@ -344,16 +438,26 @@ def main() -> None:
             print(f"  [{idx+1}/{len(samples)}] 抽取答案失败: {e}")
             answer = ""
 
-        results.append({
+        last_call_ts = time.time()
+
+        pending.append({
             "question": question or "(生成失败)",
             "answer": answer or chunk,
             "source_pdf": doc_path,
         })
         print(f"  [{idx+1}/{len(samples)}] 已生成 -> {doc_name} (chunk {chunk_index})")
 
-    with open(OUT_PATH, "w", encoding="utf-8") as f:
-        json.dump(results, f, ensure_ascii=False, indent=2)
-    print(f"已写入 {len(results)} 条到 {OUT_PATH}")
+        if len(pending) >= FLUSH_EVERY:
+            total = _append_and_flush_json_array(OUT_PATH, pending)
+            print(f"  已写入 {len(pending)} 条（累计 {total} 条）到 {OUT_PATH}")
+            pending.clear()
+
+    if pending:
+        total = _append_and_flush_json_array(OUT_PATH, pending)
+        print(f"已写入剩余 {len(pending)} 条（累计 {total} 条）到 {OUT_PATH}")
+    else:
+        total = len(_load_existing_json_array(OUT_PATH))
+        print(f"生成完成，文件现有 {total} 条：{OUT_PATH}")
 
 
 if __name__ == "__main__":

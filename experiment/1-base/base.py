@@ -94,26 +94,17 @@ def main():
         sys.exit(1)
 
     test_data = _load_test_data(DATA_PATH)
-    print(f"加载 {len(test_data)} 条测试数据，开始调用 RAG 收集回答与上下文…")
-    rows = _run_rag_and_collect(test_data)
+    total_samples = len(test_data)
+    if total_samples == 0:
+        print("错误: 测试数据为空")
+        sys.exit(1)
+    print(f"加载 {total_samples} 条测试数据。")
 
     try:
         from ragas import EvaluationDataset, SingleTurnSample, evaluate
     except ImportError as e:
         print(f"请安装 ragas: pip install ragas。错误: {e}")
         sys.exit(1)
-
-    # 构建 ragas 数据集
-    samples = [
-        SingleTurnSample(
-            user_input=r["user_input"],
-            retrieved_contexts=r["retrieved_contexts"],
-            response=r["response"],
-            reference=r["reference"],
-        )
-        for r in rows
-    ]
-    dataset = EvaluationDataset(samples=samples)
 
     # ragas 打分用的 LLM 和 Embeddings：
     # 默认复用 chat 模块的 Config.LLM_* / LLM_EMBEDDING_*，
@@ -153,13 +144,88 @@ def main():
         openai_api_base=eval_emb_base_url or None,
     )
 
-    # 不显式指定 metrics，使用 ragas 0.4.x 默认的一组 RAG 评估指标
-    res = evaluate(
-        dataset,
-        llm=chat,
-        embeddings=bge_embeddings,
-        show_progress=True,
-    )
+    # -------- 分批评估：每批默认 100 条，可通过环境变量 EVAL_BATCH_SIZE 调整 --------
+    from math import ceil
+
+    try:
+        batch_size = int(os.getenv("EVAL_BATCH_SIZE", "20"))
+        if batch_size <= 0:
+            raise ValueError
+    except ValueError:
+        batch_size = 20
+
+    num_batches = ceil(total_samples / batch_size)
+    print(f"将按批次评估: batch_size={batch_size}, 共 {num_batches} 批。")
+
+    all_per_sample_records: list[dict] = []
+    weighted_metric_sums: dict[str, float] = {}
+    total_for_metrics = 0  # 实际参与指标聚合的样本数（过滤 NaN 后）
+
+    for bi in range(num_batches):
+        start = bi * batch_size
+        end = min(total_samples, (bi + 1) * batch_size)
+        batch = test_data[start:end]
+        print(f"\n=== 批次 {bi+1}/{num_batches}: 样本 {start}–{end-1}（共 {end-start} 条）===")
+
+        rows = _run_rag_and_collect(batch)
+
+        # 构建 ragas 数据集
+        samples = [
+            SingleTurnSample(
+                user_input=r["user_input"],
+                retrieved_contexts=r["retrieved_contexts"],
+                response=r["response"],
+                reference=r["reference"],
+            )
+            for r in rows
+        ]
+        dataset = EvaluationDataset(samples=samples)
+
+        # 不显式指定 metrics，使用 ragas 默认的一组 RAG 评估指标
+        res = evaluate(
+            dataset,
+            llm=chat,
+            embeddings=bge_embeddings,
+            show_progress=True,
+        )
+
+        # 收集每条样本的指标（用于最终汇总）
+        batch_records: list[dict] = []
+        if hasattr(res, "to_pandas"):
+            try:
+                df = res.to_pandas()
+                batch_records = df.to_dict(orient="records")
+            except Exception:
+                batch_records = []
+
+        # 若无法从 pandas 拿到 per-sample，则尝试从 res.dataset_scores / scores 中取
+        if not batch_records:
+            maybe = getattr(res, "dataset_scores", None)
+            if maybe:
+                if isinstance(maybe, list):
+                    batch_records = maybe
+                else:
+                    batch_records = [maybe]
+
+        all_per_sample_records.extend(batch_records)
+
+        # 基于本批的 per-sample 指标，对数值型字段做汇总，用于后续整体聚合
+        for rec in batch_records:
+            metric_keys = [
+                k for k, v in rec.items()
+                if isinstance(v, (int, float)) and not (isinstance(v, float) and (v != v))
+            ]
+            for k in metric_keys:
+                weighted_metric_sums[k] = weighted_metric_sums.get(k, 0.0) + float(rec[k])
+
+        total_for_metrics += len(batch_records)
+        print(f"批次 {bi+1} 评估完成，记录数: {len(batch_records)}")
+
+    # -------- 聚合所有批次的指标（简单平均）--------
+    final_scores: dict[str, float] = {}
+    if total_for_metrics > 0:
+        for k, s in weighted_metric_sums.items():
+            final_scores[k] = s / total_for_metrics
 
     # 转成可序列化的结果并写入
     def _to_serializable(obj):
@@ -173,14 +239,13 @@ def main():
             return [_to_serializable(x) for x in obj]
         return obj
 
-    scores = getattr(res, "scores", None) or getattr(res, "dataset_scores", res)
-    out = {"scores": _to_serializable(scores)}
-    if hasattr(res, "to_pandas"):
-        try:
-            df = res.to_pandas()
-            out["dataset_scores"] = df.to_dict(orient="records")
-        except Exception:
-            pass
+    out = {
+        "scores": _to_serializable(final_scores),
+        "dataset_scores": _to_serializable(all_per_sample_records),
+        "total_samples": total_samples,
+        "batch_size": batch_size,
+        "num_batches": num_batches,
+    }
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
     print(f"评估完成，结果已写入 {OUT_PATH}")

@@ -7,6 +7,7 @@ RAG服务工具类
 
 '''这个才是llm rag，这个才是真正的rag核心'''
 import logging
+import os
 import queue
 import threading
 from typing import Iterable, List, Optional, Dict, Any
@@ -304,6 +305,12 @@ class RAGService:
         initial_k = 10 if use_rerank and self.rerank_service else 3  # 如果启用重排就检索10个，不启用就检索3个
         candidate_docs = []
 
+        # 可选：排除不希望参与检索的文档路径前缀（例如某些测试/教程类文档）
+        # 当前硬编码排除 "1.大数据可视化技术/" 目录下的文档。
+        excluded_prefixes = [
+            "1.大数据可视化技术/",
+        ]
+
         if use_rag and self.milvus_client is not None:
             try:
                 # 1. 先对查询做向量化
@@ -333,9 +340,21 @@ class RAGService:
                     # hit 结构: {'id': ..., 'distance': ..., 'entity': {...}} entity就是上一步results的数据
                     entity = hit.get("entity", {})
                     page_content = entity.get("content", "")
+                    doc_path_name = entity.get("doc_path_name", "") or ""
+
+                    # 跳过不需要参与检索/评估的文档（按路径前缀过滤）
+                    if doc_path_name:
+                        skipped = False
+                        for prefix in excluded_prefixes:
+                            if prefix and doc_path_name.startswith(prefix):
+                                skipped = True
+                                break
+                        if skipped:
+                            continue
+
                     metadata = {
                         "doc_name": entity.get("doc_name", ""),
-                        "doc_path_name": entity.get("doc_path_name", ""),
+                        "doc_path_name": doc_path_name,
                         "doc_type": entity.get("doc_type", ""),
                         "score": float(hit.get("distance", 0.0)),
                     }
