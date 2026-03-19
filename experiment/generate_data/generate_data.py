@@ -293,7 +293,7 @@ def main() -> None:
       - seed: None
       - output: /export/workspace/rag/experiment/generate_data/rag_eval_result.json
     """
-    COUNT = 3
+    COUNT = 30
     CONTEXT_SIZE = 3
     SEED = None
     OUT_PATH = "/export/workspace/rag/experiment/generate_data/rag_eval_result.json"
