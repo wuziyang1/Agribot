@@ -15,18 +15,14 @@ import os
 import sys
 from typing import List, Tuple, Dict
 from types import SimpleNamespace
-
 from dotenv import load_dotenv
 
-# 路径常量（固定）
 _script_dir = os.path.dirname(os.path.abspath(__file__))
-# 脚本位于 /export/workspace/rag/experiment/eval
-# 项目根目录是再往上一层：/export/workspace/rag
 _project_root = os.path.dirname(os.path.dirname(_script_dir))
 DATA_PATH = "/export/workspace/rag/experiment/generate_data/gen_data.json"
 OUT_PATH = "/export/workspace/rag/experiment/2-bm25_emb/bm25_res.json"
 
-# 加载本目录下的 .env（若有），并保证能导入 agribot_chat
+
 _env_experiment = os.path.join(_script_dir, ".env")
 load_dotenv(_env_experiment)
 if _project_root not in sys.path:
@@ -234,11 +230,14 @@ def _hybrid_retrieve_docs(
     return final_docs
 
 
-def _run_rag_and_collect_hybrid(questions_and_ground_truth: list[dict]) -> list[dict]:
+def _run_rag_and_collect_hybrid(questions_and_ground_truth: list[dict], rag=None) -> list[dict]:
     """对每个 question 调用『混合检索版 RAG』，收集 answer 与 contexts。"""
-    rag = get_rag_service()
     if rag is None:
-        raise RuntimeError("RAG 服务初始化失败，请检查 agribot_chat/.env 中 MILVUS / LLM / EMBEDDING 等配置")
+        rag = get_rag_service()
+        if rag is None:
+            raise RuntimeError(
+                "RAG 服务初始化失败，请检查 agribot_chat/.env 中 MILVUS / LLM / EMBEDDING 等配置"
+            )
 
     rows = []
     for i, item in enumerate(questions_and_ground_truth):
@@ -298,26 +297,24 @@ def main():
         sys.exit(1)
 
     test_data = _load_test_data(DATA_PATH)
-    print(f"【混合检索】加载 {len(test_data)} 条测试数据，开始调用 RAG 收集回答与上下文…")
-    rows = _run_rag_and_collect_hybrid(test_data)
+    print(f"【混合检索】加载 {len(test_data)} 条测试数据，开始分批次调用 RAG 收集并评估…")
+
+    rag = get_rag_service()
+    if rag is None:
+        raise RuntimeError("RAG 服务初始化失败，请检查 agribot_chat/.env 中 MILVUS / LLM / EMBEDDING 等配置")
 
     try:
         from ragas import EvaluationDataset, SingleTurnSample, evaluate
     except ImportError as e:
         print(f"请安装 ragas: pip install ragas。错误: {e}")
         sys.exit(1)
-
-    # 构建 ragas 数据集
-    samples = [
-        SingleTurnSample(
-            user_input=r["user_input"],
-            retrieved_contexts=r["retrieved_contexts"],
-            response=r["response"],
-            reference=r["reference"],
-        )
-        for r in rows
-    ]
-    dataset = EvaluationDataset(samples=samples)
+    from ragas.run_config import RunConfig
+    from ragas.metrics import (
+        faithfulness,
+        answer_relevancy,
+        context_recall,
+        context_precision,
+    )
 
     # ragas 打分用的 LLM 和 Embeddings：
     # 默认复用 chat 模块的 Config.LLM_* / LLM_EMBEDDING_*，
@@ -356,37 +353,69 @@ def main():
         openai_api_base=eval_emb_base_url or None,
     )
 
-    res = evaluate(
-        dataset,
-        llm=chat,
-        embeddings=bge_embeddings,
-        show_progress=True,
+    # ragas 评估更稳定的参数：降低并发 + 加重试，减少 OutputParserException
+    ragas_timeout = int(_os.getenv("EVAL_RAGAS_TIMEOUT", "600"))
+    ragas_max_workers = int(_os.getenv("EVAL_RAGAS_MAX_WORKERS", "1"))
+    ragas_max_retries = int(_os.getenv("EVAL_RAGAS_MAX_RETRIES", "5"))
+    ragas_run_config = RunConfig(
+        timeout=ragas_timeout,
+        max_workers=ragas_max_workers,
+        max_retries=ragas_max_retries,
     )
 
-    # 转成可序列化的结果并写入
-    def _to_serializable(obj):
-        if hasattr(obj, "model_dump"):
-            return obj.model_dump()
-        if hasattr(obj, "__dict__"):
-            return {k: _to_serializable(v) for k, v in obj.__dict__.items()}
-        if isinstance(obj, dict):
-            return {k: _to_serializable(v) for k, v in obj.items()}
-        if isinstance(obj, (list, tuple)):
-            return [_to_serializable(x) for x in obj]
-        return obj
+    # answer_relevancy 默认 strictness=3，会触发多次生成，模型在上游繁忙时更容易出格式问题
+    answer_relevancy.strictness = int(_os.getenv("EVAL_ANSWER_RELEVANCY_STRICTNESS", "1"))
 
-    scores = getattr(res, "scores", None) or getattr(res, "dataset_scores", res)
-    out = {"scores": _to_serializable(scores)}
-    if hasattr(res, "to_pandas"):
-        try:
-            df = res.to_pandas()
-            out["dataset_scores"] = df.to_dict(orient="records")
-        except Exception:
-            pass
+    metrics_max_retries = int(_os.getenv("EVAL_METRICS_MAX_RETRIES", "3"))
+    for _m in (context_precision, context_recall, faithfulness):
+        if hasattr(_m, "max_retries"):
+            _m.max_retries = metrics_max_retries
+
+    # 分批次：每批先收集 RAG 结果，再立即评估
+    batch_size = 20
+    if batch_size <= 0:
+        batch_size = len(test_data) if test_data else 1
+
+    combined_dataset_scores = []
+    for start in range(0, len(test_data), batch_size):
+        batch_questions = test_data[start : start + batch_size]
+        rows = _run_rag_and_collect_hybrid(batch_questions, rag=rag)
+
+        samples = [
+            SingleTurnSample(
+                user_input=r["user_input"],
+                retrieved_contexts=r["retrieved_contexts"],
+                response=r["response"],
+                reference=r["reference"],
+            )
+            for r in rows
+        ]
+
+        if not samples:
+            continue
+
+        dataset = EvaluationDataset(samples=samples)
+        result = evaluate(
+            dataset,
+            metrics=[
+                context_precision,
+                context_recall,
+                faithfulness,
+                answer_relevancy,
+            ],
+            llm=chat,
+            embeddings=bge_embeddings,
+            run_config=ragas_run_config,
+            batch_size=1,
+        )
+        df = result.to_pandas()
+        combined_dataset_scores.extend(df.to_dict(orient="records"))
+
+    out = {"dataset_scores": combined_dataset_scores}
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
     print(f"【混合检索】评估完成，结果已写入 {OUT_PATH}")
-    print("【混合检索】聚合指标:", out.get("scores", out))
+    print("【混合检索】聚合指标:", out)
 
 
 if __name__ == "__main__":
