@@ -18,6 +18,7 @@ import json
 import os
 import sys
 from pathlib import Path
+from inspect import signature
 
 # 路径常量（固定）
 _script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -48,6 +49,20 @@ def _load_test_data(path: str) -> list[dict]:
 
 def _run_rag_and_collect(questions_and_ground_truth: list[dict]) -> list[dict]:
     """对每个 question 调用 RAG，收集 answer 与 contexts。"""
+    # 评估阶段的提示词会把 contexts/response/reference 拼进去，过长容易触发网关校验失败（400）
+    # 因此这里默认限制得更保守；如需放宽可用环境变量覆盖
+    max_contexts = int(os.getenv("EVAL_MAX_CONTEXTS", "3"))
+    max_context_chars = int(os.getenv("EVAL_MAX_CONTEXT_CHARS", "900"))
+    max_response_chars = int(os.getenv("EVAL_MAX_RESPONSE_CHARS", "1200"))
+
+    def _clip_text(s: str, max_chars: int) -> str:
+        if not s:
+            return ""
+        s = s.strip()
+        if len(s) <= max_chars:
+            return s
+        return s[:max_chars] + "\n...[truncated]"
+
     rag = get_rag_service()
     if rag is None:
         raise RuntimeError("RAG 服务初始化失败，请检查 .env 中 MILVUS / LLM / EMBEDDING 等配置")
@@ -78,10 +93,13 @@ def _run_rag_and_collect(questions_and_ground_truth: list[dict]) -> list[dict]:
         contexts = resp.evaluation_contexts if getattr(resp, "evaluation_contexts", None) else []
         if not contexts and resp.source_documents:
             contexts = [d.content_preview for d in resp.source_documents]
+        contexts = [_clip_text(c, max_context_chars) for c in (contexts or []) if c]
+        if max_contexts > 0:
+            contexts = contexts[:max_contexts]
         rows.append({
             "user_input": question,
             "reference": reference,
-            "response": (resp.content or "").strip(),
+            "response": _clip_text((resp.content or "").strip(), max_response_chars),
             "retrieved_contexts": contexts or [],
         })
         print(f"  [{i+1}/{len(questions_and_ground_truth)}] 已获取 RAG 回答与上下文")
@@ -125,19 +143,26 @@ def main():
     eval_llm_model = _env_or_default("EVAL_LLM_MODEL_NAME", Config.LLM_MODEL_NAME)
     eval_llm_api_key = _env_or_default("EVAL_LLM_API_KEY", Config.LLM_API_KEY)
     eval_llm_base_url = _env_or_default("EVAL_LLM_BASE_URL", Config.LLM_BASE_URL or "")
+    # 提高评估阶段的超时/重试，避免 ragas 的子 job 过慢导致 TimeoutError
+    eval_llm_timeout_s = float(_env_or_default("EVAL_LLM_TIMEOUT_SECONDS", "240"))
+    eval_llm_retries = int(_env_or_default("EVAL_LLM_MAX_RETRIES", "10"))
 
     # 评估 Embedding：直接复用 chat 模块的 embedding 配置
     eval_emb_model = Config.LLM_EMBEDDING_MODEL_NAME
     eval_emb_api_key = Config.LLM_EMBEDDING_API_KEY
     eval_emb_base_url = Config.LLM_EMBEDDING_BASE_URL or ""
 
-    chat = ChatOpenAI(
-        model=eval_llm_model,
-        openai_api_key=eval_llm_api_key,
-        openai_api_base=eval_llm_base_url or None,
-        temperature=0.0,
-        max_tokens=1024,
-    )
+    chat_kwargs = {
+        "model": eval_llm_model,
+        "openai_api_key": eval_llm_api_key,
+        "openai_api_base": eval_llm_base_url or None,
+        "temperature": 0.0,
+        # 提高 max_tokens，减少因输出被截断导致的 OutputParserException（缺少字段）
+        "max_tokens": int(os.getenv("EVAL_LLM_MAX_TOKENS", "1024")),
+        "request_timeout": eval_llm_timeout_s,
+        "max_retries": eval_llm_retries,
+    }
+    chat = ChatOpenAI(**chat_kwargs)
     bge_embeddings = OpenAIEmbeddings(
         model=eval_emb_model,
         openai_api_key=eval_emb_api_key,
@@ -161,6 +186,52 @@ def main():
     weighted_metric_sums: dict[str, float] = {}
     total_for_metrics = 0  # 实际参与指标聚合的样本数（过滤 NaN 后）
 
+    try:
+        from ragas.run_config import RunConfig
+    except Exception:
+        RunConfig = None
+
+    # ragas 的单 job timeout 需要覆盖最慢的一次 LLM 调用
+    ragas_timeout_s = float(
+        os.getenv("EVAL_RAGAS_TIMEOUT_SECONDS", str(max(480.0, eval_llm_timeout_s * 2)))
+    )
+    ragas_max_retries = int(os.getenv("EVAL_RAGAS_MAX_RETRIES", str(max(6, eval_llm_retries))))
+    ragas_max_workers = int(os.getenv("EVAL_RAGAS_MAX_WORKERS", "1"))
+
+    def _evaluate_with_compat(dataset, llm, embeddings):
+        base_kwargs = {
+            "dataset": dataset,
+            "llm": llm,
+            "embeddings": embeddings,
+            "show_progress": True,
+        }
+        if RunConfig is not None:
+            base_kwargs["run_config"] = RunConfig(
+                timeout=ragas_timeout_s,
+                max_retries=ragas_max_retries,
+                max_workers=ragas_max_workers,
+            )
+
+        # 不同 ragas 版本参数存在差异；优先尝试关闭异常抛出，把失败样本记为 NaN
+        sig = signature(evaluate)
+        if "raise_exceptions" in sig.parameters:
+            base_kwargs["raise_exceptions"] = False
+        elif "return_executor" in sig.parameters:
+            # 旧版本兼容位，不改变行为，仅避免传入未知参数
+            pass
+
+        try:
+            return evaluate(**base_kwargs)
+        except TypeError:
+            # 极端兼容兜底：剥离 run_config/raise_exceptions 后重试
+            fallback_kwargs = {
+                "dataset": dataset,
+                "llm": llm,
+                "embeddings": embeddings,
+                "show_progress": True,
+            }
+            return evaluate(**fallback_kwargs)
+
     for bi in range(num_batches):
         start = bi * batch_size
         end = min(total_samples, (bi + 1) * batch_size)
@@ -182,12 +253,7 @@ def main():
         dataset = EvaluationDataset(samples=samples)
 
         # 不显式指定 metrics，使用 ragas 默认的一组 RAG 评估指标
-        res = evaluate(
-            dataset,
-            llm=chat,
-            embeddings=bge_embeddings,
-            show_progress=True,
-        )
+        res = _evaluate_with_compat(dataset=dataset, llm=chat, embeddings=bge_embeddings)
 
         # 收集每条样本的指标（用于最终汇总）
         batch_records: list[dict] = []
