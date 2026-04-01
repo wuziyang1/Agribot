@@ -12,6 +12,7 @@ build/
 
 # 日志文件
 *.log
+agribot_chat/agribot_chat.log.*
 
 # 虚拟环境
 venv/
