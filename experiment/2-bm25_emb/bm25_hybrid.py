@@ -248,7 +248,7 @@ def _run_rag_and_collect_hybrid(questions_and_ground_truth: list[dict], rag=None
 
         try:
             # 1. 混合检索得到最终文档列表（替代 query_service 内部的向量检索 + 重排）
-            final_docs = _hybrid_retrieve_docs(rag, question, k_vec=10, k_final=3, w_bm25=0.5)
+            final_docs = _hybrid_retrieve_docs(rag, question, k_vec=10, k_final=3, w_bm25=0.2)
             if not final_docs:
                 rows.append(
                     {
