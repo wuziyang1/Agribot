@@ -1,4 +1,22 @@
 {
     "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 500
+    "files.autoSaveDelay": 500,
+    //claude插件
+    "claudeCode.disableLoginPrompt": true,
+    // 禁用登录提示
+    "claudeCode.environmentVariables": [
+        {
+            "name": "CLAUDE_CODE_OAUTH_TOKEN",
+            "value": "sk-uFUD8SH9vIL8Fi4p4I3JHjkX2Ps2kD4xkyVMdDQQ7a7swhtu"
+        },
+        {
+            "name": "ANTHROPIC_BASE_URL",
+            "value": "https://vip.dmxapi.com"
+        },
+        {
+            "name": "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+            "value": "1"
+            // 一键关闭 Claude Code 向 Anthropic 发送的所有非核心网络请求，更少的后台流量
+        }
+    ]
 }

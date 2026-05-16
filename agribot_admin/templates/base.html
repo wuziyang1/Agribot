@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Agribot 管理后台{% endblock %}</title>
+    <title>{% block title %}Agribot 知识库管理{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block head %}{% endblock %}
 </head>
@@ -12,7 +12,7 @@
         {% if session.username %}
         <header class="header">
             <div class="header-content">
-                <h1 class="logo">Agribot 管理后台</h1>
+                <h1 class="logo">Agribot 知识库管理</h1>
                 <nav class="nav">
                     <a href="{{ url_for('file_browser') }}" class="nav-link">文件浏览</a>
                     <div class="user-info">
