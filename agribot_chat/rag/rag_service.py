@@ -19,7 +19,6 @@ from langchain_community.callbacks.manager import get_openai_callback
 
 from agribot_chat.rag.rag_config import Config
 from agribot_chat.rag.rerank_service import get_rerank_service
-from agribot_chat.rag.graph_rag_service import get_graph_rag_service
 
 # 配置日志
 logger = logging.getLogger(__name__)
@@ -69,15 +68,12 @@ class RAGService:
         使用Milvus向量数据库实现检索增强生成服务，通过大模型生成回答
     """
     
-    # 提示词模板（融合向量检索 + 知识图谱双路上下文）
+    # 提示词模板
     PROMPT_TEMPLATE = """
         你是一个基于企业文档知识库的问答助手，优先利用检索到的文档内容来回答用户问题，但在知识库没有覆盖时可以结合通用常识进行补充说明。
 
         知识库内容（来自向量相似度检索，可能来自多个文档片段，可能为空或不相关）:
         {context}
-
-        知识图谱关系（来自图数据库的精准检索，展示实体间的上下级/因果/所属等结构化关系，可能为空）:
-        {graph_context}
 
         以下是本对话的近期历史（请结合历史理解并回答当前问题）:
         {chat_history}
@@ -85,12 +81,11 @@ class RAGService:
         当前用户问题: {question}
 
         回答要求：
-            1. 综合利用上方"知识库内容"和"知识图谱关系"来回答问题。向量检索提供语义相似的段落，图谱提供精准的实体关联与层级结构，两者互补。
-            2. 当知识库和图谱都包含相关信息时，以文档原文为主、图谱关系为辅进行融合回答。
-            3. 当知识库中的信息只覆盖了问题的一部分时，先基于已有内容回答"已知部分"，然后可以适度结合通用经验补充，但不要与知识库中已有结论相矛盾。
-            4. 当知识库和图谱内容都与问题几乎无关或基本为空时，可以直接基于通用知识/常识完整回答用户问题，此时不必刻意强调"知识库里查不到"，但也不要虚构具体文档中才会出现的细节（如具体公司名称、条款编号等）。
-            5. 若有近期对话历史，请结合历史上下文理解当前问题，保持回答连贯、不重复已说明过的内容。
-            6. 回答使用自然流畅的中文，语言简洁、逻辑清晰，可以合理使用 Markdown 语法（如标题、列表、加粗、代码块等）提升可读性。
+            1. 优先基于上方"知识库内容"来回答问题。
+            2. 当知识库中的信息只覆盖了问题的一部分时，先基于已有内容回答"已知部分"，然后可以适度结合通用经验补充，但不要与知识库中已有结论相矛盾。
+            3. 当知识库内容与问题几乎无关或基本为空时，可以直接基于通用知识/常识完整回答用户问题，此时不必刻意强调"知识库里查不到"，但也不要虚构具体文档中才会出现的细节（如具体公司名称、条款编号等）。
+            4. 若有近期对话历史，请结合历史上下文理解当前问题，保持回答连贯、不重复已说明过的内容。
+            5. 回答使用自然流畅的中文，语言简洁、逻辑清晰，可以合理使用 Markdown 语法（如标题、列表、加粗、代码块等）提升可读性。
 
         请基于以上要求，使用 Markdown 格式给出对用户问题的最终回答：
     """
@@ -121,7 +116,6 @@ class RAGService:
         self.embeddings = None
         self.llm = None
         self.rerank_service = None  # 重排序服务
-        self.graph_rag = None  # 知识图谱服务（双读融合）
         self._initialize_components()
     #=======================================================
     #初始化组件
@@ -140,9 +134,6 @@ class RAGService:
             
             # 初始化重排序服务
             self._initialize_rerank_service()
-
-            # 初始化知识图谱服务（可选，用于双读融合检索）
-            self._initialize_graph_service()
             
             logger.info("RAG服务初始化完成")
             
@@ -283,19 +274,6 @@ class RAGService:
         except Exception as e:
             logger.warning(f"重排序服务初始化失败: {e}")
             self.rerank_service = None
-
-    # =====================================================================
-    def _initialize_graph_service(self):
-        """初始化知识图谱服务（用于双读融合检索）"""
-        try:
-            self.graph_rag = get_graph_rag_service()
-            if self.graph_rag:
-                logger.info("知识图谱服务已集成到 RAGService（双读模式）")
-            else:
-                logger.info("知识图谱服务未配置，将跳过图谱检索")
-        except Exception as e:
-            logger.warning(f"知识图谱服务初始化失败（不影响向量检索）: {e}")
-            self.graph_rag = None
 
     # 公共私有方法：向量检索、重排序、文档处理、构建 prompt
     # =====================================================================
@@ -476,50 +454,12 @@ class RAGService:
                 ))
         return processed_source_docs
 
-    def _retrieve_graph_context(self, query):
-        """从知识图谱获取结构化关系上下文（双读的图谱检索部分）
-
-        通过 Cypher 查询或关键词模糊匹配，获取与用户问题相关的
-        实体关系信息，作为向量检索的补充上下文。
-        """
-        if not self.graph_rag:
-            return ""
-        try:
-            graph_rag = self.graph_rag
-            graph_rag.graph.refresh_schema()
-            schema = graph_rag.graph.schema
-
-            # 尝试 LLM 生成 Cypher 精准查询
-            cypher = graph_rag._generate_cypher(query, schema)
-            results = []
-            if cypher:
-                try:
-                    results = graph_rag.graph.query(cypher)
-                    logger.info("图谱 Cypher 查询返回 %d 条结果", len(results))
-                except Exception:
-                    pass
-
-            # Cypher 无结果时回退到关键词模糊匹配
-            if not results:
-                results = graph_rag._fallback_search(query)
-                if results:
-                    logger.info("图谱关键词回退查询返回 %d 条结果", len(results))
-
-            if not results:
-                return ""
-
-            return graph_rag._format_graph_results(results)
-        except Exception as e:
-            logger.warning(f"图谱检索失败（不影响向量检索）: {e}")
-            return ""
-
-    def _build_prompt(self, final_docs, query, chat_history=None, graph_context=""):
-        """根据最终文档列表和查询构建 LLM prompt（融合向量上下文 + 图谱上下文）。"""
+    def _build_prompt(self, final_docs, query, chat_history=None):
+        """根据最终文档列表和查询构建 LLM prompt。"""
         context = "\n\n".join([doc.page_content for doc in final_docs])
         chat_history_str = self._format_chat_history(chat_history)
         return self.PROMPT_TEMPLATE.format(
             context=context,
-            graph_context=graph_context or "（无图谱信息）",
             chat_history=chat_history_str,
             question=query,
         )
@@ -528,19 +468,18 @@ class RAGService:
     # 对外查询方法
     # =====================================================================
 
-    def query_service(self, query, use_rerank=True, use_rag=True, use_graph=True, chat_history=None, return_contexts=False):
+    def query_service(self, query, use_rerank=True, use_rag=True, chat_history=None, return_contexts=False):
         """核心查询服务方法
 
         Args:
             query: 用户输入的查询内容
             use_rerank: 是否使用重排序功能
             use_rag: 是否使用知识库检索（为 False 时不查库，仅用 LLM 回答）
-            use_graph: 是否使用知识图谱检索（为 False 时不查图谱）
             chat_history: 本会话的近期对话历史 [{"role":"user"|"assistant","content":"..."}, ...]，可选
             return_contexts: 为 True 时，在返回中附带 evaluation_contexts（检索到的完整文本列表），供 RAG 评估使用
         """
         try:
-            logger.info(f"🔍 开始处理查询（use_rag={use_rag}, use_graph={use_graph}, rerank={use_rerank}): {query}")
+            logger.info(f"🔍 开始处理查询（use_rag={use_rag}, rerank={use_rerank}): {query}")
 
             if not query or not query.strip():
                 return RAGResponse(
@@ -556,13 +495,8 @@ class RAGService:
             # 第二步：重排序
             final_docs = self._rerank_docs(query, candidate_docs, use_rerank)
 
-            # 第三步：从知识图谱获取结构化关系上下文
-            graph_context = self._retrieve_graph_context(query) if use_graph else ""
-            if graph_context:
-                logger.info("🔗 图谱检索到关系上下文（%d 字符）", len(graph_context))
-
-            # 第四步：融合向量上下文 + 图谱上下文，生成回答
-            prompt = self._build_prompt(final_docs, query, chat_history, graph_context=graph_context)
+            # 第三步：构建 prompt 并生成回答
+            prompt = self._build_prompt(final_docs, query, chat_history)
             with get_openai_callback() as cb:  # 在上下文中获取 OpenAI 回调处理器，方便地公开令牌和成本信息
                 answer = self.llm.invoke(prompt).content
 
@@ -599,7 +533,7 @@ class RAGService:
                 evaluation_contexts=None,
             )
 
-    def stream_query(self, query, use_rerank=True, use_rag=True, use_graph=True, chat_history=None):
+    def stream_query(self, query, use_rerank=True, use_rag=True, chat_history=None):
         """流式输出（token 级别），逐条 yield 事件字典。
 
         与 query_service 共用检索 / 重排 / 文档处理逻辑，仅 LLM 生成阶段改为流式。
@@ -654,13 +588,8 @@ class RAGService:
         # 处理源文档信息（提前算好，end 事件里带上）
         processed_source_docs = self._process_source_docs(final_docs)
 
-        # 第三步：从知识图谱获取结构化关系上下文
-        graph_context = self._retrieve_graph_context(query) if use_graph else ""
-        if graph_context:
-            logger.info("🔗 图谱检索到关系上下文（%d 字符）", len(graph_context))
-
-        # 第四步：融合向量上下文 + 图谱上下文，流式生成回答
-        prompt = self._build_prompt(final_docs, query, chat_history, graph_context=graph_context)
+        # 第三步：构建 prompt 并流式生成回答
+        prompt = self._build_prompt(final_docs, query, chat_history)
 
         _STOP = object()
         token_q = queue.Queue()

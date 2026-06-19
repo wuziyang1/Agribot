@@ -13,9 +13,6 @@ const navNewChatBtn = document.querySelector('.nav-new-chat');
 /** 是否使用知识库（RAG）检索，默认开启 */
 let useRag = true;
 
-/** 始终使用知识图谱（Graph RAG）检索 */
-const useGraph = true;
-
 /** Session 管理（数据库持久化） */
 const WELCOME_MSG = '## 🌿 欢迎使用中药材种植技术智能问答系统\n\n' +
   '我是您的 **中药材种植智能助手**，基于专业文档知识库为您提供权威解答。\n\n' +
@@ -375,7 +372,6 @@ async function sendQuestion() {
         question: text,
         use_rerank: true,
         use_rag: useRag,
-        use_graph: useRag,
         session_id: activeSessionId || undefined
       })
     });

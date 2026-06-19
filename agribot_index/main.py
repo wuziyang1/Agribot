@@ -11,7 +11,6 @@ from minio import Minio
 from parser.simple_object_parser import SimpleObjectParser
 from embedding import EmbeddingTool
 from milvus_api import MilvusAPI, MilvusDocument
-from neo4j_graph import create_graph_indexer
 from logger.logging import setup_logging
 
 load_dotenv()
@@ -54,18 +53,6 @@ class MinioEventListener:
         logger.info("测试embedding工具...")
         self.embedding_tool: EmbeddingTool = EmbeddingTool()
 
-        # 知识图谱开关（通过环境变量控制，默认关闭）
-        self.enable_graph_rag = os.getenv("ENABLE_GRAPH_RAG", "false").lower() == "true"
-
-        # 初始化知识图谱索引器（可选）
-        if self.enable_graph_rag:
-            logger.info("初始化知识图谱索引器...")
-            self.graph_indexer = create_graph_indexer()
-            if self.graph_indexer is None:
-                logger.info("Neo4j 配置不可用，知识图谱索引功能已跳过")
-        else:
-            self.graph_indexer = None
-            logger.info("知识图谱未启用（ENABLE_GRAPH_RAG=false），上传时不进行命名实体识别和关系抽取")
         logger.info("所有组件初始化完成！")
     
     #从 MinIO/S3 的原始事件 JSON 里抽出需要用的字段
@@ -190,13 +177,6 @@ class MinioEventListener:
                 logger.info(f"成功删除文档记录: {doc_path_name}")
             else:
                 logger.error(f"删除文档记录失败: {doc_path_name}")
-
-            # 同步从知识图谱中删除
-            if self.graph_indexer is not None:
-                try:
-                    self.graph_indexer.delete_document(doc_path_name)
-                except Exception as e:
-                    logger.warning(f"知识图谱删除失败（不影响向量删除）: {e}")
             
         except Exception as e:
             logger.error(f"处理对象删除事件失败: {e}")
@@ -233,7 +213,7 @@ class MinioEventListener:
         except Exception as e:
             logger.error(f"处理事件时出错: {e}")
     
-    #对「单个 MinIO 对象」（一个文件）做完整处理：解析 → 向量化 → 写入 Milvus → 写 Neo4j。
+    #对「单个 MinIO 对象」（一个文件）做完整处理：解析 → 向量化 → 写入 Milvus。
     def _process_single_object(self, bucket_name: str, object_name: str, force_update: bool = False):
         """
         处理单个对象（用于全量刷新和排查补漏）
@@ -324,24 +304,6 @@ class MinioEventListener:
                     continue
             
             logger.info(f"    完成！成功存储 {success_count}/{len(parse_result['contents'])} 个片段")
-
-            # 同步导入知识图谱（如果图谱索引器可用）
-            if self.graph_indexer is not None:
-                try:
-                    graph_result = self.graph_indexer.import_document(
-                        doc_name=parse_result['doc_name'],
-                        doc_path_name=parse_result['doc_path_name'],
-                        text_chunks=parse_result['contents'],
-                    )
-                    logger.info(
-                        "    图谱导入: %d 实体, %d 关系",
-                        graph_result['entities_count'],
-                        graph_result['relations_count'],
-                    )
-                except Exception as e:
-                    logger.warning(f"    知识图谱导入失败（不影响向量索引）: {e}")
-            else:
-                logger.info("    知识图谱功能当前未启用，本次仅完成向量索引（实体识别与关系抽取已跳过）")
 
             return success_count > 0
             

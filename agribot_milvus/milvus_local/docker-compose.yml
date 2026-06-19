@@ -102,31 +102,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # ======================== Neo4j (使用已有 neo4j:5.26-community) ========================
-  neo4j:
-    container_name: mildoc-neo4j
-    image: neo4j:5.26-community
-    restart: unless-stopped
-    environment:
-      TZ: Asia/Shanghai
-      NEO4J_AUTH: "${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-REDACTED_NEO4J_PASSWORD}"
-      NEO4J_PLUGINS: '["apoc"]'
-      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
-    ports:
-      - "${NEO4J_HTTP_PORT:-7474}:7474"
-      - "${NEO4J_BOLT_PORT:-7687}:7687"
-    volumes:
-      - neo4j_data2:/data
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-volumes:
-  neo4j_data2:
-    external: true
-
 networks:
   default:
     name: milvus
