@@ -29,18 +29,18 @@ services:
       # etcd 配置
       ETCD_ENDPOINTS: etcd:2379
       
-      # 外部 MinIO 配置
-      MINIO_ADDRESS: 172.31.154.203
-      MINIO_PORT: 9000
-      MINIO_ACCESS_KEY_ID: qT63tdsO66jqUjEHeXv3
-      MINIO_SECRET_ACCESS_KEY: YRYrBJzOJxD8e4WKlmSl5qqMbzd64ECTDarEQVAg
-      MINIO_USE_SSL: false
-      MINIO_BUCKET_NAME: milvus
+      # 外部 MinIO 配置（请在 .env 中填写，勿提交真实密钥）
+      MINIO_ADDRESS: ${MINIO_ADDRESS:-127.0.0.1}
+      MINIO_PORT: ${MINIO_PORT:-9000}
+      MINIO_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY_ID}
+      MINIO_SECRET_ACCESS_KEY: ${MINIO_SECRET_ACCESS_KEY}
+      MINIO_USE_SSL: ${MINIO_USE_SSL:-false}
+      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME:-agribot}
 
       # milvus 账号权限
       COMMON_SECURITY_AUTHORIZATION_ENABLED: true
       COMMON_SECURITY_SUPER_USERS: root  # 不要更改root用户名。
-      COMMON_SECURITY_DEFAULT_ROOT_PASSWORD: admin123
+      COMMON_SECURITY_DEFAULT_ROOT_PASSWORD: ${MILVUS_ROOT_PASSWORD:-changeme}
 
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus

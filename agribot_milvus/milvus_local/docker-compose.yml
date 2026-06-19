@@ -91,7 +91,7 @@ services:
     restart: unless-stopped
     environment:
       TZ: Asia/Shanghai
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-my57root@nku}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-changeme_root_password}"
     ports:
       - "${MYSQL_PORT:-3306}:3306"
     volumes:

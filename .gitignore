@@ -6,11 +6,18 @@ __pycache__/
 dist/
 build/
 *.egg
+.pytest_cache/
+.mypy_cache/
 
-# 环境变量
+# 环境变量与密钥（仅保留 .env.example）
 .env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
 
-# 日志文件
+# 日志
 *.log
 agribot_chat/agribot_chat.log.*
 
@@ -19,7 +26,7 @@ venv/
 .venv/
 env/
 
-# IDE
+# IDE（含可能存放 API Key 的本地配置）
 .idea/
 .vscode/
 *.swp
@@ -36,7 +43,18 @@ Thumbs.db
 # Specstory
 .specstory/
 
-# Docker volumes
+# Docker 本地数据卷
 volumes/
+/docker_data_volume/
 
-*.json
+# 实验与评测产物（体积大、可能含私有数据）
+experiment/.env
+experiment/output/
+experiment/generate_data/gen_data.json
+experiment/generate_data/tmp.json
+
+# 备份目录
+agribot_backup_*/
+
+# git filter-repo 元数据
+.git/filter-repo/

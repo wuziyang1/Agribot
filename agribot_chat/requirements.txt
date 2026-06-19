@@ -8,4 +8,5 @@ langchain==0.3.26
 langchain-openai==0.3.28
 langchain-community==0.3.27
 pymilvus==2.5.15
-pymongo>=4.6.0pymysql
+pymongo>=4.6.0
+pymysql>=1.1.0

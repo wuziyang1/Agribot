@@ -199,8 +199,8 @@ def reset_password(email: str, verification_code: str, new_password: str) -> Dic
 
 if __name__ == "__main__":
     # 简单命令行用法示例：
-    # 1) 发送验证码：python forgot_password_smtp.py send iswuziyang@163.com
-    # 2) 重置密码：python forgot_password_smtp.py reset iswuziyang@163.com 123456 新密码
+    # 1) 发送验证码：python forgot_password_smtp.py send user@example.com
+    # 2) 重置密码：python forgot_password_smtp.py reset user@example.com 123456 新密码
     import sys
 
     if len(sys.argv) < 3:

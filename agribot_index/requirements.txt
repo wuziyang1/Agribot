@@ -24,5 +24,3 @@ pymupdf
 
 # MinerU文档解析（安装包非常大默认不安装，需要时再安装）
 #mineru[core]==2.0.6
-
-pymilvus==2.5.15

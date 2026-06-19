@@ -1,35 +1,29 @@
 ## 访问说明
 
-### minio
+### MinIO（外部实例）
 
-- API端口：172.31.154.203:9000
-- 管理后台：172.31.154.203:9001
+- API 端口：`127.0.0.1:9000`（按实际部署修改）
+- 管理后台：`127.0.0.1:9001`
 
-### milvus
+### Milvus
 
-- API端口：19530
+- API 端口：19530
 - 管理端口：9091
-
-
 
 ## docker compose 配置说明
 
-### 去除
-- services:
-  - minio 节点
+本 compose 不包含 MinIO 容器，Milvus 连接**外部 MinIO**。
 
-### 增加 standalone 节点的环境变量
+1. 复制 `.env.example` 为 `.env` 并填写 MinIO 密钥
+2. 启动：`docker compose up -d`
 
-- services:
-  - standalone:  
-    - enviroment:
-      - MINIO_ADDRESS: 172.31.154.203
-      - MINIO_PORT: 9000
-      - MINIO_ACCESS_KEY_ID: 你的ak
-      - MINIO_SECRET_ACCESS_KEY: 你的sk
-      - MINIO_USE_SSL: false
-      - MINIO_BUCKET_NAME: agribot
+### standalone 环境变量示例
 
-
-
-      
+```yaml
+MINIO_ADDRESS: ${MINIO_ADDRESS}
+MINIO_PORT: ${MINIO_PORT}
+MINIO_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY_ID}
+MINIO_SECRET_ACCESS_KEY: ${MINIO_SECRET_ACCESS_KEY}
+MINIO_USE_SSL: ${MINIO_USE_SSL}
+MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
+```
